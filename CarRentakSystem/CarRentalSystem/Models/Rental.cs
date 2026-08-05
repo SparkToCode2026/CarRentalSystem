@@ -8,7 +8,7 @@ namespace CarRentalSystem.Models
     public class Rental
     {
         
-        public int User_ID { get; set; }
+        public int Rental_ID { get; set; }
         public DateOnly StartDate { get; set; } //= new DateOnly();
         public DateOnly DueDate { get; set; }
         public DateTime ReturnAtUtc { get; set; }
