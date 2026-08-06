@@ -1,4 +1,5 @@
-﻿namespace CarRentalSystem.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+namespace CarRentalSystem.Models
 {
     public class Insurance
     {
@@ -6,5 +7,10 @@
         public string PolicyType { get; set; }
         public string Coverage { get; set; }
         public decimal Premium { get; set; }
+
+        // One-to-one: an Insurance policy belongs to exactly one Rental
+        [ForeignKey("Rental")]
+        public int Rental_ID { get; set; }  
+        public Rental Rental { get; set; }
     }
 }
