@@ -8,4 +8,5 @@ namespace CarRentalSystem.Models
 
         public decimal DefaultDailyRate { get; set; }
     }
+    public ICollection<Car> Cars { get; set; } = new List<Car>();
 }
