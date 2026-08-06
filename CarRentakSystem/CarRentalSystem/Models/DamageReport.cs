@@ -13,12 +13,14 @@ namespace CarRentalSystem.Models
 
         // Relationship: DamageReport -> Car (Many-to-One)
         // // A damage report belongs to one car.
-        [ForeignKey("Car")] public int CarId { get; set; }
+        [ForeignKey("Car")] 
+        public int CarId { get; set; }
 
         public Car Car { get; set; } = null!;
 
         // Relationship: DamageReport -> Rental (Many-to-One)
         // A damage report belongs to one rental.
+        [ForeignKey("Rental")]
         public int Rental_ID { get; set; }
 
         public Rental Rental { get; set; } = null!;
