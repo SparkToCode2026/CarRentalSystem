@@ -17,6 +17,8 @@ namespace CarRentalSystem
 
         public DbSet<Maintenance> Maintenances { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<DriverProfile> DriverProfiles { get; set; }
+        public DbSet<Insurance> Insurance { get; set; }
     }
 }
 
