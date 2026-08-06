@@ -10,6 +10,7 @@
         public string Status { get; set; } = string.Empty;
 
         //FK with Rental model (one-to-one)
-        public IList<Rental> Rentals { get; set; } = new List<Rental>();
+        public int Rental_ID { get; set; }
+        public Rental Rental { get; set; } = null!;
     }
 }
