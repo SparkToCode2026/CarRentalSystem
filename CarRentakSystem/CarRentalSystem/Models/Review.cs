@@ -1,4 +1,6 @@
-﻿namespace CarRentalSystem.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CarRentalSystem.Models
 {
     public class Review
     {
@@ -8,9 +10,11 @@
         public int Rating { get; set; }
 
         //Foreign key to the Car entity Many-to-One relationship
+        [ForeignKey("Car")]
         public int Carid { get; set; }
         public Car Car { get; set; }
         //foreign key to the User entity Many-to-One relationship
+        [ForeignKey("User")]
         public int Userid { get; set; }
         public User User { get; set; }
     }
