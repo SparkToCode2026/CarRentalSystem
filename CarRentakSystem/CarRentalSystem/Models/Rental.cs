@@ -14,5 +14,6 @@ namespace CarRentalSystem.Models
         public DateTime ReturnAtUtc { get; set; }
         public string Status { get; set; } = string.Empty;
         public int TotalDays { get; set; }
+        
     }
 }
