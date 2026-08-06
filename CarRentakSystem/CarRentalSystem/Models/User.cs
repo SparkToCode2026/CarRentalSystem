@@ -19,9 +19,9 @@
         public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
 
         // One-to-one: a User may have one DriverProfile 
-        //public DriverProfile DriverProfile_ID { get; set; }  // Navigation property 
+        public DriverProfile DriverProfile_ID { get; set; }  // Navigation property 
 
         // One-to-many: a User writes many Reviews
-        //public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }
