@@ -8,8 +8,10 @@
         public int Rating { get; set; }
 
         //Foreign key to the Car entity Many-to-One relationship
-        public ICollection<Car> Cars { get; set; } = new List<Car>();
+        public int Carid { get; set; }
+        public Car Car { get; set; }
         //foreign key to the User entity Many-to-One relationship
-        public ICollection<User> Users { get; set; } = new List<User>();    
+        public int Userid { get; set; }
+        public User User { get; set; }
     }
 }

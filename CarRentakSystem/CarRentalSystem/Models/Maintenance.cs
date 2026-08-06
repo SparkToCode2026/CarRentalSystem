@@ -9,7 +9,11 @@
         public string Status { get; set; }
 
         //Foreign key to the Car entity Many-to-One relationship
-        public ICollection<Car> Cars { get; set; } = new List<Car>();
+        public int Carid { get; set; }
+        public Car Car { get; set; }
+
+
+
         
     }
 }
