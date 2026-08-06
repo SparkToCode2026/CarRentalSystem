@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="CarRentalSystem/CarRentalSystem.csproj" />
+  <Project Path="ERD,Mapping/ERD,Mapping.csproj" Id="0cb5a250-ea5a-4224-9aac-e9dd6ab8a72a" />
+  <Project Path="Eshraq-(ERD,Mapping)/Eshraq-(ERD,Mapping).csproj" Id="1e7619a6-ea65-4b06-ab58-135d522613f8" />
 </Solution>
