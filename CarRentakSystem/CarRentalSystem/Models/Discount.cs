@@ -2,7 +2,7 @@ namespace CarRentalSystem.Models;
 
     public class Discount
     {
-        public int Id { get; set; }
+        public int Discount_ID { get; set; }
 
         public string Code { get; set; }
 

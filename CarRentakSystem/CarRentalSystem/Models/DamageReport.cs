@@ -2,7 +2,7 @@ namespace CarRentalSystem.Models;
 
 public class DamageReport
 {
-    public int Id { get; set; }
+    public int DamageReport_ID { get; set; }
     
     public string Description { get; set; }
     
