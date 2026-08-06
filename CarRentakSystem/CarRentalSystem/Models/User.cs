@@ -15,5 +15,9 @@
         public UserRole role { get; set; }
         public DateTime CreatedAtUtc { get; set; }
 
+        //books relationship
+        public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
+
+
     }
 }
