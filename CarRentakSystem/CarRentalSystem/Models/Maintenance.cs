@@ -7,5 +7,9 @@
         public string Description { get; set; }
         public decimal Cost { get; set; }
         public string Status { get; set; }
+
+        //Foreign key to the Car entity Many-to-One relationship
+        public ICollection<Car> Cars { get; set; } = new List<Car>();
+        
     }
 }
