@@ -26,13 +26,13 @@ namespace CarRentalSystem.Models
         public Branch Branch { get; set; }
 
         // One-to-many: a Car is serviced across many Maintenance records
-        //public ICollection<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
+        public ICollection<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
 
         // One-to-many: a Car can have many DamageReports
-        //public ICollection<DamageReport> DamageReports { get; set; } = new List<DamageReport>()
+        public ICollection<DamageReport> DamageReports { get; set; } = new List<DamageReport>();
 
         // One-to-many: a Car can have many reviews
-        //public ICollection<Review> Reviews { get; set; } = new List<Review>()
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     }
 }
