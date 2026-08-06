@@ -14,16 +14,33 @@ namespace CarRentalSystem.Models
         public string Status { get; set; } = string.Empty;
         public int TotalDays { get; set; }
 
+
         //Foreign Key Relationships
-        public ICollection<Car> Cars { get; set; } = new List<Car>();               //FK: Rental → Car (Many-to-One)
-        public ICollection<User> Users { get; set; } = new List<User>();          //FK: Rental → User (Many-to-One)
-        public ICollection<Branch> Branches { get; set; } = new List<Branch>();  //FK: Rental → Branch (Many-to-One)
-        public ICollection<Payments> Payments { get; set; } = new List<Payments>();               //FK: Rental → Payments (One-to-One)
-        //public ICollection<Insurance> Insurances { get; set; } = new List<Insurance>();        //FK: Rental → Insurance (One-to-Many)  
+
+        // FK: Rental → Car (Many-to-One): one rental is for exactly one car
+        [ForeignKey("Car")]
+        public int CarId { get; set; }
+        public Car Car { get; set; } = null!;
+
+        // FK: Rental → User (Many-to-One): one rental belongs to exactly one user
+
+        [ForeignKey("User")]
+        public int userId { get; set; }
+        public User User { get; set; } = null!;
+
+        // FK: Rental → Branch (Many-to-One): one rental is tied to exactly one branch
+
+        [ForeignKey("Branch")]
+        public int BranchId { get; set; }
+        public Branch Branch { get; set; } = null!;
+ 
+        // FK: Rental → Payments — kept as a collection (One-to-Many)..
+        public ICollection<Payments> Payments { get; set; } = new List<Payments>();
+ 
+        //public ICollection<Insurance> Insurances { get; set; } = new List<Insurance>();                        //FK: Rental → Insurance (One-to-Many)  
         //public ICollection<DamageReport> DamageReports { get; set; } = new List<DamageReport>();              //FK: Rental → DamageReport (One-to-Many)
         //Public ICollection<RentalDiscount> RentalDiscounts { get; set; } = new List<RentalDiscount>();       //FK: Rental → RentalDiscount (One-to-Many)
         //public IList<DriverProfile> DriverProfiles { get; set; } = new List<DriverProfile>();               // FK: Rental → DriverProfile (Many-to-One)
-        
     }
 }
 //============IMPORTANT NOTE:==========
