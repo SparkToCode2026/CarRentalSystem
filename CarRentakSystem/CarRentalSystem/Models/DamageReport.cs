@@ -3,8 +3,8 @@ namespace CarRentalSystem.Models;
 public class DamageReport
 {
     public int DamageReport_ID { get; set; }
-    
-    public string Description { get; set; } = string.Empty
+
+    public string Description { get; set; } = string.Empty;
     
     public DateTime ReortedAtUtc { get; set; }
     
