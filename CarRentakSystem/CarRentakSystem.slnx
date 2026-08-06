@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path="Approve_ERD_Mapping/CarRentalSystemERD.jpg" />
+    <File Path="Approve_ERD_Mapping/CarRentalSystemMapping.jpg" />
   </Folder>
   <Project Path="CarRentalSystem/CarRentalSystem.csproj" />
   <Project Path="ERD,Mapping/ERD,Mapping.csproj" Id="0cb5a250-ea5a-4224-9aac-e9dd6ab8a72a" />
