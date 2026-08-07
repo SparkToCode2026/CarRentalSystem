@@ -6,7 +6,7 @@ namespace CarRentalSystem.Models
     {
 
         public int Payment_ID { get; set; }
-        public string Amount { get; set; }
+        public decimal Amount { get; set; }
         public string Method { get; set; } = string.Empty;
         public DateTime PaidAtUtc { get; set; }
         public string Status { get; set; } = string.Empty;

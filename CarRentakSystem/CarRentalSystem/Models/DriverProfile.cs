@@ -12,7 +12,7 @@ namespace CarRentalSystem.Models
 
         // One-to-one: a DriverProfile belongs to exactly one User
         [ForeignKey("User")]
-        public string userId { get; set; } 
+        public int userId { get; set; } 
         public User User { get; set; } 
 
         // One-to-many: a DriverProfile drives many Rentals

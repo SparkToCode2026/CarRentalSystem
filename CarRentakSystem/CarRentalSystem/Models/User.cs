@@ -8,7 +8,7 @@
             Customer,
             staff
         }
-        public string userId { get; set; }
+        public int userId { get; set; }
         public string name { get; set; }
         public string email { get; set; }
         public string passwordHash { get; set; }
@@ -19,7 +19,7 @@
         public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
 
         // One-to-one: a User may have one DriverProfile 
-        public DriverProfile DriverProfile_ID { get; set; }  // Navigation property 
+        public DriverProfile DriverProfile { get; set; }  // Navigation property 
 
         // One-to-many: a User writes many Reviews
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
