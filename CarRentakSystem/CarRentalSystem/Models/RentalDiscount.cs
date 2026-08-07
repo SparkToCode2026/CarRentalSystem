@@ -6,7 +6,7 @@ namespace CarRentalSystem.Models
     [PrimaryKey(nameof(Rental_ID), nameof(DiscountId))]
     public class RentalDiscount
     {
-
+        [Precision(10, 2)]
         public decimal AppliedAmount { get; set; }
 
         [ForeignKey("Rental")]

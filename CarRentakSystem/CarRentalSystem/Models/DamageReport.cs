@@ -1,14 +1,17 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 namespace CarRentalSystem.Models
 {
     public class DamageReport
     {
+        [Key]
         public int DamageReport_ID { get; set; }
 
         public string Description { get; set; } = string.Empty;
 
-        public DateTime ReortedAtUtc { get; set; }
-
+        public DateTime ReportedAtUtc { get; set; }
+        [Precision(10, 2)]
         public decimal RepairCost { get; set; }
 
         // Relationship: DamageReport -> Car (Many-to-One)

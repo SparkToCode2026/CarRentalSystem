@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalSystem.Models
 {
@@ -9,6 +10,7 @@ namespace CarRentalSystem.Models
         public string Make { get; set; }
         public string Model { get; set; }
         public int year { get; set; }
+        [Precision(10, 2)]
         public decimal DailyRate { get; set; }
         public bool IsAvailable { get; set; }
 

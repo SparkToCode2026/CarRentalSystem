@@ -8,6 +8,7 @@ namespace CarRentalSystem.Models
 {
     public class Rental
     {
+        [Key]
         public int Rental_ID { get; set; }
         public DateOnly StartDate { get; set; } //= new DateOnly();
         public DateOnly DueDate { get; set; }
