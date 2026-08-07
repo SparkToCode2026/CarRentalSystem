@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarRentalSystem.Models
 {
     public class DriverProfile
     {
+        [Key]
         public int DriverProfile_ID { get; set; }
         
         public int LicenseNumber { get; set; }
