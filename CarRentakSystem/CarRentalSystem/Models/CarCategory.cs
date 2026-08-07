@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalSystem.Models
 {
@@ -8,6 +9,7 @@ namespace CarRentalSystem.Models
 
         public string Name { get; set; } = string.Empty;
 
+        [Precision(10, 2)]
         public decimal DefaultDailyRate { get; set; }
 
         

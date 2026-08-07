@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarRentalSystem.Models
 {
     public class Review
     {
+        [Key]
         public int Review_ID { get; set; }
         public DateOnly ReviewDate{ get; set; }
         public string Comment { get; set; }
