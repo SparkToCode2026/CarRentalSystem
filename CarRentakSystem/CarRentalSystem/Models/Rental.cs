@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 
 
@@ -34,12 +35,15 @@ namespace CarRentalSystem.Models
         public int BranchId { get; set; }
         public Branch Branch { get; set; } = null!;
 
+        //FK: Rental → DriverProfile 
+        [ForeignKey("DriverProfile")]
+        public int DriverProfile_ID { get; set; }
+        public DriverProfile DriverProfile { get; set; } = null!;
+
         //
         public ICollection<Payments> Payments { get; set; } = new List<Payments>();                            //FK: Rental → Payment (One-to-Many)
-
         public ICollection<Insurance> Insurances { get; set; } = new List<Insurance>();                        //FK: Rental → Insurance (One-to-Many)  
         public ICollection<DamageReport> DamageReports { get; set; } = new List<DamageReport>();              //FK: Rental → DamageReport (One-to-Many)
         public ICollection<RentalDiscount> RentalDiscounts { get; set; } = new List<RentalDiscount>();       //FK: Rental → RentalDiscount (One-to-Many)
-        public IList<DriverProfile> DriverProfiles { get; set; } = new List<DriverProfile>();               // FK: Rental → DriverProfile (Many-to-One)
     }
 }
