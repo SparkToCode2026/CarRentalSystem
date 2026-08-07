@@ -33,15 +33,15 @@ namespace CarRentalSystem.Models
         [ForeignKey("Branch")]
         public int BranchId { get; set; }
         public Branch Branch { get; set; } = null!;
- 
+
         // FK: Rental → Payments — kept as a collection (One-to-Many)..
-        public ICollection<Payments> Payments { get; set; } = new List<Payments>();
- 
-        //public ICollection<Insurance> Insurances { get; set; } = new List<Insurance>();                        //FK: Rental → Insurance (One-to-Many)  
-        //public ICollection<DamageReport> DamageReports { get; set; } = new List<DamageReport>();              //FK: Rental → DamageReport (One-to-Many)
-        //Public ICollection<RentalDiscount> RentalDiscounts { get; set; } = new List<RentalDiscount>();       //FK: Rental → RentalDiscount (One-to-Many)
-        //public IList<DriverProfile> DriverProfiles { get; set; } = new List<DriverProfile>();               // FK: Rental → DriverProfile (Many-to-One)
+        [ForeignKey("Payment")]
+        public int Payment_ID { get; set; }
+        public Payments Payment { get; set; } = null!;
+
+        public ICollection<Insurance> Insurances { get; set; } = new List<Insurance>();                        //FK: Rental → Insurance (One-to-Many)  
+        public ICollection<DamageReport> DamageReports { get; set; } = new List<DamageReport>();              //FK: Rental → DamageReport (One-to-Many)
+        public ICollection<RentalDiscount> RentalDiscounts { get; set; } = new List<RentalDiscount>();       //FK: Rental → RentalDiscount (One-to-Many)
+        public IList<DriverProfile> DriverProfiles { get; set; } = new List<DriverProfile>();               // FK: Rental → DriverProfile (Many-to-One)
     }
 }
-//============IMPORTANT NOTE:==========
-//needs to be updated later since this branch dosent have the insurance, damage report, rental discount, and driver profile models yet.
