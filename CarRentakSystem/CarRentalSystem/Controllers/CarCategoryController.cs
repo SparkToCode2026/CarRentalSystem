@@ -119,5 +119,63 @@ namespace CarRentalSystem.Controllers
 
             return NoContent();
         }
+        
+        // GET: api/CarCategory/filter?name=SUV
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<CarCategory>>> Filter(string? name)
+        {
+            var query = _context.CarCategories
+                .Include(c => c.Cars)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(c => c.Name.Contains(name));
+            }
+
+            return Ok(await query.ToListAsync());
+        }
+
+        // GET: api/CarCategory/sort
+        [HttpGet("sort")]
+        public async Task<ActionResult<IEnumerable<CarCategory>>> Sort(
+            string sortBy = "name",
+            bool descending = false)
+        {
+            var query = _context.CarCategories.AsQueryable();
+
+            if (sortBy.ToLower() == "rate")
+            {
+                query = descending
+                    ? query.OrderByDescending(c => c.DefaultDailyRate)
+                    : query.OrderBy(c => c.DefaultDailyRate);
+            }
+            else
+            {
+                query = descending
+                    ? query.OrderByDescending(c => c.Name)
+                    : query.OrderBy(c => c.Name);
+            }
+
+            return Ok(await query.ToListAsync());
+        }
+
+        // GET: api/CarCategory/summary
+        [HttpGet("summary")]
+        public async Task<IActionResult> Summary()
+        {
+            var result = await _context.CarCategories
+                .GroupBy(c => 1)
+                .Select(g => new
+                {
+                    TotalCategories = g.Count(),
+                    AverageDailyRate = g.Average(c => c.DefaultDailyRate),
+                    MinimumDailyRate = g.Min(c => c.DefaultDailyRate),
+                    MaximumDailyRate = g.Max(c => c.DefaultDailyRate)
+                })
+                .FirstOrDefaultAsync();
+
+            return Ok(result);
+        }
     }
 }
