@@ -102,5 +102,22 @@ namespace CarRentalSystem.Controllers
 
             return NoContent();
         }
+        // DELETE: api/CarCategory/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var category = await _context.CarCategories
+                .FindAsync(id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            _context.CarCategories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
