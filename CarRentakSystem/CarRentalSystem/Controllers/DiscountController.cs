@@ -119,5 +119,15 @@ namespace CarRentalSystem.Controllers
             return Ok(discounts);
         }
         
+        // 8.GET SORT - Sort by expiration date 
+        [HttpGet("GetSortedByExpiry")]
+        public IActionResult GetSortedByExpiry()
+        {
+            List<Discount> discounts = context.Discounts
+                .OrderBy(d => d.ExpiresOn)
+                .ToList();
+
+            return Ok(discounts);
+        }
     }
 }
