@@ -96,5 +96,21 @@ namespace CarRentalSystem.Controllers
 
             return Ok(damageReports);
         }
+        // 6.GET BY ID -Include related Car and Rental
+        [HttpGet("GetDamageReport")]
+        public IActionResult GetDamageReport(int id)
+        {
+            DamageReport? d = context.DamageReports
+                .Include(d => d.Car)
+                .Include(d => d.Rental)
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ")
+            }
+
+            return Ok(d);
+        }
     }
 }
