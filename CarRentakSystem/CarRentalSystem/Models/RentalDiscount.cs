@@ -13,11 +13,11 @@ namespace CarRentalSystem.Models
         [ForeignKey("Rental")]
         public int Rental_ID { get; set; }
         [JsonIgnore]
-        public Rental Rental { get; set; }
+        public Rental ?Rental { get; set; }
 
         [ForeignKey("Discount")]
         public int DiscountId { get; set; }
         [JsonIgnore]
-        public Discount Discount { get; set; }
+        public Discount? Discount { get; set; }
     }
 }
