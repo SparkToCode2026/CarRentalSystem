@@ -139,6 +139,17 @@ namespace CarRentalSystem.Controllers
             return Ok(rentalDiscounts);
         }
 
+        // 8. SORT - Using OrderByDescending()
+        [HttpGet("SortByAppliedAmount")]
+        public IActionResult SortByAppliedAmount()
+        {
+            List<RentalDiscount> rentalDiscounts =
+                context.RentalDiscounts
+                    .OrderByDescending(rd => rd.AppliedAmount)
+                    .ToList();
+
+            return Ok(rentalDiscounts);
+        }
 
 
 
