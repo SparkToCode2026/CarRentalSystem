@@ -105,6 +105,39 @@ namespace CarRentalSystem.Controllers
             return Ok(rentalDiscounts);
         }
 
+        // 6. GET BY composite key
+        [HttpGet("GetRentalDiscount")]
+        public IActionResult GetRentalDiscount(
+            int rentalId,
+            int discountId)
+        {
+            RentalDiscount? rentalDiscount =
+                context.RentalDiscounts
+                    .Include(rd => rd.Rental)
+                    .Include(rd => rd.Discount)
+                    .FirstOrDefault(rd =>
+                        rd.Rental_ID == rentalId &&
+                        rd.DiscountId == discountId);
+
+            if (rentalDiscount == null)
+            {
+                return NotFound("rental discount not found");
+            }
+
+            return Ok(rentalDiscount);
+        }
+
+        // 7. FILTER - Using Where()
+        [HttpGet("GetByRental")]
+        public IActionResult GetByRental(int rentalId)
+        {
+            List<RentalDiscount> rentalDiscounts =
+                context.RentalDiscounts
+                    .Where(rd => rd.Rental_ID == rentalId)
+                    .ToList();
+
+            return Ok(rentalDiscounts);
+        }
 
 
 
