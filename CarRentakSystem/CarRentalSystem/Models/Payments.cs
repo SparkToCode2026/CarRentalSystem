@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace CarRentalSystem.Models
 {
@@ -17,6 +18,7 @@ namespace CarRentalSystem.Models
         //FK with Rental model (Many-to-one)
         [ForeignKey("Rental")]
         public int Rental_ID { get; set; }
+        [JsonIgnore]
         public Rental Rental { get; set; } = null!;
     }
 }
