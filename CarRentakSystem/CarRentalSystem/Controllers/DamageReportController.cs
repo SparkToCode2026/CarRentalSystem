@@ -84,5 +84,17 @@ namespace CarRentalSystem.Controllers
             return Ok("damage report removed successfully ");
         }
         
+        
+        // 5.GET ALL - Include related Car and Rental
+        [HttpGet("GetAllDamageReports")]
+        public IActionResult GetAllDamageReports()
+        {
+            List<DamageReport> damageReports = context.DamageReports
+                .Include(d => d.Car)
+                .Include(d => d.Rental)
+                .ToList();
+
+            return Ok(damageReports);
+        }
     }
 }
