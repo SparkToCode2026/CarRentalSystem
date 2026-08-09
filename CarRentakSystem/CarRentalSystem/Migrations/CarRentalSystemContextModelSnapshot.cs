@@ -44,7 +44,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Branches");
+                    b.ToTable("Branches", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Car", b =>
@@ -89,7 +89,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("CarCategoryId");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Cars", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.CarCategory", b =>
@@ -110,7 +110,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CarCategories");
+                    b.ToTable("CarCategories", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.DamageReport", b =>
@@ -144,7 +144,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("Rental_ID");
 
-                    b.ToTable("DamageReports");
+                    b.ToTable("DamageReports", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Discount", b =>
@@ -168,7 +168,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasKey("Discount_ID");
 
-                    b.ToTable("Discounts");
+                    b.ToTable("Discounts", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.DriverProfile", b =>
@@ -193,7 +193,7 @@ namespace CarRentalSystem.Migrations
                     b.HasIndex("userId")
                         .IsUnique();
 
-                    b.ToTable("DriverProfiles");
+                    b.ToTable("DriverProfiles", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Insurance", b =>
@@ -223,7 +223,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("Rental_ID");
 
-                    b.ToTable("Insurances");
+                    b.ToTable("Insurances", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Maintenance", b =>
@@ -256,7 +256,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("Carid");
 
-                    b.ToTable("Maintenances");
+                    b.ToTable("Maintenances", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Payments", b =>
@@ -289,7 +289,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("Rental_ID");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Rental", b =>
@@ -338,7 +338,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Rentals");
+                    b.ToTable("Rentals", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.RentalDiscount", b =>
@@ -357,7 +357,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("DiscountId");
 
-                    b.ToTable("RentalDiscounts");
+                    b.ToTable("RentalDiscounts", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Review", b =>
@@ -390,7 +390,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasIndex("Userid");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.User", b =>
@@ -421,7 +421,7 @@ namespace CarRentalSystem.Migrations
 
                     b.HasKey("userId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("CarRentalSystem.Models.Car", b =>
