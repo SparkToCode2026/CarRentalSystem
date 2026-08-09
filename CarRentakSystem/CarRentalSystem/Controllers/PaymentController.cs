@@ -76,7 +76,7 @@ namespace CarRentalSystem.Controllers
             return Ok("Deleted successfully");
         }
 
-        // 5. GET ALL: List records including related entity via Include()[cite: 1]
+        // 5. GET ALL: List records including related entity via Include()
         [HttpGet("GetAllPayments")]
         public IActionResult GetAllPayments()
         {
@@ -87,7 +87,7 @@ namespace CarRentalSystem.Controllers
             return Ok(payments);
         }
 
-        // 6. GET BY ID: Find a single record by ID[cite: 1]
+        // 6. GET BY ID: Find a single record by ID
         [HttpGet("GetPaymentById")]
         public IActionResult GetPaymentById(int id)
         {
@@ -103,7 +103,7 @@ namespace CarRentalSystem.Controllers
             return Ok(payment);
         }
 
-        // 7. GET (Filter): Filter records using LINQ Where()[cite: 1]
+        // 7. GET (Filter): Filter records using LINQ Where()
         [HttpGet("FilterPayments")]
         public IActionResult FilterPayments(string? status, string? method)
         {
@@ -122,7 +122,7 @@ namespace CarRentalSystem.Controllers
             return Ok(query.ToList());
         }
 
-        // 8. GET (Sort/Aggregate): Sort and aggregate records[cite: 1]
+        // 8. GET (Sort/Aggregate): Sort and aggregate records
         [HttpGet("PaymentAnalytics")]
         public IActionResult PaymentAnalytics()
         {
