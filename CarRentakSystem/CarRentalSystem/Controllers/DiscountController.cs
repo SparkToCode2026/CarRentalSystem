@@ -100,7 +100,7 @@ namespace CarRentalSystem.Controllers
 
             if (d == null)
             {
-                return NotFound("discount not found ")
+                return NotFound("discount not found ");
                     
             }
 
