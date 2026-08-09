@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalSystem.Models
@@ -11,10 +12,12 @@ namespace CarRentalSystem.Models
 
         [ForeignKey("Rental")]
         public int Rental_ID { get; set; }
+        [JsonIgnore]
         public Rental Rental { get; set; }
 
         [ForeignKey("Discount")]
         public int DiscountId { get; set; }
+        [JsonIgnore]
         public Discount Discount { get; set; }
     }
 }
