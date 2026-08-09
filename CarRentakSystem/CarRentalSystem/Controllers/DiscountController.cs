@@ -108,5 +108,16 @@ namespace CarRentalSystem.Controllers
             
         }
         
+        // 7.GET FILTER - filter by percetage 
+        [HttpGet("GetByPercent")]
+        public IActionResult GetByPercent(decimal percent)
+        {
+            List<Discount> discounts = context.Discounts
+                .Where(d => d.Percent >= percent)
+                .ToList();
+
+            return Ok(discounts);
+        }
+        
     }
 }
