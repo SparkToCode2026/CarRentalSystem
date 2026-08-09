@@ -112,5 +112,18 @@ namespace CarRentalSystem.Controllers
 
             return Ok(d);
         }
+        
+        // 7.FILTER - Filter by Car
+        [HttpGet("GetByCar")]
+        public IActionResult GetByCar(int carId)
+        {
+            List<DamageReport> damageReports = context.DamageReports
+                .Where(d => d.CarId == carId)
+                .ToList();
+
+            return Ok(damageReports);
+        }
+        
+        
     }
 }
