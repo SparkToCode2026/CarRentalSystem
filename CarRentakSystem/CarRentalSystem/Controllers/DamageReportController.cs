@@ -66,7 +66,23 @@ namespace CarRentalSystem.Controllers
             return Ok("repair cost updated successfully ");
         }
         
-        
+        // 4.DELETE -Delete DamageReport by ID
+        [HttpDelete("RemoveDamageReport")]
+        public IActionResult RemoveDamageReport(int id)
+        {
+            DamageReport? d = context.DamageReports
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ");
+            }
+
+            context.DamageReports.Remove(d);
+            context.SaveChanges();
+
+            return Ok("damage report removed successfully ");
+        }
         
     }
 }
