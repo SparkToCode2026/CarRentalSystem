@@ -62,6 +62,23 @@ namespace CarRentalSystem.Controllers
 
             return Ok("discount percentage updated successfully");
         }
+        // 4.DELETE - Delete Discount by ID
+        [HttpDelete("RemoveDiscount")]
+        public IActionResult RemoveDiscount(int discount_id)
+        {
+            Discount? d = context.Discounts
+                .FirstOrDefault(d => d.Discount_ID == discount_id);
+
+            if (d == null)
+            {
+                return NotFound("discount not found ");
+            }
+
+            context.Discounts.Remove(d);
+            context.SaveChanges();
+
+            return Ok("discount removed successfully ");
+        }
         
     }
 }
