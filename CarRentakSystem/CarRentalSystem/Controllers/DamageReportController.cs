@@ -124,6 +124,16 @@ namespace CarRentalSystem.Controllers
             return Ok(damageReports);
         }
         
+        // 8.SORT -Sort by RepairCost
+        [HttpGet("GetSortedByRepairCost")]
+        public IActionResult GetSortedByRepairCost()
+        {
+            List<DamageReport> damageReports = context.DamageReports
+                .OrderByDescending(d => d.RepairCost)
+                .ToList();
+
+            return Ok(damageReports);
+        }
         
     }
 }
