@@ -47,6 +47,25 @@ namespace CarRentalSystem.Controllers
 
             return Ok("damage report updated successfully");
         }
+        // 3.PATCH -Update RepairCost only
+        [HttpPatch("UpdateRepairCost")]
+        public IActionResult UpdateRepairCost(int id, decimal newRepairCost)
+        {
+            DamageReport? d = context.DamageReports
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ");
+            }
+
+            d.RepairCost = newRepairCost;
+
+            context.SaveChanges();
+
+            return Ok("repair cost updated successfully ");
+        }
+        
         
         
     }
