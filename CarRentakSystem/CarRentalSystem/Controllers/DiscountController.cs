@@ -44,6 +44,24 @@ namespace CarRentalSystem.Controllers
             return Ok("discount updated successfully");
             
         }
+        // 3.PATCH - Update Discount percentage 
+        [HttpPatch("UpdateDiscountPercent")]
+        public IActionResult UpdateDiscountPercent(int discount_id, decimal newPercent)
+        {
+            Discount? d = context.Discounts
+                .FirstOrDefault(d => d.Discount_ID == discount_id);
+
+            if (d == null)
+            {
+                return NotFound("discount not found ");
+            }
+
+            d.Percent = newPercent;
+
+            context.SaveChanges();
+
+            return Ok("discount percentage updated successfully");
+        }
         
     }
 }
