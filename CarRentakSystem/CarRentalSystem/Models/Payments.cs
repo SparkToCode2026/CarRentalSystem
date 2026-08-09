@@ -8,6 +8,7 @@ namespace CarRentalSystem.Models
     public class Payments
     {
         [Key]
+        [JsonIgnore]
         public int Payment_ID { get; set; }
         [Precision(10, 2)]
         public decimal Amount { get; set; }
@@ -19,6 +20,6 @@ namespace CarRentalSystem.Models
         [ForeignKey("Rental")]
         public int Rental_ID { get; set; }
         [JsonIgnore]
-        public Rental Rental { get; set; } = null!;
+        public Rental? Rental { get; set; } = null!;
     }
 }
