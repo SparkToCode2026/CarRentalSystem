@@ -119,5 +119,61 @@ namespace CarRentalSystem.Controllers
 
             return NoContent();
         }
+        // GET: api/Branch/filter?city=Muscat
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<Branch>>> Filter(
+            string? city)
+        {
+            var query = _context.Branches
+                .Include(b => b.Cars)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(city))
+            {
+                query = query.Where(b => b.City.Contains(city));
+            }
+
+            return Ok(await query.ToListAsync());
+        }
+
+// GET: api/Branch/sort
+        [HttpGet("sort")]
+        public async Task<ActionResult<IEnumerable<Branch>>> Sort(
+            string sortBy = "name",
+            bool descending = false)
+        {
+            var query = _context.Branches.AsQueryable();
+
+            if (sortBy.ToLower() == "city")
+            {
+                query = descending
+                    ? query.OrderByDescending(b => b.City)
+                    : query.OrderBy(b => b.City);
+            }
+            else
+            {
+                query = descending
+                    ? query.OrderByDescending(b => b.Name)
+                    : query.OrderBy(b => b.Name);
+            }
+
+            return Ok(await query.ToListAsync());
+        }
+
+// GET: api/Branch/summary
+        [HttpGet("summary")]
+        public async Task<IActionResult> Summary()
+        {
+            var result = await _context.Branches
+                .GroupBy(b => 1)
+                .Select(g => new
+                {
+                    TotalBranches = g.Count(),
+                    Cities = g.Select(b => b.City).Distinct().Count()
+                })
+                .FirstOrDefaultAsync();
+
+            return Ok(result);
+        }
     }
 }
