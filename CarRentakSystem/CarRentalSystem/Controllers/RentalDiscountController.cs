@@ -45,9 +45,33 @@ namespace CarRentalSystem.Controllers
             rentalDiscount.AppliedAmount = newRentalDiscount.AppliedAmount;
             context.SaveChanges();
             return Ok("rental discount updated successfully");
-
-
         }
+
+        // 3. PATCH - Update a specific field
+        [HttpPatch("UpdateAppliedAmount")]
+        public IActionResult UpdateAppliedAmount(
+    int rentalId,
+    int discountId,
+    decimal newAmount)
+        {
+            RentalDiscount? rentalDiscount = context.RentalDiscounts
+                .FirstOrDefault(rd =>
+                    rd.Rental_ID == rentalId &&
+                    rd.DiscountId == discountId);
+
+            if (rentalDiscount == null)
+            {
+                return NotFound("rental discount not found");
+            }
+
+            rentalDiscount.AppliedAmount = newAmount;
+
+            context.SaveChanges();
+
+            return Ok("applied amount updated successfully");
+        }
+
+
 
 
 
