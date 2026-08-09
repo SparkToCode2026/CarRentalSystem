@@ -23,6 +23,27 @@ namespace CarRentalSystem.Controllers
 
             return Ok(d.Discount_ID);
         }
+        //2.PUT - Update full Discount
+        [HttpPut("UpdateDiscount")]
+        public IActionResult UpdateDiscout(int discount_id, Discount newDiscount)
+        {
+            Discount? d = context.Discounts
+                .FirstOrDefault(d => d.Discount_ID == discount_id);
+
+            if (d == null)
+            {
+                return NotFound("discount not found");
+            }
+
+            d.Code = newDiscount.Code;
+            d.Percent = newDiscount.Percent;
+            d.ExpiresOn = newDiscount.ExpiresOn;
+
+            context.SaveChanges();
+
+            return Ok("discount updated successfully");
+            
+        }
         
     }
 }
