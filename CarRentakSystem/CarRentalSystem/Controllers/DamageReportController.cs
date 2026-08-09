@@ -25,5 +25,29 @@ namespace CarRentalSystem.Controllers
             return Ok(d.DamageReport_ID);
         }
         
+        // 2.PUT - Update full DamageReport
+        [HttpPut("UpdateDamageReport")]
+        public IActionResult UpdateDamageReport(int id, DamageReport newDamagereport)
+        {
+            DamageReport? d = context.DamageReports
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ");
+            }
+
+            d.Description = newDamagereport.Description;
+            d.ReportedAtUtc = newDamagereport.ReportedAtUtc;
+            d.RepairCost = newDamagereport.RepairCost;
+            d.CarId = newDamagereport.CarId;
+            d.Rental_ID = newDamagereport.Rental_ID;
+
+            context.SaveChanges();
+
+            return Ok("damage report updated successfully");
+        }
+        
+        
     }
 }
