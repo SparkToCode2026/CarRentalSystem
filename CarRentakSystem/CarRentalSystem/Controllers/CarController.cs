@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using CarRentalSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 namespace CarRentalSystem.Controllers
 {
     [ApiController]
@@ -88,5 +89,52 @@ namespace CarRentalSystem.Controllers
 
             return Ok(cars);
         }
+        //GET ALL with related data
+        [HttpGet("Carswithdata")]
+        public IActionResult Carswithdata()
+        {
+            List<Car> cars = context.Cars
+                .Include(c => c.CarCategory)
+                .Include(c => c.Branch)
+                .ToList();
+
+            return Ok(cars);
+        }
+        // GET BY ID
+        [HttpGet("GetCar")]
+        public IActionResult GetCar(int id)
+        {
+            Car? car = context.Cars.FirstOrDefault(c => c.CarId == id);
+
+            if (car == null)
+            {
+                return NotFound("car not found");
+            }
+
+            return Ok(car);
+        }
+
+        //Filter endpoint using Where()
+        [HttpGet("GetByMake")]
+        public IActionResult GetByMake(string make)
+        {
+            List<Car> cars = context.Cars
+                .Where(c => c.Make.Contains(make))
+                .ToList();
+
+            return Ok(cars);
+        }
+
+        //Sort using OrderBy()
+        [HttpGet("SortByDailyRate")]
+        public IActionResult SortByDailyRate()
+        {
+            List<Car> cars = context.Cars
+                .OrderBy(c => c.DailyRate)
+                .ToList();
+
+            return Ok(cars);
+        }
+
     }
 }
