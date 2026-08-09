@@ -92,6 +92,18 @@ namespace CarRentalSystem.Controllers
             return Ok("removed successfully");
         }
 
+        // 5. GET ALL + Include related data
+        [HttpGet("GetAllRentalDiscounts")]
+        public IActionResult GetAllRentalDiscounts()
+        {
+            List<RentalDiscount> rentalDiscounts =
+                context.RentalDiscounts
+                    .Include(rd => rd.Rental)
+                    .Include(rd => rd.Discount)
+                    .ToList();
+
+            return Ok(rentalDiscounts);
+        }
 
 
 
