@@ -70,7 +70,27 @@ namespace CarRentalSystem.Controllers
 
             return Ok("applied amount updated successfully");
         }
+        // 4. DELETE - Delete using the composite key
+        [HttpDelete("RemoveRentalDiscount")]
+        public IActionResult RemoveRentalDiscount(
+            int rentalId,
+            int discountId)
+        {
+            RentalDiscount? rentalDiscount = context.RentalDiscounts
+                .FirstOrDefault(rd =>
+                    rd.Rental_ID == rentalId &&
+                    rd.DiscountId == discountId);
 
+            if (rentalDiscount == null)
+            {
+                return NotFound("rental discount not found");
+            }
+
+            context.RentalDiscounts.Remove(rentalDiscount);
+            context.SaveChanges();
+
+            return Ok("removed successfully");
+        }
 
 
 
