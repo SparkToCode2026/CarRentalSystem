@@ -90,5 +90,23 @@ namespace CarRentalSystem.Controllers
             return Ok(discounts);
         }
         
+        // 6.GET BY ID 
+        [HttpGet("GetDiscount")]
+        public IActionResult GetDiscount(int discount_id)
+        {
+            Discount? d = context.Discounts
+                .Include(d => d.RentalDiscounts)
+                .FirstOrDefault(d => d.Discount_ID == discount_id);
+
+            if (d == null)
+            {
+                return NotFound("discount not found ")
+                    
+            }
+
+            return Ok(d);
+            
+        }
+        
     }
 }
