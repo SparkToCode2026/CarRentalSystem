@@ -102,5 +102,22 @@ namespace CarRentalSystem.Controllers
 
             return NoContent();
         }
+        // DELETE: api/Branch/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBranch(int id)
+        {
+            var branch = await _context.Branches
+                .FindAsync(id);
+
+            if (branch == null)
+            {
+                return NotFound();
+            }
+
+            _context.Branches.Remove(branch);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
