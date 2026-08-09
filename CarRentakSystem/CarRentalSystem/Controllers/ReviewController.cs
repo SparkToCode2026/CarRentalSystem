@@ -60,24 +60,7 @@ namespace CarRentalSystem.Controllers
         }
 
 
-        //Request URL => http://localhost:5071/Review/UpdateReviewComment?id=3&newComment=Updated comment
-        //Request method => Patch
-        [HttpPatch("UpdateReviewComment")]
-        public IActionResult UpdateReviewComment(int id, string newComment)
-        {
-            Review r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
-
-            if (r == null)
-            {
-                return NotFound("review not found");
-            }
-
-            r.Comment = newComment;
-
-            context.SaveChanges();
-
-            return Ok();
-        }
+        
 
         //Request URL => http://localhost:5071/Review/UpdateReviewRating?id=3&newRating=4
         //Request method => Patch
@@ -170,33 +153,7 @@ namespace CarRentalSystem.Controllers
             return Ok(reviews);
         }
 
-        //Request URL => http://localhost:5071/Review/GetByCar?carId=2
-        //Request method => Get
-        [HttpGet("GetByCar")]
-        public IActionResult GetByCar(int carId)
-        {
-            List<Review> reviews = context.Reviews
-                .Include(r => r.Car)
-                .Include(r => r.User)
-                .Where(r => r.Carid == carId)
-                .ToList();
-
-            return Ok(reviews);
-        }
-
-        //Request URL => http://localhost:5071/Review/GetByUser?userId=1
-        //Request method => Get
-        [HttpGet("GetByUser")]
-        public IActionResult GetByUser(int userId)
-        {
-            List<Review> reviews = context.Reviews
-                .Include(r => r.Car)
-                .Include(r => r.User)
-                .Where(r => r.Userid == userId)
-                .ToList();
-
-            return Ok(reviews);
-        }
+        
 
         //Request URL => http://localhost:5071/Review/GetSortedByRating
         //Request method => Get
@@ -212,25 +169,7 @@ namespace CarRentalSystem.Controllers
             return Ok(reviews);
         }
 
-        //Request URL => http://localhost:5071/Review/GetReviewStats
-        //Request method => Get
-        [HttpGet("GetReviewStats")]
-        public IActionResult GetReviewStats()
-        {
-            var stats = context.Reviews
-                .GroupBy(r => r.Carid)
-                .Select(g => new
-                {
-                    Carid = g.Key,
-                    Count = g.Count(),
-                    AverageRating = g.Average(r => r.Rating),
-                    HighestRating = g.Max(r => r.Rating),
-                    LowestRating = g.Min(r => r.Rating)
-                })
-                .ToList();
-
-            return Ok(stats);
-        }
+        
 
     }
 }
