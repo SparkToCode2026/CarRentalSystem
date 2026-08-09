@@ -60,25 +60,6 @@ namespace CarRentalSystem.Controllers
         }
 
 
-        //Request URL => http://localhost:5071/Maintenance/UpdateMaintenanceCost?id=3&newCost=60.0
-        //Request method => Patch
-        [HttpPatch("UpdateMaintenanceCost")]
-        public IActionResult UpdateMaintenanceCost(int id, decimal newCost)
-        {
-            Maintenance m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
-
-            if (m == null)
-            {
-                return NotFound("maintenance record not found");
-            }
-
-            m.Cost = newCost;
-
-            context.SaveChanges();
-
-            return Ok();
-        }
-
         //Request URL => http://localhost:5071/Maintenance/UpdateMaintenanceStatus?id=3&newStatus=Completed
         //Request method => Patch
         [HttpPatch("UpdateMaintenanceStatus")]
@@ -167,18 +148,7 @@ namespace CarRentalSystem.Controllers
             return Ok(maintenances);
         }
 
-        //Request URL => http://localhost:5071/Maintenance/GetByCar?carId=2
-        //Request method => Get
-        [HttpGet("GetByCar")]
-        public IActionResult GetByCar(int carId)
-        {
-            List<Maintenance> maintenances = context.Maintenances
-                .Include(m => m.Car)
-                .Where(m => m.Carid == carId)
-                .ToList();
-
-            return Ok(maintenances);
-        }
+        
 
         //Request URL => http://localhost:5071/Maintenance/GetSortedByCost
         //Request method => Get
@@ -193,24 +163,7 @@ namespace CarRentalSystem.Controllers
             return Ok(maintenances);
         }
 
-        //Request URL => http://localhost:5071/Maintenance/GetMaintenanceStats
-        //Request method => Get
-        [HttpGet("GetMaintenanceStats")]
-        public IActionResult GetMaintenanceStats()
-        {
-            var stats = context.Maintenances
-                .GroupBy(m => m.Status)
-                .Select(g => new
-                {
-                    Status = g.Key,
-                    Count = g.Count(),
-                    TotalCost = g.Sum(m => m.Cost),
-                    AverageCost = g.Average(m => m.Cost)
-                })
-                .ToList();
-
-            return Ok(stats);
-        }
+     
 
     }
 }
