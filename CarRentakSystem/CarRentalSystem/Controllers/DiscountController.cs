@@ -79,6 +79,16 @@ namespace CarRentalSystem.Controllers
 
             return Ok("discount removed successfully ");
         }
+        // 5.GET ALL - Include related RentalDiscounts
+        [HttpGet("GetAllDiscount")]
+        public IActionResult GetAllDiscount()
+        {
+            List<Discount> discounts = context.Discounts
+                .Include(d => d.RentalDiscounts)
+                .ToList();
+
+            return Ok(discounts);
+        }
         
     }
 }
