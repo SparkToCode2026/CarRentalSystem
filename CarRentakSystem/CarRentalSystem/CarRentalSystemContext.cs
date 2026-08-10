@@ -38,7 +38,7 @@ namespace CarRentalSystem
             modelBuilder.Entity<Rental>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Rentals)
-                .HasForeignKey(r => r.CarId)
+                .HasForeignKey(r => r.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Rental>()
