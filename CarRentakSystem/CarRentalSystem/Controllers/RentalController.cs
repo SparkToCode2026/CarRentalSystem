@@ -17,21 +17,8 @@ namespace CarRentalSystem.Controllers
 
         // 1. POST: Clean JSON request body
         [HttpPost("AddRental")]
-        public IActionResult AddRental(CreateRentalDto dto)
+        public IActionResult AddRental(Rental rental)
         {
-            Rental rental = new Rental
-            {
-                StartDate = DateOnly.FromDateTime(dto.StartDate),
-                DueDate = DateOnly.FromDateTime(dto.DueDate),
-                ReturnAtUtc = dto.ReturnAtUtc,
-                Status = dto.Status,
-                TotalDays = dto.TotalDays,
-                Car_ID = dto.Car_ID,
-                User_ID = dto.User_ID,
-                Branch_ID = dto.Branch_ID,
-                DriverProfile_ID = dto.DriverProfile_ID
-            };
-
             context.Rentals.Add(rental);
             context.SaveChanges();
 
@@ -40,25 +27,29 @@ namespace CarRentalSystem.Controllers
 
         // 2. PUT: Clean full update body
         [HttpPut("UpdateRental")]
-        public IActionResult UpdateRental(int id, UpdateRentalDto dto)
+        public IActionResult UpdateRental(int id, Rental newRental)
         {
-            Rental rental = context.Rentals.FirstOrDefault(r => r.Rental_ID == id);
+            Rental? rental = context.Rentals
+                .FirstOrDefault(r => r.Rental_ID == id);
+
             if (rental == null)
             {
                 return NotFound("Rental record not found");
             }
 
-            rental.StartDate = DateOnly.FromDateTime(dto.StartDate);
-            rental.DueDate = DateOnly.FromDateTime(dto.DueDate);
-            rental.ReturnAtUtc = dto.ReturnAtUtc;
-            rental.Status = dto.Status;
-            rental.TotalDays = dto.TotalDays;
-            rental.Car_ID = dto.Car_ID;
-            rental.User_ID = dto.User_ID;
-            rental.Branch_ID = dto.Branch_ID;
-            rental.DriverProfile_ID = dto.DriverProfile_ID;
+            rental.StartDate = newRental.StartDate;
+            rental.DueDate = newRental.DueDate;
+            rental.ReturnAtUtc = newRental.ReturnAtUtc;
+            rental.Status = newRental.Status;
+            rental.TotalDays = newRental.TotalDays;
+
+            rental.CarId = newRental.CarId;
+            rental.userId = newRental.userId;
+            rental.BranchId = newRental.BranchId;
+            rental.DriverProfile_ID = newRental.DriverProfile_ID;
 
             context.SaveChanges();
+
             return Ok("Updated successfully");
         }
 
@@ -66,13 +57,16 @@ namespace CarRentalSystem.Controllers
         [HttpPatch("UpdateRentalStatus")]
         public IActionResult UpdateRentalStatus(int id, string status)
         {
-            Rental rental = context.Rentals.FirstOrDefault(r => r.Rental_ID == id);
+            Rental? rental = context.Rentals
+                .FirstOrDefault(r => r.Rental_ID == id);
+
             if (rental == null)
             {
                 return NotFound("Rental record not found");
             }
 
             rental.Status = status;
+
             context.SaveChanges();
 
             return Ok("Status updated successfully");
@@ -82,7 +76,9 @@ namespace CarRentalSystem.Controllers
         [HttpDelete("DeleteRental")]
         public IActionResult DeleteRental(int id)
         {
-            Rental rental = context.Rentals.FirstOrDefault(r => r.Rental_ID == id);
+            Rental? rental = context.Rentals
+                .FirstOrDefault(r => r.Rental_ID == id);
+
             if (rental == null)
             {
                 return NotFound("Rental record not found");
@@ -102,6 +98,7 @@ namespace CarRentalSystem.Controllers
                 .Include(r => r.Car)
                 .Include(r => r.User)
                 .Include(r => r.Branch)
+                .Include(r => r.DriverProfile)
                 .ToList();
 
             return Ok(rentals);
@@ -111,10 +108,11 @@ namespace CarRentalSystem.Controllers
         [HttpGet("GetRentalById")]
         public IActionResult GetRentalById(int id)
         {
-            Rental rental = context.Rentals
+            Rental? rental = context.Rentals
                 .Include(r => r.Car)
                 .Include(r => r.User)
                 .Include(r => r.Branch)
+                .Include(r => r.DriverProfile)
                 .FirstOrDefault(r => r.Rental_ID == id);
 
             if (rental == null)
@@ -127,7 +125,10 @@ namespace CarRentalSystem.Controllers
 
         // 7. GET (Filter): Filter by status, car, or user
         [HttpGet("FilterRentals")]
-        public IActionResult FilterRentals(string? status, int? carId, int? userId)
+        public IActionResult FilterRentals(
+            string? status,
+            int? carId,
+            int? userId)
         {
             var query = context.Rentals.AsQueryable();
 
@@ -138,12 +139,12 @@ namespace CarRentalSystem.Controllers
 
             if (carId.HasValue)
             {
-                query = query.Where(r => r.Car_ID == carId.Value);
+                query = query.Where(r => r.CarId == carId.Value);
             }
 
             if (userId.HasValue)
             {
-                query = query.Where(r => r.User_ID == userId.Value);
+                query = query.Where(r => r.userId == userId.Value);
             }
 
             return Ok(query.ToList());
@@ -157,9 +158,15 @@ namespace CarRentalSystem.Controllers
                 .OrderByDescending(r => r.TotalDays)
                 .ToList();
 
-            var totalRentals = context.Rentals.Count();
-            var totalDaysRented = totalRentals > 0 ? context.Rentals.Sum(r => r.TotalDays) : 0;
-            var averageDays = totalRentals > 0 ? context.Rentals.Average(r => r.TotalDays) : 0;
+            int totalRentals = context.Rentals.Count();
+
+            int totalDaysRented = totalRentals > 0
+                ? context.Rentals.Sum(r => r.TotalDays)
+                : 0;
+
+            double averageDays = totalRentals > 0
+                ? context.Rentals.Average(r => r.TotalDays)
+                : 0;
 
             return Ok(new
             {
@@ -171,19 +178,5 @@ namespace CarRentalSystem.Controllers
         }
     }
 
-    // Clean DTOs for Swagger Input Blocks
-    public class CreateRentalDto
-    {
-        public DateTime StartDate { get; set; }
-        public DateTime DueDate { get; set; }
-        public DateTime ReturnAtUtc { get; set; }
-        public string Status { get; set; } = "Active";
-        public int TotalDays { get; set; }
-        public int Car_ID { get; set; }
-        public int User_ID { get; set; }
-        public int Branch_ID { get; set; }
-        public int DriverProfile_ID { get; set; }
-    }
-
-    public class UpdateRentalDto : CreateRentalDto { }
+    
 }
