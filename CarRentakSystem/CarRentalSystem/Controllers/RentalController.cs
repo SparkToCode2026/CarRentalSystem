@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarRentalSystem.Models;
+using CarRentalSystem.Services;
 
 namespace CarRentalSystem.Controllers
 {
@@ -9,18 +10,22 @@ namespace CarRentalSystem.Controllers
     public class RentalController : ControllerBase
     {
         private readonly CarRentalSystemContext context;
+        private readonly IEmailService emailService;
 
-        public RentalController(CarRentalSystemContext _context)
+        public RentalController(
+            CarRentalSystemContext _context,
+            IEmailService _emailService)
         {
             context = _context;
+            emailService = _emailService;
         }
 
         // 1. POST: Clean JSON request body
         [HttpPost("AddRental")]
-        public IActionResult AddRental(Rental rental)
+        public async Task<IActionResult> AddRental(Rental rental)
         {
             context.Rentals.Add(rental);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return Ok(rental.Rental_ID);
         }
