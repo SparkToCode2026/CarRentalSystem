@@ -7,7 +7,6 @@ namespace CarRentalSystem.Models
     public class Review
     {
         [Key]
-        [JsonIgnore]
         public int Review_ID { get; set; }
         public DateTime ReviewDate { get; set; }
         public string Comment { get; set; }

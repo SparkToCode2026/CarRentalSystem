@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,7 @@ namespace CarRentalSystem.Models
 {
     public class CarCategory
     {
-        [JsonIgnore]
+        [Key]
         public int Id { get; set; }
 
         public string Name { get; set; } = string.Empty;

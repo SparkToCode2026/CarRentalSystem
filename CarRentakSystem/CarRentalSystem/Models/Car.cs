@@ -8,7 +8,6 @@ namespace CarRentalSystem.Models
     public class Car
     {
         [Key]
-        [JsonIgnore]
         public int CarId { get; set; }
         
         public string PlateNumber { get; set; }

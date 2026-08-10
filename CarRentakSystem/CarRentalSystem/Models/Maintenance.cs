@@ -8,7 +8,6 @@ namespace CarRentalSystem.Models
     public class Maintenance
     {
         [Key]
-        [JsonIgnore]
         public int Maintenane_ID { get; set; }
         public DateTime ServiceDate { get; set; }
         public string Description { get; set; }

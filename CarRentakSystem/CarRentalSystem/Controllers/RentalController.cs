@@ -25,7 +25,6 @@ namespace CarRentalSystem.Controllers
             return Ok(rental.Rental_ID);
         }
 
-        // 2. PUT: Clean full update body
         [HttpPut("UpdateRental")]
         public IActionResult UpdateRental(int id, Rental newRental)
         {
@@ -37,11 +36,20 @@ namespace CarRentalSystem.Controllers
                 return NotFound("Rental record not found");
             }
 
+            // Check dates first
+            if (newRental.DueDate <= newRental.StartDate)
+            {
+                return BadRequest("Due date must be after start date");
+            }
+
             rental.StartDate = newRental.StartDate;
             rental.DueDate = newRental.DueDate;
             rental.ReturnAtUtc = newRental.ReturnAtUtc;
             rental.Status = newRental.Status;
-            rental.TotalDays = newRental.TotalDays;
+
+            // Calculate TotalDays automatically
+            rental.TotalDays =
+                (newRental.DueDate.Date - newRental.StartDate.Date).Days;
 
             rental.CarId = newRental.CarId;
             rental.userId = newRental.userId;

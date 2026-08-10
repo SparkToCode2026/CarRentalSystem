@@ -9,7 +9,6 @@ namespace CarRentalSystem.Models
     public class Rental
     {
         [Key]
-        [JsonIgnore]
         public int Rental_ID { get; set; }
         public DateTime StartDate { get; set; } //= new DateOnly();
         public DateTime DueDate { get; set; }

@@ -45,7 +45,7 @@ namespace CarRentalSystem.Controllers
         public IActionResult RemoveMaintenance(int id)
         {
 
-            Maintenance m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
+            Maintenance? m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
 
             if (m == null)
             {
@@ -65,7 +65,7 @@ namespace CarRentalSystem.Controllers
         [HttpPatch("UpdateMaintenanceStatus")]
         public IActionResult UpdateMaintenanceStatus(int id, string newStatus)
         {
-            Maintenance m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
+            Maintenance? m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
 
             if (m == null)
             {
@@ -87,7 +87,7 @@ namespace CarRentalSystem.Controllers
         [HttpPut("UpdateMaintenance")]
         public IActionResult UpdateMaintenance(int id, Maintenance newMaintenance)
         {
-            Maintenance m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
+            Maintenance? m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
 
             if (m == null)
             {
@@ -111,7 +111,7 @@ namespace CarRentalSystem.Controllers
         [HttpGet("GetMaintenance")]
         public IActionResult GetMaintenance(int id)
         {
-            Maintenance m = context.Maintenances
+            Maintenance? m = context.Maintenances
                 .Include(m => m.Car)
                 .FirstOrDefault(m => m.Maintenane_ID == id);
 

@@ -54,19 +54,11 @@ namespace CarRentalSystem.Controllers
                 branch);
         }
 
-// PUT: api/Branch/5
+        // PUT: api/Branch/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBranch(
-            int id,
-            Branch branch)
+        public async Task<IActionResult> Update(int id, Branch branch)
         {
-            if (id != branch.Id)
-            {
-                return BadRequest("ID does not match.");
-            }
-
-            var existingBranch = await _context.Branches
-                .FindAsync(id);
+            var existingBranch = await _context.Branches.FindAsync(id);
 
             if (existingBranch == null)
             {
@@ -79,7 +71,7 @@ namespace CarRentalSystem.Controllers
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("branch updated successfully");
         }
 
         // PUT: api/Branch/5/city

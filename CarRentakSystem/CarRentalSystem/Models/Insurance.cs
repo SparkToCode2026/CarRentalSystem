@@ -7,7 +7,6 @@ namespace CarRentalSystem.Models
     public class Insurance
     {
         [Key]
-        [JsonIgnore]
         public int Insurance_ID { get; set; }
         public string PolicyType { get; set; }
         public string Coverage { get; set; }

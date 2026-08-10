@@ -8,7 +8,6 @@ namespace CarRentalSystem.Models
     public class Payments
     {
         [Key]
-        [JsonIgnore]
         public int Payment_ID { get; set; }
         [Precision(10, 2)]
         public decimal Amount { get; set; }
