@@ -1,6 +1,139 @@
-﻿namespace CarRentalSystem.Controllers
+﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace CarRentalSystem.Controllers
 {
-    public class DamageReportController
+    [ApiController]
+    [Route("DamageReport")]
+    public class DamageReportController : ControllerBase
     {
+        private CarRentalSystemContext context;
+
+        public DamageReportController(CarRentalSystemContext _context)
+        {
+            context = _context;
+        }
+        
+        // 1.POST - Create a new DamageReport
+        [HttpPost("AddDamageReport")]
+        public IActionResult AddDamageReport(DamageReport d)
+        {
+            context.DamageReports.Add(d);
+            context.SaveChanges();
+
+            return Ok(d.DamageReport_ID);
+        }
+        
+        // 2.PUT - Update full DamageReport
+        [HttpPut("UpdateDamageReport")]
+        public IActionResult UpdateDamageReport(int id, DamageReport newDamagereport)
+        {
+            DamageReport? d = context.DamageReports
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ");
+            }
+
+            d.Description = newDamagereport.Description;
+            d.ReportedAtUtc = newDamagereport.ReportedAtUtc;
+            d.RepairCost = newDamagereport.RepairCost;
+            d.CarId = newDamagereport.CarId;
+            d.Rental_ID = newDamagereport.Rental_ID;
+
+            context.SaveChanges();
+
+            return Ok("damage report updated successfully");
+        }
+        // 3.PATCH -Update RepairCost only
+        [HttpPatch("UpdateRepairCost")]
+        public IActionResult UpdateRepairCost(int id, decimal newRepairCost)
+        {
+            DamageReport? d = context.DamageReports
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ");
+            }
+
+            d.RepairCost = newRepairCost;
+
+            context.SaveChanges();
+
+            return Ok("repair cost updated successfully ");
+        }
+        
+        // 4.DELETE -Delete DamageReport by ID
+        [HttpDelete("RemoveDamageReport")]
+        public IActionResult RemoveDamageReport(int id)
+        {
+            DamageReport? d = context.DamageReports
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ");
+            }
+
+            context.DamageReports.Remove(d);
+            context.SaveChanges();
+
+            return Ok("damage report removed successfully ");
+        }
+        
+        
+        // 5.GET ALL - Include related Car and Rental
+        [HttpGet("GetAllDamageReports")]
+        public IActionResult GetAllDamageReports()
+        {
+            List<DamageReport> damageReports = context.DamageReports
+                .Include(d => d.Car)
+                .Include(d => d.Rental)
+                .ToList();
+
+            return Ok(damageReports);
+        }
+        // 6.GET BY ID -Include related Car and Rental
+        [HttpGet("GetDamageReport")]
+        public IActionResult GetDamageReport(int id)
+        {
+            DamageReport? d = context.DamageReports
+                .Include(d => d.Car)
+                .Include(d => d.Rental)
+                .FirstOrDefault(d => d.DamageReport_ID == id);
+
+            if (d == null)
+            {
+                return NotFound("damage report not found ");
+            }
+
+            return Ok(d);
+        }
+        
+        // 7.FILTER - Filter by Car
+        [HttpGet("GetByCar")]
+        public IActionResult GetByCar(int carId)
+        {
+            List<DamageReport> damageReports = context.DamageReports
+                .Where(d => d.CarId == carId)
+                .ToList();
+
+            return Ok(damageReports);
+        }
+        
+        // 8.SORT -Sort by RepairCost
+        [HttpGet("GetSortedByRepairCost")]
+        public IActionResult GetSortedByRepairCost()
+        {
+            List<DamageReport> damageReports = context.DamageReports
+                .OrderByDescending(d => d.RepairCost)
+                .ToList();
+
+            return Ok(damageReports);
+        }
+        
     }
 }
