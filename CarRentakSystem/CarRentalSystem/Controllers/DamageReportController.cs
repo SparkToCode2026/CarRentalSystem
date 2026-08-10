@@ -107,7 +107,7 @@ namespace CarRentalSystem.Controllers
 
             if (d == null)
             {
-                return NotFound("damage report not found ")
+                return NotFound("damage report not found ");
             }
 
             return Ok(d);
