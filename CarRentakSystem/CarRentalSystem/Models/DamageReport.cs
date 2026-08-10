@@ -7,7 +7,6 @@ namespace CarRentalSystem.Models
     public class DamageReport
     {
         [Key]
-        [JsonIgnore]
         public int DamageReport_ID { get; set; }
 
         public string Description { get; set; } = string.Empty;

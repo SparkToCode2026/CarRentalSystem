@@ -30,7 +30,7 @@ namespace CarRentalSystem.Controllers
         [HttpPut("UpdateUser")]
         public IActionResult UpdateUser(int id, User updatedUser)
         {
-            User user = context.Users.FirstOrDefault(user => user.userId==id);
+            User? user = context.Users.FirstOrDefault(user => user.userId==id);
             if (user == null)
             {
                 return NotFound("user not found");
@@ -48,7 +48,7 @@ namespace CarRentalSystem.Controllers
         [HttpPut("UpdateUserRole")]
         public IActionResult UpdateUserRole(int id, UserRole newRole)
         {
-            User user = context.Users.FirstOrDefault(user => user.userId == id);
+            User? user = context.Users.FirstOrDefault(user => user.userId == id);
             if (user == null)
             {
                 return NotFound("user not found");
@@ -61,7 +61,7 @@ namespace CarRentalSystem.Controllers
         [HttpDelete("DeleteUser")]
         public IActionResult DeleteUser(int id)
         {
-            User user = context.Users.FirstOrDefault(user => user.userId == id);
+            User? user = context.Users.FirstOrDefault(user => user.userId == id);
             if (user == null)
             {
                 return NotFound("user not found");
@@ -83,7 +83,7 @@ namespace CarRentalSystem.Controllers
         [HttpGet("GetUserWithRelatedData")]
         public IActionResult GetUserWithRelatedData(int id)
         {
-            User user = context.Users
+            User? user = context.Users
                 .Include(u => u.Rentals)
                 .Include(u => u.DriverProfile)
                 .Include(u => u.Reviews)
@@ -98,7 +98,7 @@ namespace CarRentalSystem.Controllers
         [HttpGet("GetUserById")]
         public IActionResult GetUserById(int id)
         {
-            User user = context.Users.FirstOrDefault(user => user.userId == id);
+            User? user = context.Users.FirstOrDefault(user => user.userId == id);
             if (user == null)
             {
                 return NotFound("user not found");

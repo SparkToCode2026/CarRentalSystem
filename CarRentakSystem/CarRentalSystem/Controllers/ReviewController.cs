@@ -45,7 +45,7 @@ namespace CarRentalSystem.Controllers
         public IActionResult RemoveReview(int id)
         {
 
-            Review r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
+            Review? r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
 
             if (r == null)
             {
@@ -67,7 +67,7 @@ namespace CarRentalSystem.Controllers
         [HttpPatch("UpdateReviewRating")]
         public IActionResult UpdateReviewRating(int id, int newRating)
         {
-            Review r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
+            Review? r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
 
             if (r == null)
             {
@@ -89,7 +89,7 @@ namespace CarRentalSystem.Controllers
         [HttpPut("UpdateReview")]
         public IActionResult UpdateReview(int id, Review newReview)
         {
-            Review r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
+            Review? r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
 
             if (r == null)
             {
@@ -113,7 +113,7 @@ namespace CarRentalSystem.Controllers
         [HttpGet("GetReview")]
         public IActionResult GetReview(int id)
         {
-            Review r = context.Reviews
+            Review? r = context.Reviews
                 .Include(r => r.Car)
                 .Include(r => r.User)
                 .FirstOrDefault(r => r.Review_ID == id);

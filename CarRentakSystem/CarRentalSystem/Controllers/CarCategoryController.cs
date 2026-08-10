@@ -57,17 +57,9 @@ namespace CarRentalSystem.Controllers
 
         // PUT: api/CarCategory/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(
-            int id,
-            CarCategory category)
+        public async Task<IActionResult> Update(int id, CarCategory category)
         {
-            if (id != category.Id)
-            {
-                return BadRequest("ID does not match.");
-            }
-
-            var existingCategory = await _context.CarCategories
-                .FindAsync(id);
+            var existingCategory = await _context.CarCategories.FindAsync(id);
 
             if (existingCategory == null)
             {
@@ -79,7 +71,7 @@ namespace CarRentalSystem.Controllers
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("category updated successfully");
         }
 
         // PUT: api/CarCategory/5/rate

@@ -7,7 +7,6 @@ namespace CarRentalSystem.Models
     public class DriverProfile
     {
         [Key]
-        [JsonIgnore]
         public int DriverProfile_ID { get; set; }
         
         public int LicenseNumber { get; set; }

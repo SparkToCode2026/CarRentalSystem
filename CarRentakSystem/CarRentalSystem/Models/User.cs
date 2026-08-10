@@ -12,7 +12,6 @@ namespace CarRentalSystem.Models
             staff
         }
         [Key]
-        [JsonIgnore]
         public int userId { get; set; }
         [Required]
         public string name { get; set; }

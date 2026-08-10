@@ -7,7 +7,6 @@ namespace CarRentalSystem.Models;
     public class Discount
     {
         [Key]
-        [JsonIgnore]
         public int Discount_ID { get; set; }
 
         public string Code { get; set; } = string.Empty;

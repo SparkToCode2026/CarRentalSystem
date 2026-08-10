@@ -30,7 +30,7 @@ namespace CarRentalSystem.Controllers
         [HttpPut("UpdatePayment")]
         public IActionResult UpdatePayment(int id, Payments updatedPayment)
         {
-            Payments payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
+            Payments? payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
             if (payment == null)
             {
                 return NotFound("Payment not found");
@@ -50,7 +50,7 @@ namespace CarRentalSystem.Controllers
         [HttpPatch("UpdateStatus")]
         public IActionResult UpdateStatus(int id, string status)
         {
-            Payments payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
+            Payments? payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
             if (payment == null)
             {
                 return NotFound("Payment not found");
@@ -65,7 +65,7 @@ namespace CarRentalSystem.Controllers
         [HttpDelete("DeletePayment")]
         public IActionResult DeletePayment(int id)
         {
-            Payments payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
+            Payments? payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
             if (payment == null)
             {
                 return NotFound("Payment not found");
@@ -91,7 +91,7 @@ namespace CarRentalSystem.Controllers
         [HttpGet("GetPaymentById")]
         public IActionResult GetPaymentById(int id)
         {
-            Payments payment = context.Payments
+            Payments? payment = context.Payments
                 .Include(p => p.Rental)
                 .FirstOrDefault(p => p.Payment_ID == id);
 
