@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using CarRentalSystem.Services;
 namespace CarRentalSystem
+
 {
     public class Program
     {
@@ -11,7 +13,11 @@ namespace CarRentalSystem
             builder.Services.AddDbContext<CarRentalSystemContext>(options =>
                options.UseSqlServer(
                    builder.Configuration.GetConnectionString("DefaultConnection")));
+            
+            builder.Services.Configure<EmailSettings>(
+                builder.Configuration.GetSection("EmailSettings"));
 
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddControllers();
             //////////////////////////////////////////////////////
