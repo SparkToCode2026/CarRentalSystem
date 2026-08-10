@@ -27,7 +27,51 @@ namespace CarRentalSystem.Controllers
             context.Rentals.Add(rental);
             await context.SaveChangesAsync();
 
-            return Ok(rental.Rental_ID);
+            var savedRental = await context.Rentals
+                .Include(r => r.User)
+                .Include(r => r.Car)
+                .Include(r => r.Branch)
+                .FirstOrDefaultAsync(r => r.Rental_ID == rental.Rental_ID);
+
+            if (savedRental == null)
+            {
+                return NotFound("Rental was not found after saving");
+            }
+
+            try
+            {
+                if (!string.IsNullOrEmpty(savedRental.User?.email))
+                {
+                    string emailBody = $"""
+                                        <h2>Rental Confirmation</h2>
+
+                                        <p>Hello {savedRental.User.name},</p>
+
+                                        <p>Your car rental has been successfully confirmed.</p>
+
+                                        <h3>Rental Details</h3>
+
+                                        <p><strong>Rental ID:</strong> {savedRental.Rental_ID}</p>
+                                        <p><strong>Car:</strong> {savedRental.Car?.Make} {savedRental.Car?.Model}</p>
+                                        <p><strong>Pickup Branch:</strong> {savedRental.Branch?.Name}</p>
+                                        <p><strong>Start Date:</strong> {savedRental.StartDate}</p>
+                                        <p><strong>Due Date:</strong> {savedRental.DueDate}</p>
+
+                                        <p>Thank you for using Car Rental System.</p>
+                                        """;
+
+                    await emailService.SendEmailAsync(
+                        savedRental.User.email,
+                        "Rental Confirmation - Car Rental System",
+                        emailBody);
+                }
+            }
+            catch (Exception)
+            {
+                // Email failure should not cancel the rental
+            }
+
+            return Ok(savedRental.Rental_ID);
         }
 
         [HttpPut("UpdateRental")]
