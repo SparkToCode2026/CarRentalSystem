@@ -54,6 +54,10 @@ namespace CarRentalSystem
             }
 
             app.UseHttpsRedirection();
+            ////////////////////
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            ////////////////////
 
             app.UseAuthorization();
 
