@@ -38,6 +38,10 @@ namespace CarRentalSystem.Services
 
             using var client = new SmtpClient();
 
+            // Temporary fix for local testing
+            client.ServerCertificateValidationCallback =
+                (sender, certificate, chain, sslPolicyErrors) => true;
+
             await client.ConnectAsync(
                 _settings.SmtpServer,
                 _settings.SmtpPort,

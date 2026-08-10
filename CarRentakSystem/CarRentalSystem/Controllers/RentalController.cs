@@ -64,11 +64,18 @@ namespace CarRentalSystem.Controllers
                         savedRental.User.email,
                         "Rental Confirmation - Car Rental System",
                         emailBody);
+
+                    Console.WriteLine("EMAIL SENT SUCCESSFULLY");
+                }
+                else
+                {
+                    Console.WriteLine("EMAIL ERROR: User not found or email is empty.");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Email failure should not cancel the rental
+                Console.WriteLine("EMAIL ERROR: " + ex.Message);
             }
 
             return Ok(savedRental.Rental_ID);
