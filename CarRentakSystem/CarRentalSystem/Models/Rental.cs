@@ -21,19 +21,19 @@ namespace CarRentalSystem.Models
 
         // FK: Rental → Car (Many-to-One): one rental is for exactly one car
         [ForeignKey("Car")]
-        public int CarId { get; set; }
+        public int Car_ID { get; set; }
         public Car Car { get; set; } = null!;
 
         // FK: Rental → User (Many-to-One): one rental belongs to exactly one user
 
         [ForeignKey("User")]
-        public int userId { get; set; }
+        public int User_ID { get; set; }
         public User User { get; set; } = null!;
 
         // FK: Rental → Branch (Many-to-One): one rental is tied to exactly one branch
 
         [ForeignKey("Branch")]
-        public int BranchId { get; set; }
+        public int Branch_ID { get; set; }
         public Branch Branch { get; set; } = null!;
 
         //FK: Rental → DriverProfile 

@@ -32,13 +32,13 @@ namespace CarRentalSystem
             modelBuilder.Entity<Rental>()
                 .HasOne(r => r.Car)
                 .WithMany(c => c.Rentals)
-                .HasForeignKey(r => r.CarId)
+                .HasForeignKey(r => r.Car_ID)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Rental>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Rentals)
-                .HasForeignKey(r => r.userId)
+                .HasForeignKey(r => r.User_ID)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Rental>()
@@ -50,7 +50,7 @@ namespace CarRentalSystem
             modelBuilder.Entity<Rental>()
                 .HasOne(r => r.Branch)
                 .WithMany(b => b.PickupRentals)
-                .HasForeignKey(r => r.BranchId)
+                .HasForeignKey(r => r.Branch_ID)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
