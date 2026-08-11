@@ -19,9 +19,12 @@ namespace CarRentalSystem.Controllers
     {
         private CarRentalSystemContext context;
         private readonly IConfiguration _configuration; //read jwt key from appsettings.json
-        public UserController(CarRentalSystemContext _context)
+        public UserController(
+    CarRentalSystemContext _context,
+    IConfiguration configuration)
         {
             context = _context;
+            _configuration = configuration;
         }
         //new for jwt
         //Register User
