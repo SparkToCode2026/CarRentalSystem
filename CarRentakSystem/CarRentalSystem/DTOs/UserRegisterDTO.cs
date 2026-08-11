@@ -1,12 +1,17 @@
-﻿using static CarRentalSystem.Models.User;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalSystem.DTOs
 {
-    public class UserRegisterDto
+    public class UserRegisterDto // DTO for user registration
     {
-        public string name { get; set; }
-        public string email { get; set; }
-        public string password { get; set; } // password input by user
-        public UserRole role { get; set; }
+        [Required]
+        public string name { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        public string email { get; set; } = string.Empty;
+
+        [Required]
+        public string password { get; set; } = string.Empty;
     }
 }

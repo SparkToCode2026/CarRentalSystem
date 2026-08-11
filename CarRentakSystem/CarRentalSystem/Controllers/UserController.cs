@@ -60,7 +60,7 @@ namespace CarRentalSystem.Controllers
         // Login User
         [AllowAnonymous]
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] UserLoginDto request)
+        public IActionResult Login([FromBody] UserRegisterDto request)
         {
             User? user = context.Users.FirstOrDefault(u => u.email == request.email);
             if (user == null)
