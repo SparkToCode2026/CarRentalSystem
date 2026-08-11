@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using CarRentalSystem.Services;
 namespace CarRentalSystem
 
@@ -20,7 +23,32 @@ namespace CarRentalSystem
             builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddControllers();
-            //////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////   jwt config
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false; // true? // Set to true in production for security
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings["Audience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero // Tokens expire exactly when they are supposed to aka 10 minutes
+                };
+            });
+            //////////////////////////////////////////////////////  swagger config
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
@@ -61,8 +89,9 @@ namespace CarRentalSystem
 
             app.UseHttpsRedirection();
 
+            // Add authentication and authorization middleware
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 
