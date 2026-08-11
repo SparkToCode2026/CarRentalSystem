@@ -88,6 +88,10 @@ namespace CarRentalSystem
             }
 
             app.UseHttpsRedirection();
+            ////////////////////
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            ////////////////////
 
             // Add authentication and authorization middleware
             app.UseAuthentication();
