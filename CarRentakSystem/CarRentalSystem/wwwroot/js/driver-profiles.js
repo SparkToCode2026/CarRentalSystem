@@ -486,7 +486,239 @@ async function addDriver() {
     }
 
 }
+// ========================================
+// VIEW DRIVER
+// ========================================
 
+async function viewDriver(id) {
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/GetDriverProfileWithRelatedData?id=${id}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load driver profile.");
+        }
+
+        const driver = await response.json();
+
+        const content =
+            document.getElementById("viewDriverContent");
+
+        content.innerHTML = `
+    <p><strong>User ID:</strong> ${driver.userId}</p>
+
+    <p><strong>User:</strong>
+        ${driver.userName ?? "-"}
+    </p>
+
+    <p><strong>License Number:</strong>
+        ${driver.licenseNumber}
+    </p>
+
+    <p><strong>Expiry Date:</strong>
+        ${new Date(driver.licenseExpiryDate).toLocaleDateString()}
+    </p>
+
+    <p><strong>Rentals:</strong>
+        ${driver.rentalCount}
+    </p>
+`;
+
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(
+                document.getElementById("viewDriverModal")
+            );
+
+        modal.show();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to load driver profile.",
+            "danger"
+        );
+    }
+}
+
+
+
+// ========================================
+// EDIT DRIVER
+// ========================================
+
+async function editDriver(id) {
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/GetDriverProfile?id=${id}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Driver profile not found.");
+        }
+
+        const driver = await response.json();
+
+        document.getElementById("editDriverId").value =
+            driver.driverProfile_ID;
+
+        document.getElementById("editUserId").value =
+            driver.userId;
+
+        document.getElementById("editLicenseNumber").value =
+            driver.licenseNumber;
+
+        document.getElementById("editLicenseExpiryDate").value =
+            driver.licenseExpiryDate.substring(0, 10);
+
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(
+                document.getElementById("editDriverModal")
+            );
+
+        modal.show();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to load driver profile for editing.",
+            "danger"
+        );
+    }
+}
+
+
+
+// ========================================
+// UPDATE DRIVER
+// ========================================
+
+async function updateDriver() {
+
+    const id =
+        document.getElementById("editDriverId").value;
+
+    const updatedDriver = {
+
+        userId:
+            Number(
+                document.getElementById("editUserId").value
+            ),
+
+        licenseNumber:
+            Number(
+                document.getElementById("editLicenseNumber").value
+            ),
+
+        licenseExpiryDate:
+            document.getElementById("editLicenseExpiryDate").value
+    };
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/UpdateDriverProfile?id=${id}`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(updatedDriver)
+            }
+        );
+
+        if (!response.ok) {
+
+            const text = await response.text();
+
+            throw new Error(
+                text || "Failed to update driver profile."
+            );
+        }
+
+        bootstrap.Modal
+            .getInstance(
+                document.getElementById("editDriverModal")
+            )
+            ?.hide();
+
+        await loadDrivers();
+
+        showMessage(
+            "Driver profile updated successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to update driver profile.",
+            "danger"
+        );
+    }
+}
+
+
+
+// ========================================
+// DELETE DRIVER
+// ========================================
+
+async function deleteDriver(id) {
+
+    if (!confirm(
+        "Are you sure you want to delete this driver profile?"
+    )) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/RemoveDriverProfile?id=${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        if (!response.ok) {
+
+            const text = await response.text();
+
+            throw new Error(
+                text || "Failed to delete driver profile."
+            );
+        }
+
+        await loadDrivers();
+
+        showMessage(
+            "Driver profile deleted successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message,
+            "danger"
+        );
+    }
+}
 
 
 // ========================================
@@ -497,7 +729,18 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+        const updateDriverBtn =
+            document.getElementById(
+                "updateDriverBtn"
+            );
 
+        if (updateDriverBtn) {
+
+            updateDriverBtn.addEventListener(
+                "click",
+                updateDriver
+            );
+        }
         // Load drivers
 
         loadDrivers();
