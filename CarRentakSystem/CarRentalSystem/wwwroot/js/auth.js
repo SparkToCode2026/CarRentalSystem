@@ -86,8 +86,7 @@ async function login(event) {
             await response.json();
 
 
-        const token =
-            result.token ?? result.Token;
+        const token = result.accessToken ?? result.AccessToken;
 
 
         if (!token) {
