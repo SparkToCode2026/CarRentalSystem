@@ -1,4 +1,4 @@
-﻿const API_BASE = "http://localhost:5092";
+﻿const API_BASE = " ";
 
 let reviews = [];
 let reviewModal;
