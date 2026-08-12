@@ -63,7 +63,7 @@ namespace CarRentalSystem.Controllers
         // Login User
         [AllowAnonymous]
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] UserRegisterDto request)
+        public IActionResult Login([FromBody] UserLoginDto request)
         {
             User? user = context.Users.FirstOrDefault(u => u.email == request.email);
             if (user == null)
@@ -95,53 +95,88 @@ namespace CarRentalSystem.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
             //token return
-            return Ok(new { Token = tokenString });
+            return Ok(new LoginResponseDto
+            {
+                AccessToken = tokenString,
+                ExpiresAtUtc = DateTime.UtcNow.AddHours(1),
+                userId = user.userId,
+                name = user.name,
+                email = user.email,
+                role = user.role.ToString()
+            }); 
         }
         //note: add user replaced with register user
         // Implement PUT/PATCH to update an existing record.
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUser")]
         public IActionResult UpdateUser(int id, User updatedUser)
         {
-            User? user = context.Users.FirstOrDefault(user => user.userId == id);
+            User? user = context.Users.FirstOrDefault(u => u.userId == id);
+
             if (user == null)
             {
-                return NotFound("user not found");
+                return NotFound("User not found");
             }
+
             user.name = updatedUser.name;
             user.email = updatedUser.email;
-            user.passwordHash = updatedUser.passwordHash; 
-            user.role = updatedUser.role;
-            user.CreatedAtUtc = updatedUser.CreatedAtUtc;
+
             context.SaveChanges();
-            return Ok("updated successfully");
+
+            return Ok("User updated successfully");
         }
 
         //Implement a second PUT/PATCH endpoint for a specific field/status update
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUserRole")]
         public IActionResult UpdateUserRole(int id, UserRole newRole)
         {
-            User? user = context.Users.FirstOrDefault(user => user.userId == id);
+            User? user = context.Users.FirstOrDefault(u => u.userId == id);
+
             if (user == null)
             {
-                return NotFound("user not found");
+                return NotFound("User not found");
             }
+
             user.role = newRole;
+
             context.SaveChanges();
-            return Ok("role updated successfully");
+
+            return Ok("Role updated successfully");
         }
         // Implement DELETE by ID
         [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser")]
         public IActionResult DeleteUser(int id)
         {
-            User? user = context.Users.FirstOrDefault(user => user.userId == id);
+            User? user = context.Users
+                .FirstOrDefault(u => u.userId == id);
+
             if (user == null)
             {
-                return NotFound("user not found");
+                return NotFound("User not found");
             }
+
+            bool hasRentals =
+                context.Rentals.Any(r => r.userId == id);
+
+            bool hasReviews =
+                context.Reviews.Any(r => r.Userid == id);
+
+            bool hasDriverProfile =
+                context.DriverProfiles.Any(d => d.userId == id);
+
+            if (hasRentals || hasReviews || hasDriverProfile)
+            {
+                return BadRequest(
+                    "This user cannot be deleted because they have related records."
+                );
+            }
+
             context.Users.Remove(user);
             context.SaveChanges();
-            return Ok("deleted successfully");
+
+            return Ok("User deleted successfully");
         }
 
         //Implement GET ALL
@@ -183,7 +218,7 @@ namespace CarRentalSystem.Controllers
         }
         // does not require authorization? confirm>
         //Implement a Filter endpoint using Where()
-        
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetByName")]
         public IActionResult GetByName(string name)
         {
@@ -193,7 +228,7 @@ namespace CarRentalSystem.Controllers
         }
 
         //Implement a Sort endpoint using OrderBy()
-        
+        [Authorize(Roles = "Admin")]
         [HttpGet("SortUsersByName")]
         public IActionResult SortUsersByName()
         {
