@@ -79,6 +79,16 @@ namespace CarRentalSystem.Controllers
                 return NotFound("driver profile not found");
             }
 
+            bool hasRentals = context.Rentals
+                .Any(r => r.DriverProfile_ID == id);
+
+            if (hasRentals)
+            {
+                return BadRequest(
+                    "This driver profile cannot be deleted because it has related rental records."
+                );
+            }
+
             context.DriverProfiles.Remove(d);
             context.SaveChanges();
 
@@ -101,8 +111,6 @@ namespace CarRentalSystem.Controllers
         public IActionResult GetDriverProfile(int id)
         {
             DriverProfile? d = context.DriverProfiles
-                .Include(d => d.User)
-                .Include(d => d.Rentals)
                 .FirstOrDefault(d => d.DriverProfile_ID == id);
 
             if (d == null)
@@ -133,6 +141,34 @@ namespace CarRentalSystem.Controllers
                 .ToList();
 
             return Ok(driverProfiles);
+        }
+
+        [HttpGet("GetDriverProfileWithRelatedData")]
+        public IActionResult GetDriverProfileWithRelatedData(int id)
+        {
+            var d = context.DriverProfiles
+                .Where(d => d.DriverProfile_ID == id)
+                .Select(d => new
+                {
+                    d.DriverProfile_ID,
+                    d.LicenseNumber,
+                    d.LicenseExpiryDate,
+                    d.userId,
+
+                    UserName = d.User != null
+                        ? d.User.name
+                        : null,
+
+                    RentalCount = d.Rentals.Count()
+                })
+                .FirstOrDefault();
+
+            if (d == null)
+            {
+                return NotFound("driver profile not found");
+            }
+
+            return Ok(d);
         }
     }
 }
