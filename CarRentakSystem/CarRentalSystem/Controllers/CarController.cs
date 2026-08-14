@@ -68,14 +68,40 @@ namespace CarRentalSystem.Controllers
         [HttpDelete("RemoveCar")]
         public IActionResult RemoveCar(int id)
         {
-            Car? car = context.Cars.FirstOrDefault(c => c.CarId == id);
+            Car? car = context.Cars
+                .FirstOrDefault(c => c.CarId == id);
 
             if (car == null)
             {
                 return NotFound("car not found");
             }
 
+            bool hasRentals =
+                context.Rentals.Any(r => r.CarId == id);
+
+            bool hasMaintenance =
+                context.Maintenances.Any(m => m.Carid == id);
+
+            bool hasDamageReports =
+                context.DamageReports.Any(d => d.CarId == id);
+
+            bool hasReviews =
+                context.Reviews.Any(r => r.Carid == id);
+
+            if (
+                hasRentals ||
+                hasMaintenance ||
+                hasDamageReports ||
+                hasReviews
+            )
+            {
+                return BadRequest(
+                    "This car cannot be deleted because it has related records."
+                );
+            }
+
             context.Cars.Remove(car);
+
             context.SaveChanges();
 
             return Ok("car removed successfully");
