@@ -19,31 +19,86 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddPayment")]
         public IActionResult AddPayment(Payments payment)
         {
-            payment.Rental = null!; // Avoids navigation property tracking issues in EF
+            // Check that the rental really exists
+            bool rentalExists =
+                context.Rentals.Any(
+                    r => r.Rental_ID == payment.Rental_ID
+                );
+
+            if (!rentalExists)
+            {
+                return BadRequest(
+                    "The selected Rental ID does not exist."
+                );
+            }
+
+            payment.Rental = null!;
 
             context.Payments.Add(payment);
+
             context.SaveChanges();
+
             return Ok(payment.Payment_ID);
         }
 
         // 2. PUT: Update an existing record
         [HttpPut("UpdatePayment")]
-        public IActionResult UpdatePayment(int id, Payments updatedPayment)
+        public IActionResult UpdatePayment(
+    int id,
+    Payments updatedPayment)
         {
-            Payments? payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
+            Payments? payment =
+                context.Payments
+                    .FirstOrDefault(
+                        p => p.Payment_ID == id
+                    );
+
             if (payment == null)
             {
-                return NotFound("Payment not found");
+                return NotFound(
+                    "Payment not found"
+                );
             }
 
-            payment.Amount = updatedPayment.Amount;
-            payment.Method = updatedPayment.Method;
-            payment.PaidAtUtc = updatedPayment.PaidAtUtc;
-            payment.Status = updatedPayment.Status;
-            payment.Rental_ID = updatedPayment.Rental_ID;
+
+            bool rentalExists =
+                context.Rentals.Any(
+                    r =>
+                        r.Rental_ID ==
+                        updatedPayment.Rental_ID
+                );
+
+
+            if (!rentalExists)
+            {
+                return BadRequest(
+                    "The selected Rental ID does not exist."
+                );
+            }
+
+
+            payment.Amount =
+                updatedPayment.Amount;
+
+            payment.Method =
+                updatedPayment.Method;
+
+            payment.PaidAtUtc =
+                updatedPayment.PaidAtUtc;
+
+            payment.Status =
+                updatedPayment.Status;
+
+            payment.Rental_ID =
+                updatedPayment.Rental_ID;
+
 
             context.SaveChanges();
-            return Ok("Updated successfully");
+
+
+            return Ok(
+                "Updated successfully"
+            );
         }
 
         // 3. PATCH: Second distinct update case (Status update)
