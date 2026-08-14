@@ -180,12 +180,20 @@ namespace CarRentalSystem.Controllers
         }
 
         //Implement GET ALL
-        [Authorize(Roles = "Admin")]
-        [HttpGet("GetAllUser")] 
-        public IActionResult GetAllUser()
+        [AllowAnonymous]
+        [HttpGet("GetCustomers")]
+        public IActionResult GetCustomers()
         {
-            List<User> users = context.Users.ToList();
-            return Ok(users);
+            var customers = context.Users
+                .Where(u => u.role == UserRole.Customer)
+                .Select(u => new
+                {
+                    userId = u.userId,
+                    name = u.name
+                })
+                .ToList();
+
+            return Ok(customers);
         }
 
         // Use Include() where related data should be returned.
