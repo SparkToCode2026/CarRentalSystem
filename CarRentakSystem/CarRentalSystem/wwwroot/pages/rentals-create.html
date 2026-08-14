@@ -1,0 +1,978 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>RoadKey — Create Rental</title>
+
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
+          rel="stylesheet">
+
+
+    <!-- Shared CSS -->
+    <link rel="stylesheet"
+          href="../css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ======================================== -->
+    <!-- TOP BAR -->
+    <!-- ======================================== -->
+
+    <div class="topbar">
+
+
+        <div class="brand">
+
+            <span class="dot"></span>
+
+            RoadKey
+
+        </div>
+
+
+        <div class="search flex-grow-1">
+
+            <input class="form-control form-control-sm"
+                   placeholder="Search cars, rentals, customers...">
+
+        </div>
+
+
+        <button class="btn btn-sm btn-primary"
+                onclick="location.href='rentals-create.html'">
+
+            <i class="bi bi-plus-lg"></i>
+
+            New Rental
+
+        </button>
+
+
+        <div class="avatar">
+            M
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================== -->
+    <!-- APP -->
+    <!-- ======================================== -->
+
+    <div class="app-shell">
+
+
+        <!-- ==================================== -->
+        <!-- SIDEBAR -->
+        <!-- ==================================== -->
+
+        <aside class="sidebar">
+
+
+            <!-- OVERVIEW -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    Overview
+                </div>
+
+
+                <a class="side-link"
+                   href="../index.html">
+
+                    <i class="bi bi-grid-1x2"></i>
+
+                    Dashboard
+
+                </a>
+
+            </div>
+
+
+
+            <!-- FLEET -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    Fleet
+                </div>
+
+
+                <a class="side-link"
+                   href="cars.html">
+
+                    <i class="bi bi-car-front"></i>
+
+                    Cars
+
+                </a>
+
+
+                <a class="side-link"
+                   href="categories.html">
+
+                    <i class="bi bi-tags"></i>
+
+                    Car Categories
+
+                </a>
+
+
+                <a class="side-link"
+                   href="branches.html">
+
+                    <i class="bi bi-geo-alt"></i>
+
+                    Branches
+
+                </a>
+
+
+                <a class="side-link"
+                   href="maintenance.html">
+
+                    <i class="bi bi-tools"></i>
+
+                    Maintenance
+
+                </a>
+
+
+                <a class="side-link"
+                   href="damage-reports.html">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    Damage Reports
+
+                </a>
+
+            </div>
+
+
+
+            <!-- BOOKINGS -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    Bookings
+                </div>
+
+
+                <a class="side-link active"
+                   href="rentals.html">
+
+                    <i class="bi bi-key"></i>
+
+                    Rentals
+
+                </a>
+
+
+                <a class="side-link"
+                   href="payments.html">
+
+                    <i class="bi bi-credit-card"></i>
+
+                    Payments
+
+                </a>
+
+
+                <a class="side-link"
+                   href="discounts.html">
+
+                    <i class="bi bi-percent"></i>
+
+                    Discounts
+
+                </a>
+
+
+                <a class="side-link"
+                   href="insurance.html">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    Insurance
+
+                </a>
+
+            </div>
+
+
+
+            <!-- PEOPLE -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    People
+                </div>
+
+
+                <a class="side-link"
+                   href="driver-profiles.html">
+
+                    <i class="bi bi-person-badge"></i>
+
+                    Driver Profiles
+
+                </a>
+
+
+                <a class="side-link"
+                   href="reviews.html">
+
+                    <i class="bi bi-star"></i>
+
+                    Reviews
+
+                </a>
+
+
+                <a class="side-link"
+                   href="users.html">
+
+                    <i class="bi bi-people"></i>
+
+                    Users
+
+                </a>
+
+            </div>
+
+
+        </aside>
+
+
+
+        <!-- ==================================== -->
+        <!-- MAIN -->
+        <!-- ==================================== -->
+
+        <main class="main">
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-head">
+
+
+                <div>
+
+                    <div class="eyebrow">
+                        Bookings · Rentals
+                    </div>
+
+
+                    <h1 class="page-title">
+                        Create Rental
+                    </h1>
+
+
+                    <div class="page-sub">
+                        Create a new rental and send a confirmation email to the customer.
+                    </div>
+
+                </div>
+
+
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        onclick="location.href='rentals.html'">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Back to Rentals
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- MESSAGE -->
+            <!-- ================================= -->
+
+            <div id="messageBox"
+                 class="alert d-none"
+                 role="alert">
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- SUCCESS MESSAGE -->
+            <!-- ================================= -->
+
+            <div id="rentalSuccessAlert"
+                 class="alert d-none"
+                 style="
+                background:var(--success-tint);
+                border:1px solid #bfe6d1;
+                color:var(--success);
+                border-radius:10px;
+            ">
+
+                <div class="d-flex align-items-start gap-2">
+
+
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+
+
+                    <div>
+
+                        <strong>
+                            Rental created successfully.
+                        </strong>
+
+                        Confirmation email was processed for the customer.
+
+
+                        <div class="mt-2">
+
+                            <a href="rentals.html">
+
+                                View Rentals →
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- FORM AREA -->
+            <!-- ================================= -->
+
+            <div class="row g-3">
+
+
+                <!-- LEFT: FORM -->
+
+                <div class="col-lg-7">
+
+
+                    <div class="card p-4">
+
+
+                        <form id="rentalForm">
+
+
+                            <div class="row g-3">
+
+
+                                <!-- ================= -->
+                                <!-- CUSTOMER -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="userId"
+                                           class="form-label">
+
+                                        Customer
+
+                                    </label>
+
+
+                                    <select class="form-select"
+                                            id="userId"
+                                            required>
+
+                                        <option value=""
+                                                disabled
+                                                selected>
+
+                                            Loading customers...
+
+                                        </option>
+
+                                    </select>
+
+
+                                    <div class="form-error">
+
+                                        Select a customer.
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- ================= -->
+                                <!-- CAR -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="carId"
+                                           class="form-label">
+
+                                        Car
+
+                                    </label>
+
+
+                                    <select class="form-select"
+                                            id="carId"
+                                            required>
+
+                                        <option value=""
+                                                disabled
+                                                selected>
+
+                                            Loading cars...
+
+                                        </option>
+
+                                    </select>
+
+
+                                    <div class="form-error">
+
+                                        Select a car.
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- ================= -->
+                                <!-- BRANCH -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="branchId"
+                                           class="form-label">
+
+                                        Pickup Branch
+
+                                    </label>
+
+
+                                    <select class="form-select"
+                                            id="branchId"
+                                            required>
+
+                                        <option value=""
+                                                disabled
+                                                selected>
+
+                                            Loading branches...
+
+                                        </option>
+
+                                    </select>
+
+
+                                    <div class="form-error">
+
+                                        Select a pickup branch.
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- ================= -->
+                                <!-- DRIVER PROFILE -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="driverProfileId"
+                                           class="form-label">
+
+                                        Driver Profile
+
+                                    </label>
+
+
+                                    <select class="form-select"
+                                            id="driverProfileId"
+                                            required>
+
+                                        <option value=""
+                                                disabled
+                                                selected>
+
+                                            Loading driver profiles...
+
+                                        </option>
+
+                                    </select>
+
+
+                                    <div class="form-error">
+
+                                        Select a driver profile.
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- ================= -->
+                                <!-- START DATE -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="startDate"
+                                           class="form-label">
+
+                                        Start Date
+
+                                    </label>
+
+
+                                    <input type="date"
+                                           class="form-control"
+                                           id="startDate"
+                                           required>
+
+
+                                    <div class="form-error">
+
+                                        Start date is required.
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- ================= -->
+                                <!-- DUE DATE -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="dueDate"
+                                           class="form-label">
+
+                                        Due Date
+
+                                    </label>
+
+
+                                    <input type="date"
+                                           class="form-control"
+                                           id="dueDate"
+                                           required>
+
+
+                                    <div class="form-hint">
+
+                                        Due date must be after the start date.
+
+                                    </div>
+
+
+                                    <div class="form-error">
+
+                                        Enter a valid due date.
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- ================= -->
+                                <!-- TOTAL DAYS -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="totalDaysPreview"
+                                           class="form-label">
+
+                                        Total Days
+
+                                    </label>
+
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="totalDaysPreview"
+                                           value="0 days"
+                                           readonly>
+
+
+                                    <div class="form-hint">
+
+                                        Calculated automatically.
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- ================= -->
+                                <!-- STATUS -->
+                                <!-- ================= -->
+
+                                <div class="col-md-6">
+
+
+                                    <label for="rentalStatus"
+                                           class="form-label">
+
+                                        Status
+
+                                    </label>
+
+
+                                    <select class="form-select"
+                                            id="rentalStatus">
+
+                                        <option value="Active"
+                                                selected>
+
+                                            Active
+
+                                        </option>
+
+
+                                        <option value="Completed">
+
+                                            Completed
+
+                                        </option>
+
+
+                                        <option value="Overdue">
+
+                                            Overdue
+
+                                        </option>
+
+
+                                        <option value="Cancelled">
+
+                                            Cancelled
+
+                                        </option>
+
+
+                                    </select>
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <!-- ===================== -->
+                            <!-- BUTTONS -->
+                            <!-- ===================== -->
+
+                            <div class="d-flex gap-2 mt-4">
+
+
+                                <button type="submit"
+                                        class="btn btn-primary px-4"
+                                        id="createRentalBtn">
+
+                                    <i class="bi bi-check-lg"></i>
+
+                                    Create Rental & Send Confirmation
+
+                                </button>
+
+
+                                <button type="button"
+                                        class="btn btn-outline-secondary"
+                                        onclick="location.href='rentals.html'">
+
+                                    Cancel
+
+                                </button>
+
+
+                            </div>
+
+
+                        </form>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- ================================= -->
+                <!-- RIGHT: EMAIL INFORMATION -->
+                <!-- ================================= -->
+
+                <div class="col-lg-5">
+
+
+                    <div class="card p-4"
+                         style="
+                        background:var(--surface-2);
+                        border-style:dashed;
+                    ">
+
+
+                        <div class="d-flex align-items-center gap-2 mb-2">
+
+
+                            <i class="bi bi-envelope-paper fs-5"
+                               style="color:var(--primary);">
+                            </i>
+
+
+                            <strong style="font-size:14px;">
+
+                                What the customer receives
+
+                            </strong>
+
+
+                        </div>
+
+
+                        <p class="small text-muted mb-2">
+
+                            After the rental is successfully saved,
+                            RoadKey sends a confirmation email containing:
+
+                        </p>
+
+
+                        <ul class="small text-muted mb-0">
+
+                            <li>
+                                Rental ID
+                            </li>
+
+                            <li>
+                                Car make and model
+                            </li>
+
+                            <li>
+                                Pickup branch
+                            </li>
+
+                            <li>
+                                Start date
+                            </li>
+
+                            <li>
+                                Due date
+                            </li>
+
+                        </ul>
+
+
+                    </div>
+
+
+
+                    <!-- ================================= -->
+                    <!-- RENTAL SUMMARY -->
+                    <!-- ================================= -->
+
+                    <div class="card p-4 mt-3">
+
+
+                        <div class="d-flex align-items-center gap-2 mb-3">
+
+
+                            <i class="bi bi-receipt"
+                               style="color:var(--primary);">
+                            </i>
+
+
+                            <strong>
+
+                                Rental Summary
+
+                            </strong>
+
+
+                        </div>
+
+
+
+                        <div class="d-flex justify-content-between mb-2">
+
+
+                            <span class="text-muted">
+
+                                Customer
+
+                            </span>
+
+
+                            <strong id="summaryCustomer">
+
+                                —
+
+                            </strong>
+
+
+                        </div>
+
+
+
+                        <div class="d-flex justify-content-between mb-2">
+
+
+                            <span class="text-muted">
+
+                                Car
+
+                            </span>
+
+
+                            <strong id="summaryCar">
+
+                                —
+
+                            </strong>
+
+
+                        </div>
+
+
+
+                        <div class="d-flex justify-content-between mb-2">
+
+
+                            <span class="text-muted">
+
+                                Branch
+
+                            </span>
+
+
+                            <strong id="summaryBranch">
+
+                                —
+
+                            </strong>
+
+
+                        </div>
+
+
+
+                        <div class="d-flex justify-content-between">
+
+
+                            <span class="text-muted">
+
+                                Rental Period
+
+                            </span>
+
+
+                            <strong id="summaryDays">
+
+                                0 days
+
+                            </strong>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- ======================================== -->
+    <!-- BOOTSTRAP -->
+    <!-- ======================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- ======================================== -->
+    <!-- RENTAL CREATE JS -->
+    <!-- ======================================== -->
+
+    <script src="../js/rentals-create.js"></script>
+
+
+</body>
+
+</html>

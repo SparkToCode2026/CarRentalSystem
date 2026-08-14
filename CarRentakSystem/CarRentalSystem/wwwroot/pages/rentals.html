@@ -1,550 +1,823 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
     <title>RoadKey — Rentals</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-        /* ============ DESIGN TOKENS ============ */
-        :root {
-            --bg: #F5F7F9;
-            --surface: #FFFFFF;
-            --surface-2: #EEF2F3;
-            --ink: #171C26;
-            --ink-muted: #5B6474;
-            --border: #E1E6EA;
-            --primary: #0F6E5C;
-            --primary-dark: #0A5445;
-            --primary-tint: #E4F1EE;
-            --accent: #F5A623;
-            --accent-ink: #5A3B00;
-            --accent-tint: #FDF0D8;
-            --danger: #D6483F;
-            --danger-tint: #FBEAE8;
-            --success: #2E9E64;
-            --success-tint: #E7F6EE;
-            --info: #2F6FED;
-            --info-tint: #E9F0FE;
-            --radius: 10px;
-            --shadow-sm: 0 1px 2px rgba(23,28,38,.06);
-            --shadow-md: 0 6px 20px rgba(23,28,38,.08);
-        }
 
-        * {
-            box-sizing: border-box;
-        }
 
-        html, body {
-            height: 100%;
-        }
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-        body {
-            background: var(--bg);
-            color: var(--ink);
-            font-family: 'Inter',system-ui,sans-serif;
-            font-size: 15px;
-        }
 
-        h1, h2, h3, h4, .brand, .display {
-            font-family: 'Space Grotesk',sans-serif;
-            letter-spacing: -.01em;
-        }
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
 
-        .mono {
-            font-family: 'IBM Plex Mono',monospace;
-        }
 
-        a {
-            color: var(--primary);
-            text-decoration: none;
-        }
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
+          rel="stylesheet">
 
-        :focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
 
-        /* ---- Signature element: plate chip ---- */
-        .plate {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-family: 'IBM Plex Mono',monospace;
-            font-weight: 600;
-            font-size: 12.5px;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-            background: #FFFDF8;
-            color: var(--ink);
-            border: 1.5px solid var(--ink);
-            border-radius: 5px;
-            padding: 3px 9px 3px 7px;
-            box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3px var(--ink);
-        }
+    <!-- Shared CSS -->
+    <link rel="stylesheet"
+          href="../css/style.css">
 
-            .plate::before {
-                content: "";
-                width: 6px;
-                height: 6px;
-                border-radius: 50%;
-                background: var(--accent);
-                flex-shrink: 0;
-            }
-
-        /* ---- Topbar ---- */
-        .topbar {
-            height: 60px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 0 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1030;
-        }
-
-        .brand {
-            font-size: 19px;
-            font-weight: 700;
-            color: var(--ink);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .brand .dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 3px;
-                background: var(--accent);
-                display: inline-block;
-            }
-
-        .topbar .search {
-            max-width: 340px;
-        }
-
-            .topbar .search input {
-                background: var(--surface-2);
-                border: 1px solid var(--border);
-            }
-
-        .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: var(--primary-tint);
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        /* ---- Sidebar ---- */
-        .app-shell {
-            display: flex;
-            min-height: calc(100vh - 60px);
-        }
-
-        .sidebar {
-            width: 230px;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            padding: 18px 12px;
-            flex-shrink: 0;
-        }
-
-        .side-group {
-            margin-bottom: 20px;
-        }
-
-        .side-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .07em;
-            color: var(--ink-muted);
-            padding: 0 10px;
-            margin-bottom: 6px;
-        }
-
-        .side-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            color: var(--ink-muted);
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 2px;
-        }
-
-            .side-link i {
-                font-size: 16px;
-                width: 18px;
-                text-align: center;
-            }
-
-            .side-link:hover {
-                background: var(--surface-2);
-                color: var(--ink);
-            }
-
-            .side-link.active {
-                background: var(--primary-tint);
-                color: var(--primary-dark);
-                font-weight: 600;
-            }
-
-        .main {
-            flex: 1;
-            padding: 26px 30px;
-            min-width: 0;
-        }
-
-        .page-head {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .eyebrow {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--primary);
-        }
-
-        .page-title {
-            font-size: 26px;
-            font-weight: 700;
-            margin: 2px 0 0;
-        }
-
-        .page-sub {
-            color: var(--ink-muted);
-            font-size: 13.5px;
-            margin-top: 2px;
-        }
-
-        /* ---- Buttons ---- */
-        .btn {
-            font-weight: 600;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
-            .btn-primary:hover {
-                background: var(--primary-dark);
-                border-color: var(--primary-dark);
-            }
-
-        .btn-outline-secondary {
-            border-color: var(--border);
-            color: var(--ink-muted);
-        }
-
-        /* ---- Cards ---- */
-        .card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* ---- Tables ---- */
-        .table-toolbar {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-
-            .table-toolbar .filters {
-                display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
-                align-items: center;
-            }
-
-        .table-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        table.mgmt {
-            width: 100%;
-            margin: 0;
-            font-size: 13.8px;
-        }
-
-            table.mgmt thead th {
-                background: var(--surface-2);
-                color: var(--ink-muted);
-                font-weight: 600;
-                font-size: 11.5px;
-                text-transform: uppercase;
-                letter-spacing: .04em;
-                border-bottom: 1px solid var(--border);
-                padding: 11px 14px;
-                white-space: nowrap;
-            }
-
-            table.mgmt tbody td {
-                padding: 11px 14px;
-                border-bottom: 1px solid var(--border);
-                vertical-align: middle;
-            }
-
-            table.mgmt tbody tr:last-child td {
-                border-bottom: none;
-            }
-
-            table.mgmt tbody tr:hover {
-                background: #FAFBFC;
-            }
-
-        .row-actions {
-            display: flex;
-            gap: 4px;
-            justify-content: flex-end;
-        }
-
-            .row-actions .btn {
-                padding: 4px 8px;
-                font-size: 13px;
-            }
-
-        /* ---- Badges ---- */
-        .badge-status {
-            font-weight: 600;
-            font-size: 11.5px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            text-transform: capitalize;
-        }
-
-        .badge-success {
-            background: var(--success-tint);
-            color: var(--success);
-        }
-
-        .badge-danger {
-            background: var(--danger-tint);
-            color: var(--danger);
-        }
-
-        .badge-warning {
-            background: var(--accent-tint);
-            color: var(--accent-ink);
-        }
-
-        .badge-info {
-            background: var(--info-tint);
-            color: var(--info);
-        }
-
-        .badge-neutral {
-            background: var(--surface-2);
-            color: var(--ink-muted);
-        }
-
-        /* ---- Forms ---- */
-        .form-control, .form-select {
-            border-color: var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-            .form-control:focus, .form-select:focus {
-                border-color: var(--primary);
-                box-shadow: 0 0 0 3px var(--primary-tint);
-            }
-
-        /* ---- Alerts / states ---- */
-        .state-empty {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--ink-muted);
-        }
-
-            .state-empty i {
-                font-size: 34px;
-                color: var(--border);
-                display: block;
-                margin-bottom: 10px;
-            }
-
-        .skeleton {
-            background: linear-gradient(90deg,#EEF2F3 25%,#E4E9EB 37%,#EEF2F3 63%);
-            background-size: 400% 100%;
-            animation: shimmer 1.4s infinite;
-            border-radius: 6px;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: 100% 0;
-            }
-
-            100% {
-                background-position: 0 0;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .skeleton {
-                animation: none;
-            }
-        }
-
-        .alert-success-soft {
-            background: var(--success-tint);
-            border: 1px solid #bfe6d1;
-            color: var(--success);
-            border-radius: 10px;
-        }
-
-        .alert-danger-soft {
-            background: var(--danger-tint);
-            border: 1px solid #f3c9c5;
-            color: var(--danger);
-            border-radius: 10px;
-        }
-
-        /* mobile */
-        @media (max-width: 900px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                padding: 18px;
-            }
-        }
-    </style>
 </head>
+
+
 <body>
 
+
+    <!-- ======================================== -->
+    <!-- TOP BAR -->
+    <!-- ======================================== -->
+
     <div class="topbar">
-        <div class="brand"><span class="dot"></span> RoadKey</div>
+
+
+        <div class="brand">
+
+            <span class="dot"></span>
+
+            RoadKey
+
+        </div>
+
+
         <div class="search flex-grow-1">
-            <input class="form-control form-control-sm" placeholder="Search cars, rentals, customers…">
+
+            <input class="form-control form-control-sm"
+                   placeholder="Search cars, rentals, customers...">
+
         </div>
-        <a class="btn btn-sm btn-primary" href="rental-create.html"><i class="bi bi-plus-lg"></i> New rental</a>
-        <div class="dropdown">
-            <div class="avatar" role="button" data-bs-toggle="dropdown">JC</div>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><span class="dropdown-item-text small text-muted">Jane Carter · Admin</span></li>
-            </ul>
+
+
+        <button class="btn btn-sm btn-primary"
+                onclick="location.href='rentals-create.html'">
+
+            <i class="bi bi-plus-lg"></i>
+
+            New Rental
+
+        </button>
+
+
+        <div class="avatar">
+            M
         </div>
+
+
     </div>
+
+
+
+    <!-- ======================================== -->
+    <!-- APP -->
+    <!-- ======================================== -->
 
     <div class="app-shell">
-        <div class="sidebar">
-            <div class="side-group">
-                <div class="side-label">Overview</div>
-                <div class="side-link"><i class="bi bi-grid-1x2"></i> Dashboard</div>
-            </div>
-            <div class="side-group">
-                <div class="side-label">Fleet</div>
-                <a class="side-link" href="cars.html"><i class="bi bi-car-front"></i> Cars</a>
-                <a class="side-link" href="categories.html"><i class="bi bi-tags"></i> Car Categories</a>
-                <a class="side-link" href="branches.html"><i class="bi bi-geo-alt"></i> Branches</a>
-                <a class="side-link" href="maintenance.html"><i class="bi bi-tools"></i> Maintenance</a>
-                <a class="side-link" href="damage-reports.html"><i class="bi bi-exclamation-triangle"></i> Damage Reports</a>
-            </div>
-            <div class="side-group">
-                <div class="side-label">Bookings</div>
-                <a class="side-link active" href="rentals.html"><i class="bi bi-key"></i> Rentals</a>
-                <a class="side-link" href="payments.html"><i class="bi bi-credit-card"></i> Payments</a>
-                <a class="side-link" href="discounts.html"><i class="bi bi-percent"></i> Discounts</a>
-                <a class="side-link" href="insurance.html"><i class="bi bi-shield-check"></i> Insurance</a>
-            </div>
-            <div class="side-group">
-                <div class="side-label">People</div>
-                <a class="side-link" href="driver-profiles.html"><i class="bi bi-person-badge"></i> Driver Profiles</a>
-                <a class="side-link" href="reviews.html"><i class="bi bi-star"></i> Reviews</a>
-                <a class="side-link" href="users.html"><i class="bi bi-people"></i> Users</a>
-            </div>
-        </div>
 
-        <div class="main">
-            <div class="page-head">
-                <div>
-                    <div class="eyebrow">Bookings</div>
-                    <h1 class="page-title">Rentals</h1>
-                    <div class="page-sub" id="pageSub">Loading rentals…</div>
+
+        <!-- ==================================== -->
+        <!-- SIDEBAR -->
+        <!-- ==================================== -->
+
+        <aside class="sidebar">
+
+
+            <!-- OVERVIEW -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    Overview
                 </div>
-                <a class="btn btn-primary" href="rental-create.html"><i class="bi bi-plus-lg"></i> Create rental</a>
+
+
+                <a class="side-link"
+                   href="../index.html">
+
+                    <i class="bi bi-grid-1x2"></i>
+
+                    Dashboard
+
+                </a>
+
             </div>
 
-            <div id="alertArea" class="mb-3 d-none"></div>
+
+
+            <!-- FLEET -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    Fleet
+                </div>
+
+
+                <a class="side-link"
+                   href="cars.html">
+
+                    <i class="bi bi-car-front"></i>
+
+                    Cars
+
+                </a>
+
+
+                <a class="side-link"
+                   href="categories.html">
+
+                    <i class="bi bi-tags"></i>
+
+                    Car Categories
+
+                </a>
+
+
+                <a class="side-link"
+                   href="branches.html">
+
+                    <i class="bi bi-geo-alt"></i>
+
+                    Branches
+
+                </a>
+
+
+                <a class="side-link"
+                   href="maintenance.html">
+
+                    <i class="bi bi-tools"></i>
+
+                    Maintenance
+
+                </a>
+
+
+                <a class="side-link"
+                   href="damage-reports.html">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    Damage Reports
+
+                </a>
+
+            </div>
+
+
+
+            <!-- BOOKINGS -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    Bookings
+                </div>
+
+
+                <a class="side-link active"
+                   href="rentals.html">
+
+                    <i class="bi bi-key"></i>
+
+                    Rentals
+
+                </a>
+
+
+                <a class="side-link"
+                   href="payments.html">
+
+                    <i class="bi bi-credit-card"></i>
+
+                    Payments
+
+                </a>
+
+
+                <a class="side-link"
+                   href="discounts.html">
+
+                    <i class="bi bi-percent"></i>
+
+                    Discounts
+
+                </a>
+
+
+                <a class="side-link"
+                   href="insurance.html">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    Insurance
+
+                </a>
+
+            </div>
+
+
+
+            <!-- PEOPLE -->
+
+            <div class="side-group">
+
+                <div class="side-label">
+                    People
+                </div>
+
+
+                <a class="side-link"
+                   href="driver-profiles.html">
+
+                    <i class="bi bi-person-badge"></i>
+
+                    Driver Profiles
+
+                </a>
+
+
+                <a class="side-link"
+                   href="reviews.html">
+
+                    <i class="bi bi-star"></i>
+
+                    Reviews
+
+                </a>
+
+
+                <a class="side-link"
+                   href="users.html">
+
+                    <i class="bi bi-people"></i>
+
+                    Users
+
+                </a>
+
+            </div>
+
+
+        </aside>
+
+
+
+        <!-- ==================================== -->
+        <!-- MAIN -->
+        <!-- ==================================== -->
+
+        <main class="main">
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-head">
+
+
+                <div>
+
+                    <div class="eyebrow">
+                        Bookings
+                    </div>
+
+
+                    <h1 class="page-title">
+                        Rentals
+                    </h1>
+
+
+                    <div class="page-sub"
+                         id="recordCount">
+
+                        Loading rentals...
+
+                    </div>
+
+                </div>
+
+
+
+                <button class="btn btn-primary"
+                        onclick="location.href='rentals-create.html'">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                    Create Rental
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- MESSAGE -->
+
+            <div id="messageBox"
+                 class="alert d-none"
+                 role="alert">
+            </div>
+
+
+
+            <!-- ================================= -->
+            <!-- FILTERS -->
+            <!-- ================================= -->
 
             <div class="table-toolbar">
+
+
                 <div class="filters">
-                    <select class="form-select form-select-sm" id="filterStatus" style="width:170px;">
-                        <option value="">All statuses</option>
-                        <option value="Reserved">Reserved</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Active">Active</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Overdue">Overdue</option>
-                        <option value="Cancelled">Cancelled</option>
+
+
+                    <!-- SEARCH CUSTOMER -->
+
+                    <input type="text"
+                           class="form-control form-control-sm"
+                           id="customerSearch"
+                           style="width:220px;"
+                           placeholder="Search customer...">
+
+
+                    <!-- STATUS FILTER -->
+
+                    <select class="form-select form-select-sm"
+                            id="statusFilter"
+                            style="width:160px;">
+
+                        <option value="">
+                            All statuses
+                        </option>
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                        <option value="Overdue">
+                            Overdue
+                        </option>
+
+                        <option value="Cancelled">
+                            Cancelled
+                        </option>
+
                     </select>
-                    <input type="number" min="1" class="form-control form-control-sm" id="filterCarId" style="width:130px;" placeholder="Car ID">
-                    <input type="number" min="1" class="form-control form-control-sm" id="filterUserId" style="width:150px;" placeholder="Customer ID">
-                    <button class="btn btn-sm btn-primary" id="applyFiltersBtn"><i class="bi bi-funnel"></i> Apply</button>
-                    <button class="btn btn-sm btn-outline-secondary" id="clearFiltersBtn">Clear</button>
+
+
+                    <!-- CAR ID FILTER -->
+
+                    <input type="number"
+                           class="form-control form-control-sm"
+                           id="carFilter"
+                           style="width:150px;"
+                           placeholder="Car ID">
+
+
+                    <!-- USER ID FILTER -->
+
+                    <input type="number"
+                           class="form-control form-control-sm"
+                           id="userFilter"
+                           style="width:150px;"
+                           placeholder="User ID">
+
+
+                    <!-- FILTER BUTTON -->
+
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            id="filterBtn">
+
+                        <i class="bi bi-funnel"></i>
+
+                        Filter
+
+                    </button>
+
+
+                    <!-- ANALYTICS SORT -->
+
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            id="sortDaysBtn">
+
+                        <i class="bi bi-sort-numeric-down-alt"></i>
+
+                        Sort by Days
+
+                    </button>
+
+
+                    <!-- REFRESH -->
+
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            id="refreshBtn">
+
+                        <i class="bi bi-arrow-clockwise"></i>
+
+                        Refresh
+
+                    </button>
+
+
                 </div>
+
+
             </div>
 
-            <div id="rentalsTableContainer">
-                <div class="table-card p-3">
-                    <div class="skeleton mb-2" style="height:14px;width:60%;"></div>
-                    <div class="skeleton mb-2" style="height:14px;width:90%;"></div>
-                    <div class="skeleton" style="height:14px;width:75%;"></div>
+
+
+            <!-- ================================= -->
+            <!-- RENTALS TABLE -->
+            <!-- ================================= -->
+
+            <div class="table-card">
+
+
+                <div class="table-responsive">
+
+
+                    <table class="mgmt">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Rental
+                                </th>
+
+                                <th>
+                                    Car
+                                </th>
+
+                                <th>
+                                    Customer
+                                </th>
+
+                                <th>
+                                    Start
+                                </th>
+
+                                <th>
+                                    Due
+                                </th>
+
+                                <th>
+                                    Days
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody id="rentalsTableBody">
+
+
+                            <tr>
+
+                                <td colspan="8"
+                                    class="text-center py-5">
+
+                                    <div class="state-empty">
+
+                                        <i class="bi bi-hourglass-split"></i>
+
+                                        <div>
+                                            Loading rentals...
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
                 </div>
+
+
             </div>
-        </div>
+
+
+        </main>
+
+
     </div>
 
-    <!-- Delete confirmation modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
+
+
+    <!-- ======================================== -->
+    <!-- VIEW RENTAL MODAL -->
+    <!-- ======================================== -->
+
+    <div class="modal fade"
+         id="viewRentalModal"
+         tabindex="-1">
+
+
+        <div class="modal-dialog modal-lg">
+
+
             <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title">Delete this rental?</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body">This can't be undone. Related payments, insurance and damage reports may also be affected.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-outline-danger" id="confirmDeleteBtn">Delete</button>
+
+
+                <div class="modal-header">
+
+
+                    <h5 class="modal-title">
+                        Rental Details
+                    </h5>
+
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+
                 </div>
+
+
+
+                <div class="modal-body"
+                     id="rentalDetails">
+
+                    Loading...
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+
+                        Close
+
+                    </button>
+
+
+                </div>
+
+
             </div>
+
+
         </div>
+
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="rental.js"></script>
+
+
+    <!-- ======================================== -->
+    <!-- EDIT STATUS MODAL -->
+    <!-- ======================================== -->
+
+    <div class="modal fade"
+         id="statusModal"
+         tabindex="-1">
+
+
+        <div class="modal-dialog">
+
+
+            <div class="modal-content">
+
+
+                <div class="modal-header">
+
+
+                    <h5 class="modal-title">
+                        Update Rental Status
+                    </h5>
+
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+
+                </div>
+
+
+
+                <div class="modal-body">
+
+
+                    <input type="hidden"
+                           id="statusRentalId">
+
+
+                    <label for="newStatus"
+                           class="form-label">
+
+                        Status
+
+                    </label>
+
+
+                    <select id="newStatus"
+                            class="form-select">
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Completed">
+                            Completed
+                        </option>
+
+                        <option value="Overdue">
+                            Overdue
+                        </option>
+
+                        <option value="Cancelled">
+                            Cancelled
+                        </option>
+
+                    </select>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="saveStatusBtn">
+
+                        Update Status
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================== -->
+    <!-- DELETE RENTAL MODAL -->
+    <!-- ======================================== -->
+
+    <div class="modal fade"
+         id="deleteRentalModal"
+         tabindex="-1">
+
+
+        <div class="modal-dialog">
+
+
+            <div class="modal-content">
+
+
+                <div class="modal-header">
+
+
+                    <h5 class="modal-title">
+                        Delete Rental
+                    </h5>
+
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+
+                </div>
+
+
+
+                <div class="modal-body">
+
+
+                    Are you sure you want to delete rental
+
+                    <strong id="deleteRentalLabel">
+                    </strong>?
+
+
+                    <div class="small text-muted mt-2">
+
+                        The rental cannot be deleted if related
+                        payment, insurance, damage report, or
+                        discount records are using it.
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button type="button"
+                            class="btn btn-danger"
+                            id="confirmDeleteRentalBtn">
+
+                        <i class="bi bi-trash"></i>
+
+                        Delete
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- Bootstrap -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- Rentals JavaScript -->
+
+    <script src="../js/rentals.js"></script>
+
+
 </body>
+
 </html>
