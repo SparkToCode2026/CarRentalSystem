@@ -1,4 +1,4 @@
-﻿/* ============================================================
+﻿// ============================================================
    RoadKey — Rental workflow shared JS
    Used by BOTH pages/rentals.html (list) and
    pages/rental-create.html (create / edit / details).
@@ -11,11 +11,16 @@
      wwwroot), so requests use relative paths like "/Rental/...".
      If the frontend is hosted separately, set API_BASE to the
      API's base URL, e.g. "https://localhost:7071".
-   - RELATED_ENDPOINTS below are best-guess routes for Car / User /
-     Branch / DriverProfile, based on the naming pattern used
-     elsewhere in this project. If your controllers use different
-     route names, update the four entries below — everything else
-     keeps working unchanged.
+   - RELATED_ENDPOINTS: Car and DriverProfile routes are CONFIRMED
+     against the real controllers. Branch is still a guess (its
+     controller hasn't been shared) — update RELATED_ENDPOINTS.branches
+     once you have it.
+   - User's GetAllUser route is confirmed, but the whole
+     UserController is [Authorize] (Admin-only, except Register/
+     Login). Populating the Customer dropdown will 401 unless the
+     browser has a valid Admin JWT. This file reads the token from
+     localStorage.getItem('token') — adjust getAuthToken() below if
+     your login page stores it under a different key.
    - Rental.Car / Rental.User / Rental.Branch / Rental.DriverProfile
      are [JsonIgnore] in the model, so the API only returns the
      scalar fields + foreign keys (CarId, userId, BranchId,
@@ -49,19 +54,38 @@ const RENTAL_ENDPOINTS = {
     filter: params => `${API_BASE}/Rental/FilterRentals?${new URLSearchParams(params).toString()}`,
 };
 
-// Best-guess routes for related entities — adjust if your controllers differ.
+// Confirmed against the real controllers:
+//   Car:           GetAllCars              (no auth required)
+//   DriverProfile: GetAllDriverProfiles    (no auth required)
+// Still a guess — Branch controller wasn't shared yet:
+//   Branch:        GetALLBranches          (adjust once confirmed)
+// User is confirmed too, but note: [Authorize(Roles = "Admin")] is on the
+// WHOLE UserController except Register/Login. GetAllUser will 401 unless
+// the request carries a valid Admin JWT — see getAuthToken() below.
 const RELATED_ENDPOINTS = {
-    cars: `${API_BASE}/Car/GetALLCars`,
-    users: `${API_BASE}/User/GetAllUsers`,
+    cars: `${API_BASE}/Car/GetAllCars`,
+    users: `${API_BASE}/User/GetAllUser`,
     branches: `${API_BASE}/Branch/GetALLBranches`,
     driverProfiles: `${API_BASE}/DriverProfile/GetAllDriverProfiles`,
 };
 
+/* ============ auth token (needed for GetAllUser — Admin only) ============
+   Assumes your login page stores the JWT from /User/Login's AccessToken
+   field in localStorage under the key "token". Adjust the key below if
+   your login.html uses a different name. */
+function getAuthToken() {
+    try { return localStorage.getItem('token'); } catch { return null; }
+}
+
 /* ============ generic fetch wrapper ============ */
 async function apiRequest(url, options = {}) {
     try {
+        const token = getAuthToken();
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
         const res = await fetch(url, {
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             ...options,
         });
         const text = await res.text();
@@ -98,6 +122,8 @@ async function fetchRelatedLookups() {
         apiRequest(RELATED_ENDPOINTS.driverProfiles),
     ]);
 
+    const usersAuthIssue = !usersRes.ok && (usersRes.status === 401 || usersRes.status === 403);
+
     return {
         cars: carsRes.ok && Array.isArray(carsRes.data) ? carsRes.data : [],
         users: usersRes.ok && Array.isArray(usersRes.data) ? usersRes.data : [],
@@ -105,7 +131,7 @@ async function fetchRelatedLookups() {
         driverProfiles: driversRes.ok && Array.isArray(driversRes.data) ? driversRes.data : [],
         warnings: [
             !carsRes.ok ? 'Cars' : null,
-            !usersRes.ok ? 'Customers' : null,
+            !usersRes.ok ? (usersAuthIssue ? 'Customers (sign in as an Admin — GetAllUser requires it)' : 'Customers') : null,
             !branchesRes.ok ? 'Branches' : null,
             !driversRes.ok ? 'Driver profiles' : null,
         ].filter(Boolean),
