@@ -1,10 +1,251 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rentals — RoadKey</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link href="css/roadkey.css" rel="stylesheet">
 </head>
 <body>
 
+    <div class="topbar">
+        <div class="brand"><span class="dot"></span> RoadKey</div>
+        <div class="search flex-grow-1">
+            <input class="form-control form-control-sm" placeholder="Search cars, rentals, customers…">
+        </div>
+        <a class="btn btn-sm btn-primary" href="rental-form.html"><i class="bi bi-plus-lg"></i> New rental</a>
+        <div class="dropdown">
+            <div class="avatar" role="button" data-bs-toggle="dropdown">JC</div>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><span class="dropdown-item-text small text-muted">Jane Carter · Admin</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="app-shell">
+        <div class="sidebar">
+            <div class="side-group">
+                <div class="side-label">Overview</div>
+                <div class="side-link" data-nav><i class="bi bi-grid-1x2"></i> Dashboard</div>
+            </div>
+            <div class="side-group">
+                <div class="side-label">Fleet</div>
+                <div class="side-link" data-nav><i class="bi bi-car-front"></i> Cars</div>
+                <div class="side-link" data-nav><i class="bi bi-tags"></i> Car Categories</div>
+                <div class="side-link" data-nav><i class="bi bi-geo-alt"></i> Branches</div>
+                <div class="side-link" data-nav><i class="bi bi-tools"></i> Maintenance</div>
+                <div class="side-link" data-nav><i class="bi bi-exclamation-triangle"></i> Damage Reports</div>
+            </div>
+            <div class="side-group">
+                <div class="side-label">Bookings</div>
+                <div class="side-link active"><i class="bi bi-key"></i> Rentals</div>
+                <div class="side-link" data-nav><i class="bi bi-credit-card"></i> Payments</div>
+                <div class="side-link" data-nav><i class="bi bi-percent"></i> Discounts</div>
+                <div class="side-link" data-nav><i class="bi bi-shield-check"></i> Insurance</div>
+            </div>
+            <div class="side-group">
+                <div class="side-label">People</div>
+                <div class="side-link" data-nav><i class="bi bi-person-badge"></i> Driver Profiles</div>
+                <div class="side-link" data-nav><i class="bi bi-star"></i> Reviews</div>
+                <div class="side-link" data-nav><i class="bi bi-people"></i> Users</div>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="page-head">
+                <div>
+                    <div class="eyebrow">Bookings</div>
+                    <h1 class="page-title">Rentals</h1>
+                    <div class="page-sub" id="pageSub">Loading rentals…</div>
+                </div>
+                <a class="btn btn-primary" href="rental-form.html"><i class="bi bi-plus-lg"></i> Create rental</a>
+            </div>
+
+            <div id="alertArea" class="mb-3 d-none"></div>
+
+            <div class="table-toolbar">
+                <div class="filters">
+                    <select class="form-select form-select-sm" id="filterStatus" style="width:170px;">
+                        <option value="">All statuses</option>
+                        <option value="Reserved">Reserved</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Active">Active</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Overdue">Overdue</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <input type="number" min="1" class="form-control form-control-sm" id="filterCarId" style="width:130px;" placeholder="Car ID">
+                    <input type="number" min="1" class="form-control form-control-sm" id="filterUserId" style="width:150px;" placeholder="Customer ID">
+                    <button class="btn btn-sm btn-primary" id="applyFiltersBtn"><i class="bi bi-funnel"></i> Apply</button>
+                    <button class="btn btn-sm btn-outline-secondary" id="clearFiltersBtn">Clear</button>
+                </div>
+            </div>
+
+            <div id="rentalsTableContainer">
+                <div class="table-card p-3">
+                    <div class="skeleton mb-2" style="height:14px;width:60%;"></div>
+                    <div class="skeleton mb-2" style="height:14px;width:90%;"></div>
+                    <div class="skeleton" style="height:14px;width:75%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Delete this rental?</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">This can't be undone. Related payments, insurance and damage reports may also be affected.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-outline-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/rental-api.js"></script>
+    <script>
+let lookups = { cars: [], users: [], branches: [], driverProfiles: [] };
+let pendingDeleteId = null;
+let deleteModal;
+
+document.addEventListener('DOMContentLoaded', () => {
+  deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+  document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+  document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+  document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+  loadEverything();
+});
+
+async function loadEverything() {
+  lookups = await fetchRelatedLookups();
+  await loadRentals();
+}
+
+async function loadRentals(filters = null) {
+  const container = document.getElementById('rentalsTableContainer');
+  container.innerHTML = `<div class="table-card p-3">
+      <div class="skeleton mb-2" style="height:14px;width:60%;"></div>
+      <div class="skeleton mb-2" style="height:14px;width:90%;"></div>
+      <div class="skeleton" style="height:14px;width:75%;"></div>
+    </div>`;
+
+  const res = filters ? await RentalAPI.filter(filters) : await RentalAPI.getAll();
+
+  if (!res.ok) {
+    document.getElementById('pageSub').textContent = 'Could not load rentals.';
+    container.innerHTML = `<div class="state-empty">
+        <i class="bi bi-exclamation-triangle"></i>
+        <div style="color:var(--ink); font-weight:600;">Couldn't load rentals</div>
+        <p class="mb-3">${escapeHtml(res.error)}</p>
+        <button class="btn btn-primary btn-sm" onclick="loadRentals()">Try again</button>
+      </div>`;
+    return;
+  }
+
+  const rentals = Array.isArray(res.data) ? res.data : [];
+  const active = rentals.filter(r => (r.Status || '').toLowerCase() === 'active').length;
+  const overdue = rentals.filter(r => (r.Status || '').toLowerCase() === 'overdue').length;
+  document.getElementById('pageSub').textContent = `${active} active, ${overdue} overdue · ${rentals.length} total`;
+
+  if (rentals.length === 0) {
+    container.innerHTML = `<div class="state-empty">
+        <i class="bi bi-inbox"></i>
+        <div style="color:var(--ink); font-weight:600;">No rentals yet</div>
+        <p class="mb-3">Once you create one, it will show up here.</p>
+        <a href="rental-form.html" class="btn btn-primary btn-sm">Create rental</a>
+      </div>`;
+    return;
+  }
+
+  renderTable(rentals);
+}
+
+function renderTable(rentals) {
+  const rows = rentals.map(r => {
+    const car = findById(lookups.cars, ['CarId', 'Id'], r.CarId);
+    const user = findById(lookups.users, ['UserId', 'Id', 'userId'], r.userId);
+    const carLabel = labelCar(car) || `Car #${r.CarId}`;
+    const userLabel = labelUser(user) || `Customer #${r.userId}`;
+
+    return `<tr>
+      <td><span class="plate">RNT-${r.Rental_ID}</span></td>
+      <td>${escapeHtml(carLabel)}</td>
+      <td>${escapeHtml(userLabel)}</td>
+      <td>${formatDate(r.StartDate)}</td>
+      <td>${formatDate(r.DueDate)}</td>
+      <td>${r.TotalDays ?? '—'}</td>
+      <td>${badge(r.Status || 'Unknown', statusKind(r.Status))}</td>
+      <td>
+        <div class="row-actions">
+          <a class="btn btn-outline-secondary" title="View" href="rental-details.html?id=${r.Rental_ID}"><i class="bi bi-eye"></i></a>
+          <a class="btn btn-outline-secondary" title="Edit" href="rental-form.html?id=${r.Rental_ID}"><i class="bi bi-pencil"></i></a>
+          <button class="btn btn-outline-danger" title="Delete" onclick="openDeleteModal(${r.Rental_ID})"><i class="bi bi-trash"></i></button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('rentalsTableContainer').innerHTML = `
+    <div class="table-card">
+      <table class="mgmt">
+        <thead><tr>
+          <th>Rental</th><th>Car</th><th>Customer</th><th>Start</th><th>Due</th><th>Days</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+function applyFilters() {
+  const status = document.getElementById('filterStatus').value;
+  const carId = document.getElementById('filterCarId').value;
+  const userId = document.getElementById('filterUserId').value;
+  const params = {};
+  if (status) params.status = status;
+  if (carId) params.carId = carId;
+  if (userId) params.userId = userId;
+  loadRentals(Object.keys(params).length ? params : null);
+}
+
+function clearFilters() {
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('filterCarId').value = '';
+  document.getElementById('filterUserId').value = '';
+  loadRentals();
+}
+
+function openDeleteModal(id) {
+  pendingDeleteId = id;
+  deleteModal.show();
+}
+
+async function confirmDelete() {
+  if (!pendingDeleteId) return;
+  const btn = document.getElementById('confirmDeleteBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Deleting…';
+
+  const res = await RentalAPI.remove(pendingDeleteId);
+
+  btn.disabled = false;
+  btn.textContent = 'Delete';
+  deleteModal.hide();
+
+  if (res.ok) {
+    showAlert('alertArea', `Rental RNT-${pendingDeleteId} was deleted.`, 'success');
+    loadRentals();
+  } else {
+    showAlert('alertArea', `Couldn't delete rental: ${res.error}`, 'danger');
+  }
+  pendingDeleteId = null;
+}
+    </script>
 </body>
 </html>
