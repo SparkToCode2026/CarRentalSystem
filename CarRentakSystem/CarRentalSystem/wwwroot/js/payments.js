@@ -1,31 +1,182 @@
-﻿const API = "/Payments";
+﻿const PAYMENT_API = "/Payments";
+const RENTAL_API = "/Rental";
 
 let payments = [];
+let deletePaymentId = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadPayments();
-    loadAnalytics();
-    loadRentals();
+
+// ==============================
+// START PAGE
+// ==============================
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await loadRentals();
+    await loadPayments();
+    await loadAnalytics();
+
+    document
+        .getElementById("paymentForm")
+        .addEventListener(
+            "submit",
+            savePayment
+        );
+
+
+    document
+        .getElementById("statusFilter")
+        .addEventListener(
+            "change",
+            filterPayments
+        );
+
+
+    document
+        .getElementById("methodFilter")
+        .addEventListener(
+            "change",
+            filterPayments
+        );
+
+
+    document
+        .getElementById(
+            "confirmDeletePaymentBtn"
+        )
+        .addEventListener(
+            "click",
+            deletePayment
+        );
+
 });
 
 
-// ==========================================
-// GET ALL PAYMENTS
-// ==========================================
+// ==============================
+// LOAD RENTALS
+// ==============================
+
+async function loadRentals() {
+
+    const select =
+        document.getElementById("rentalId");
+
+    try {
+
+        const response =
+            await fetch(
+                `${RENTAL_API}/GetAllRentals`
+            );
+
+
+        if (!response.ok) {
+
+            const error =
+                await response.text();
+
+            console.error(
+                "Rental error:",
+                error
+            );
+
+            throw new Error(
+                "Failed to load rentals"
+            );
+        }
+
+
+        const rentals =
+            await response.json();
+
+
+        select.innerHTML = `
+            <option value="">
+                Select rental...
+            </option>
+        `;
+
+
+        rentals.forEach(rental => {
+
+            const id =
+                rental.rental_ID ??
+                rental.Rental_ID;
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value = id;
+
+
+            option.textContent =
+                `Rental #${id}`;
+
+
+            select.appendChild(option);
+
+        });
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+
+        select.innerHTML = `
+            <option value="">
+                Could not load rentals
+            </option>
+        `;
+
+    }
+
+}
+
+
+// ==============================
+// LOAD ALL PAYMENTS
+// ==============================
 
 async function loadPayments() {
 
     try {
 
-        const response = await fetch(`${API}/GetAllPayments`);
+        const response =
+            await fetch(
+                `${PAYMENT_API}/GetAllPayments`
+            );
+
 
         if (!response.ok) {
-            throw new Error("Could not load payments.");
+
+            const error =
+                await response.text();
+
+            console.error(
+                "Payment error:",
+                error
+            );
+
+            throw new Error(
+                "Failed to load payments"
+            );
         }
 
-        payments = await response.json();
 
-        displayPayments(payments);
+        payments =
+            await response.json();
+
+
+        renderPayments(payments);
+
+
+        document.getElementById(
+            "recordCount"
+        ).textContent =
+            `${payments.length} payments`;
 
     }
     catch (error) {
@@ -37,32 +188,35 @@ async function loadPayments() {
             "danger"
         );
 
-        displayPayments([]);
     }
+
 }
 
 
-// ==========================================
-// DISPLAY PAYMENTS
-// ==========================================
+// ==============================
+// RENDER PAYMENTS
+// ==============================
 
-function displayPayments(data) {
+function renderPayments(data) {
 
-    const tbody =
-        document.getElementById("paymentsTableBody");
+    const body =
+        document.getElementById(
+            "paymentsTableBody"
+        );
 
-    tbody.innerHTML = "";
+
+    body.innerHTML = "";
 
 
     if (!data || data.length === 0) {
 
-        tbody.innerHTML = `
+        body.innerHTML = `
             <tr>
-                <td colspan="7">
-                    <div class="empty-state">
-                        <i class="bi bi-credit-card"></i>
-                        No payments found.
-                    </div>
+                <td colspan="7"
+                    class="text-center py-5">
+
+                    No payments found.
+
                 </td>
             </tr>
         `;
@@ -73,6 +227,36 @@ function displayPayments(data) {
 
     data.forEach(payment => {
 
+        const paymentId =
+            payment.payment_ID ??
+            payment.Payment_ID;
+
+
+        const rentalId =
+            payment.rental_ID ??
+            payment.Rental_ID;
+
+
+        const amount =
+            payment.amount ??
+            payment.Amount;
+
+
+        const method =
+            payment.method ??
+            payment.Method;
+
+
+        const status =
+            payment.status ??
+            payment.Status;
+
+
+        const paidAt =
+            payment.paidAtUtc ??
+            payment.PaidAtUtc;
+
+
         const row =
             document.createElement("tr");
 
@@ -80,37 +264,36 @@ function displayPayments(data) {
         row.innerHTML = `
 
             <td>
-                <span class="payment-id">
-                    #${payment.payment_ID}
+                #${paymentId}
+            </td>
+
+            <td>
+                Rental #${rentalId}
+            </td>
+
+            <td>
+                OMR ${Number(amount).toFixed(2)}
+            </td>
+
+            <td>
+                ${escapeHtml(method)}
+            </td>
+
+            <td>
+                ${formatDate(paidAt)}
+            </td>
+
+            <td>
+                <span class="badge text-bg-light">
+                    ${escapeHtml(status)}
                 </span>
             </td>
 
             <td>
-                Rental #${payment.rental_ID}
-            </td>
-
-            <td class="amount">
-                ${Number(payment.amount).toFixed(2)} OMR
-            </td>
-
-            <td>
-                ${payment.method}
-            </td>
-
-            <td>
-                ${getStatusBadge(payment.status)}
-            </td>
-
-            <td>
-                ${formatDate(payment.paidAtUtc)}
-            </td>
-
-            <td class="text-end">
 
                 <button
-                    class="btn btn-sm btn-outline-secondary me-1"
-                    title="Edit"
-                    onclick="editPayment(${payment.payment_ID})">
+                    class="btn btn-sm btn-outline-secondary"
+                    onclick="openEditPaymentModal(${paymentId})">
 
                     <i class="bi bi-pencil"></i>
 
@@ -119,148 +302,283 @@ function displayPayments(data) {
 
                 <button
                     class="btn btn-sm btn-outline-danger"
-                    title="Delete"
-                    onclick="deletePayment(${payment.payment_ID})">
+                    onclick="openDeletePaymentModal(${paymentId})">
 
                     <i class="bi bi-trash"></i>
 
                 </button>
 
             </td>
+
         `;
 
-        tbody.appendChild(row);
+
+        body.appendChild(row);
+
     });
+
 }
 
 
-// ==========================================
-// ADD PAYMENT MODAL
-// ==========================================
+// ==============================
+// OPEN ADD MODAL
+// ==============================
 
-function openAddPayment() {
+function openAddPaymentModal() {
 
-    document.getElementById("paymentModalTitle")
-        .textContent = "Add Payment";
-
-    document.getElementById("paymentForm")
+    document
+        .getElementById("paymentForm")
         .reset();
 
-    document.getElementById("paymentId")
-        .value = "";
 
-    document.getElementById("status")
-        .value = "Pending";
+    document.getElementById(
+        "paymentId"
+    ).value = "";
 
 
-    // Default current date/time
-    const now = new Date();
+    document.getElementById(
+        "paymentModalTitle"
+    ).textContent =
+        "Add Payment";
+
+
+    document.getElementById(
+        "paymentStatus"
+    ).value =
+        "Pending";
+
+
+    const now =
+        new Date();
+
 
     now.setMinutes(
         now.getMinutes() -
         now.getTimezoneOffset()
     );
 
-    document.getElementById("paidAt")
-        .value = now
-            .toISOString()
-            .slice(0, 16);
+
+    document.getElementById(
+        "paidAtUtc"
+    ).value =
+        now.toISOString().slice(0, 16);
+
+
+    bootstrap.Modal
+        .getOrCreateInstance(
+            document.getElementById(
+                "paymentModal"
+            )
+        )
+        .show();
+
 }
 
 
-// ==========================================
-// SAVE PAYMENT
-// ADD OR UPDATE
-// ==========================================
+// ==============================
+// OPEN EDIT MODAL
+// ==============================
 
-async function savePayment() {
+function openEditPaymentModal(id) {
 
-    const form =
-        document.getElementById("paymentForm");
+    const payment =
+        payments.find(p =>
+            (p.payment_ID ??
+                p.Payment_ID) === id
+        );
 
 
-    if (!form.checkValidity()) {
+    if (!payment) {
 
-        form.reportValidity();
+        showMessage(
+            "Payment not found.",
+            "danger"
+        );
 
         return;
     }
 
 
+    document.getElementById(
+        "paymentId"
+    ).value = id;
+
+
+    document.getElementById(
+        "rentalId"
+    ).value =
+        payment.rental_ID ??
+        payment.Rental_ID;
+
+
+    document.getElementById(
+        "paymentAmount"
+    ).value =
+        payment.amount ??
+        payment.Amount;
+
+
+    document.getElementById(
+        "paymentMethod"
+    ).value =
+        payment.method ??
+        payment.Method;
+
+
+    document.getElementById(
+        "paymentStatus"
+    ).value =
+        payment.status ??
+        payment.Status;
+
+
+    const paidAt =
+        payment.paidAtUtc ??
+        payment.PaidAtUtc;
+
+
+    if (paidAt) {
+
+        const date =
+            new Date(paidAt);
+
+
+        date.setMinutes(
+            date.getMinutes() -
+            date.getTimezoneOffset()
+        );
+
+
+        document.getElementById(
+            "paidAtUtc"
+        ).value =
+            date.toISOString()
+                .slice(0, 16);
+
+    }
+
+
+    document.getElementById(
+        "paymentModalTitle"
+    ).textContent =
+        "Edit Payment";
+
+
+    bootstrap.Modal
+        .getOrCreateInstance(
+            document.getElementById(
+                "paymentModal"
+            )
+        )
+        .show();
+
+}
+
+
+// ==============================
+// SAVE PAYMENT
+// ==============================
+
+async function savePayment(event) {
+
+    event.preventDefault();
+
+
     const paymentId =
-        document.getElementById("paymentId").value;
+        document.getElementById(
+            "paymentId"
+        ).value;
+
+
+    const rentalId =
+        Number(
+            document.getElementById(
+                "rentalId"
+            ).value
+        );
+
+
+    if (!rentalId) {
+
+        showMessage(
+            "Please select a rental.",
+            "danger"
+        );
+
+        return;
+    }
 
 
     const payment = {
 
-        payment_ID:
-            paymentId
-                ? Number(paymentId)
-                : 0,
-
         amount:
             Number(
-                document.getElementById("amount").value
+                document.getElementById(
+                    "paymentAmount"
+                ).value
             ),
 
         method:
-            document.getElementById("method").value,
+            document.getElementById(
+                "paymentMethod"
+            ).value,
 
         paidAtUtc:
             new Date(
-                document.getElementById("paidAt").value
+                document.getElementById(
+                    "paidAtUtc"
+                ).value
             ).toISOString(),
 
         status:
-            document.getElementById("status").value,
+            document.getElementById(
+                "paymentStatus"
+            ).value,
 
         rental_ID:
-            Number(
-                document.getElementById("rentalId").value
-            )
-
+            rentalId
     };
 
 
     try {
 
-        let response;
+        let url;
+        let method;
 
 
-        // UPDATE
         if (paymentId) {
 
-            response = await fetch(
-                `${API}/UpdatePayment?id=${paymentId}`,
-                {
-                    method: "PUT",
+            url =
+                `${PAYMENT_API}/UpdatePayment?id=${paymentId}`;
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify(payment)
-                }
-            );
+            method = "PUT";
 
         }
-
-        // ADD
         else {
 
-            response = await fetch(
-                `${API}/AddPayment`,
+            url =
+                `${PAYMENT_API}/AddPayment`;
+
+            method = "POST";
+
+        }
+
+
+        const response =
+            await fetch(
+                url,
                 {
-                    method: "POST",
+                    method: method,
 
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type":
+                            "application/json"
                     },
 
-                    body: JSON.stringify(payment)
+                    body:
+                        JSON.stringify(payment)
                 }
             );
-        }
 
 
         if (!response.ok) {
@@ -268,16 +586,21 @@ async function savePayment() {
             const error =
                 await response.text();
 
-            throw new Error(error);
+
+            throw new Error(
+                error ||
+                "Failed to save payment."
+            );
         }
 
 
-        const modal =
-            bootstrap.Modal.getInstance(
-                document.getElementById("paymentModal")
-            );
-
-        modal.hide();
+        bootstrap.Modal
+            .getInstance(
+                document.getElementById(
+                    "paymentModal"
+                )
+            )
+            ?.hide();
 
 
         showMessage(
@@ -289,7 +612,6 @@ async function savePayment() {
 
 
         await loadPayments();
-
         await loadAnalytics();
 
     }
@@ -298,163 +620,18 @@ async function savePayment() {
         console.error(error);
 
         showMessage(
-            error.message || "Could not save payment.",
+            error.message,
             "danger"
         );
+
     }
+
 }
 
 
-// ==========================================
-// EDIT PAYMENT
-// ==========================================
-
-async function editPayment(id) {
-
-    try {
-
-        const response =
-            await fetch(
-                `${API}/GetPaymentById?id=${id}`
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Could not load payment."
-            );
-        }
-
-
-        const payment =
-            await response.json();
-
-
-        document.getElementById(
-            "paymentModalTitle"
-        ).textContent = "Edit Payment";
-
-
-        document.getElementById(
-            "paymentId"
-        ).value = payment.payment_ID;
-
-
-        document.getElementById(
-            "rentalId"
-        ).value = payment.rental_ID;
-
-
-        document.getElementById(
-            "amount"
-        ).value = payment.amount;
-
-
-        document.getElementById(
-            "method"
-        ).value = payment.method;
-
-
-        document.getElementById(
-            "status"
-        ).value = payment.status;
-
-
-        document.getElementById(
-            "paidAt"
-        ).value =
-            toDateTimeLocal(
-                payment.paidAtUtc
-            );
-
-
-        const modal =
-            new bootstrap.Modal(
-                document.getElementById(
-                    "paymentModal"
-                )
-            );
-
-
-        modal.show();
-
-    }
-    catch (error) {
-
-        console.error(error);
-
-        showMessage(
-            "Failed to load payment.",
-            "danger"
-        );
-    }
-}
-
-
-// ==========================================
-// DELETE PAYMENT
-// ==========================================
-
-async function deletePayment(id) {
-
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this payment?"
-        );
-
-
-    if (!confirmed)
-        return;
-
-
-    try {
-
-        const response =
-            await fetch(
-                `${API}/DeletePayment?id=${id}`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            const error =
-                await response.text();
-
-            throw new Error(error);
-        }
-
-
-        showMessage(
-            "Payment deleted successfully.",
-            "success"
-        );
-
-
-        await loadPayments();
-
-        await loadAnalytics();
-
-    }
-    catch (error) {
-
-        console.error(error);
-
-        showMessage(
-            error.message ||
-            "Could not delete payment.",
-            "danger"
-        );
-    }
-}
-
-
-// ==========================================
+// ==============================
 // FILTER
-// ==========================================
+// ==============================
 
 async function filterPayments() {
 
@@ -492,14 +669,14 @@ async function filterPayments() {
 
         const response =
             await fetch(
-                `${API}/FilterPayments?${params.toString()}`
+                `${PAYMENT_API}/FilterPayments?${params}`
             );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "Could not filter payments."
+                "Failed to filter payments."
             );
         }
 
@@ -508,7 +685,13 @@ async function filterPayments() {
             await response.json();
 
 
-        displayPayments(data);
+        renderPayments(data);
+
+
+        document.getElementById(
+            "recordCount"
+        ).textContent =
+            `${data.length} payments`;
 
     }
     catch (error) {
@@ -519,33 +702,104 @@ async function filterPayments() {
             "Failed to filter payments.",
             "danger"
         );
+
     }
+
 }
 
 
-// ==========================================
-// RESET FILTER
-// ==========================================
+// ==============================
+// DELETE MODAL
+// ==============================
 
-function resetFilters() {
+function openDeletePaymentModal(id) {
 
-    document.getElementById(
-        "statusFilter"
-    ).value = "";
+    deletePaymentId = id;
 
 
-    document.getElementById(
-        "methodFilter"
-    ).value = "";
+    bootstrap.Modal
+        .getOrCreateInstance(
+            document.getElementById(
+                "deletePaymentModal"
+            )
+        )
+        .show();
 
-
-    loadPayments();
 }
 
 
-// ==========================================
-// PAYMENT ANALYTICS
-// ==========================================
+// ==============================
+// DELETE PAYMENT
+// ==============================
+
+async function deletePayment() {
+
+    if (!deletePaymentId)
+        return;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${PAYMENT_API}/DeletePayment?id=${deletePaymentId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            const error =
+                await response.text();
+
+            throw new Error(
+                error ||
+                "Failed to delete payment."
+            );
+        }
+
+
+        bootstrap.Modal
+            .getInstance(
+                document.getElementById(
+                    "deletePaymentModal"
+                )
+            )
+            ?.hide();
+
+
+        showMessage(
+            "Payment deleted successfully.",
+            "success"
+        );
+
+
+        deletePaymentId = null;
+
+
+        await loadPayments();
+        await loadAnalytics();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message,
+            "danger"
+        );
+
+    }
+
+}
+
+
+// ==============================
+// ANALYTICS
+// ==============================
 
 async function loadAnalytics() {
 
@@ -553,7 +807,7 @@ async function loadAnalytics() {
 
         const response =
             await fetch(
-                `${API}/PaymentAnalytics`
+                `${PAYMENT_API}/PaymentAnalytics`
             );
 
 
@@ -565,33 +819,28 @@ async function loadAnalytics() {
             await response.json();
 
 
+        const count =
+            data.totalCount ??
+            data.TotalCount ??
+            0;
+
+
+        const revenue =
+            data.totalRevenue ??
+            data.TotalRevenue ??
+            0;
+
+
         document.getElementById(
             "totalPayments"
         ).textContent =
-            data.totalCount ?? 0;
+            count;
 
 
         document.getElementById(
             "totalRevenue"
         ).textContent =
-            `${Number(
-                data.totalRevenue ?? 0
-            ).toFixed(2)} OMR`;
-
-
-        // Calculate paid payments
-        const paid =
-            payments.filter(
-                p =>
-                    p.status
-                        ?.toLowerCase()
-                    === "paid"
-            ).length;
-
-
-        document.getElementById(
-            "paidPayments"
-        ).textContent = paid;
+            `OMR ${Number(revenue).toFixed(2)}`;
 
     }
     catch (error) {
@@ -600,205 +849,88 @@ async function loadAnalytics() {
             "Analytics error:",
             error
         );
+
     }
+
 }
 
 
-// ==========================================
-// STATUS BADGE
-// ==========================================
-
-function getStatusBadge(status) {
-
-    const value =
-        status || "Unknown";
-
-
-    const normalized =
-        value.toLowerCase();
-
-
-    if (normalized === "paid") {
-
-        return `
-            <span class="status status-paid">
-                Paid
-            </span>
-        `;
-    }
-
-
-    if (normalized === "pending") {
-
-        return `
-            <span class="status status-pending">
-                Pending
-            </span>
-        `;
-    }
-
-
-    if (normalized === "failed") {
-
-        return `
-            <span class="status status-failed">
-                Failed
-            </span>
-        `;
-    }
-
-
-    return `
-        <span class="status">
-            ${value}
-        </span>
-    `;
-}
-
-
-// ==========================================
-// FORMAT DATE
-// ==========================================
-
-function formatDate(date) {
-
-    if (!date)
-        return "—";
-
-
-    return new Date(date)
-        .toLocaleString();
-}
-
-
-function toDateTimeLocal(date) {
-
-    if (!date)
-        return "";
-
-
-    const d =
-        new Date(date);
-
-
-    d.setMinutes(
-        d.getMinutes() -
-        d.getTimezoneOffset()
-    );
-
-
-    return d
-        .toISOString()
-        .slice(0, 16);
-}
-
-
-// ==========================================
+// ==============================
 // MESSAGE
-// ==========================================
+// ==============================
 
-function showMessage(text, type) {
+function showMessage(
+    message,
+    type
+) {
 
-    const message =
-        document.getElementById("message");
+    const box =
+        document.getElementById(
+            "messageBox"
+        );
 
 
-    message.innerHTML = `
+    box.className =
+        `alert alert-${type}`;
 
-        <div class="alert alert-${type} alert-dismissible fade show">
 
-            ${text}
+    box.textContent =
+        message;
 
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-            </button>
 
-        </div>
-    `;
+    box.classList.remove(
+        "d-none"
+    );
 
 
     setTimeout(() => {
 
-        message.innerHTML = "";
+        box.classList.add(
+            "d-none"
+        );
 
-    }, 4000);
+    }, 5000);
+
 }
 
 
-// load rentals
-async function loadRentals() {
+// ==============================
+// FORMAT DATE
+// ==============================
 
-    const select =
-        document.getElementById(
-            "rentalId"
-        );
+function formatDate(value) {
 
-
-    try {
-
-        const response =
-            await fetch(
-                "/Rental/GetAllRentals"
-            );
+    if (!value)
+        return "—";
 
 
-        if (!response.ok) {
-
-            throw new Error(
-                "Failed to load rentals."
-            );
-        }
+    const date =
+        new Date(value);
 
 
-        const rentals =
-            await response.json();
+    if (isNaN(date.getTime()))
+        return "—";
 
 
-        select.innerHTML = `
-            <option value="">
-                Select rental...
-            </option>
-        `;
+    return date.toLocaleString();
+
+}
 
 
-        rentals.forEach(
-            rental => {
+// ==============================
+// SAFE TEXT
+// ==============================
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+function escapeHtml(value) {
 
-
-                option.value =
-                    rental.rental_ID;
+    if (value == null)
+        return "—";
 
 
-                option.textContent =
-                    `RNT-${rental.rental_ID}`;
-
-
-                select.appendChild(
-                    option
-                );
-
-            }
-        );
-
-    }
-    catch (error) {
-
-        console.error(error);
-
-
-        select.innerHTML = `
-            <option value="">
-                Could not load rentals
-            </option>
-        `;
-
-    }
-
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
