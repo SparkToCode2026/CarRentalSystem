@@ -10,162 +10,482 @@ namespace CarRentalSystem.Controllers
     {
         private readonly CarRentalSystemContext _context;
 
-        public BranchController(CarRentalSystemContext context)
+        public BranchController(
+            CarRentalSystemContext context)
         {
             _context = context;
         }
-        
-        // GET: api/Branch
+
+
+        // ========================================
+        // 1. GET ALL
+        // GET /api/Branch
+        // ========================================
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Branch>>> GetBranches()
+        public async Task<IActionResult> GetBranches()
         {
-            return await _context.Branches
-                .Include(b => b.Cars)
-                .Include(b => b.PickupRentals)
-                .ToListAsync();
+            var branches =
+                await _context.Branches
+
+                    .Select(b => new
+                    {
+                        id = b.Id,
+
+                        name = b.Name,
+
+                        city = b.City,
+
+                        address = b.Address,
+
+                        carsCount =
+                            b.Cars.Count(),
+
+                        rentalsCount =
+                            b.PickupRentals.Count()
+                    })
+
+                    .ToListAsync();
+
+
+            return Ok(branches);
         }
 
-        // GET: api/Branch/5
+
+        // ========================================
+        // 2. GET BY ID
+        // GET /api/Branch/5
+        // ========================================
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Branch>> GetBranch(int id)
+        public async Task<IActionResult> GetBranch(
+            int id)
         {
-            var branch = await _context.Branches
-                .Include(b => b.Cars)
-                .Include(b => b.PickupRentals)
-                .FirstOrDefaultAsync(b => b.Id == id);
+            var branch =
+                await _context.Branches
+
+                    .Where(b => b.Id == id)
+
+                    .Select(b => new
+                    {
+                        id = b.Id,
+
+                        name = b.Name,
+
+                        city = b.City,
+
+                        address = b.Address,
+
+                        carsCount =
+                            b.Cars.Count(),
+
+                        rentalsCount =
+                            b.PickupRentals.Count()
+                    })
+
+                    .FirstOrDefaultAsync();
+
 
             if (branch == null)
             {
-                return NotFound();
+                return NotFound(
+                    "Branch not found."
+                );
             }
+
 
             return Ok(branch);
         }
-        // POST: api/Branch
+
+
+        // ========================================
+        // 3. CREATE
+        // POST /api/Branch
+        // ========================================
+
         [HttpPost]
-        public async Task<ActionResult<Branch>> CreateBranch(Branch branch)
+        public async Task<IActionResult> CreateBranch(
+            Branch branch)
         {
-            _context.Branches.Add(branch);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetBranch),
-                new { id = branch.Id },
-                branch);
-        }
-
-        // PUT: api/Branch/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Branch branch)
-        {
-            var existingBranch = await _context.Branches.FindAsync(id);
-
-            if (existingBranch == null)
+            if (
+                string.IsNullOrWhiteSpace(
+                    branch.Name
+                )
+            )
             {
-                return NotFound();
+                return BadRequest(
+                    "Branch name is required."
+                );
             }
 
-            existingBranch.Name = branch.Name;
-            existingBranch.City = branch.City;
-            existingBranch.Address = branch.Address;
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    branch.City
+                )
+            )
+            {
+                return BadRequest(
+                    "City is required."
+                );
+            }
+
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    branch.Address
+                )
+            )
+            {
+                return BadRequest(
+                    "Address is required."
+                );
+            }
+
+
+            _context.Branches.Add(
+                branch
+            );
+
 
             await _context.SaveChangesAsync();
 
-            return Ok("branch updated successfully");
+
+            return Ok(new
+            {
+                message =
+                    "Branch created successfully.",
+
+                id =
+                    branch.Id
+            });
         }
 
-        // PUT: api/Branch/5/city
+
+        // ========================================
+        // 4. UPDATE
+        // PUT /api/Branch/5
+        // ========================================
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            int id,
+            Branch updatedBranch)
+        {
+            var branch =
+                await _context.Branches
+                    .FindAsync(id);
+
+
+            if (branch == null)
+            {
+                return NotFound(
+                    "Branch not found."
+                );
+            }
+
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    updatedBranch.Name
+                ) ||
+                string.IsNullOrWhiteSpace(
+                    updatedBranch.City
+                ) ||
+                string.IsNullOrWhiteSpace(
+                    updatedBranch.Address
+                )
+            )
+            {
+                return BadRequest(
+                    "Name, city and address are required."
+                );
+            }
+
+
+            branch.Name =
+                updatedBranch.Name;
+
+            branch.City =
+                updatedBranch.City;
+
+            branch.Address =
+                updatedBranch.Address;
+
+
+            await _context.SaveChangesAsync();
+
+
+            return Ok(
+                "Branch updated successfully."
+            );
+        }
+
+
+        // ========================================
+        // 5. UPDATE CITY ONLY
+        // PUT /api/Branch/5/city?city=Muscat
+        // ========================================
+
         [HttpPut("{id}/city")]
         public async Task<IActionResult> UpdateCity(
             int id,
             string city)
         {
-            var branch = await _context.Branches
-                .FindAsync(id);
+            var branch =
+                await _context.Branches
+                    .FindAsync(id);
+
 
             if (branch == null)
             {
-                return NotFound();
+                return NotFound(
+                    "Branch not found."
+                );
             }
 
-            branch.City = city;
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    city
+                )
+            )
+            {
+                return BadRequest(
+                    "City is required."
+                );
+            }
+
+
+            branch.City =
+                city;
+
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+
+            return Ok(
+                "Branch city updated successfully."
+            );
         }
-        // DELETE: api/Branch/5
+
+
+        // ========================================
+        // 6. DELETE
+        // DELETE /api/Branch/5
+        // ========================================
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBranch(int id)
+        public async Task<IActionResult> DeleteBranch(
+            int id)
         {
-            var branch = await _context.Branches
-                .FindAsync(id);
+            var branch =
+                await _context.Branches
+                    .FindAsync(id);
+
 
             if (branch == null)
             {
-                return NotFound();
+                return NotFound(
+                    "Branch not found."
+                );
             }
 
-            _context.Branches.Remove(branch);
+
+            // Check if cars use the branch
+            bool hasCars =
+                await _context.Cars
+                    .AnyAsync(
+                        c => c.BranchId == id
+                    );
+
+
+            // Check if rentals use the branch
+            bool hasRentals =
+                await _context.Rentals
+                    .AnyAsync(
+                        r => r.BranchId == id
+                    );
+
+
+            if (
+                hasCars ||
+                hasRentals
+            )
+            {
+                return BadRequest(
+                    "This branch cannot be deleted because it has related cars or rentals."
+                );
+            }
+
+
+            _context.Branches.Remove(
+                branch
+            );
+
+
             await _context.SaveChangesAsync();
 
-            return NoContent();
+
+            return Ok(
+                "Branch deleted successfully."
+            );
         }
-        // GET: api/Branch/filter?city=Muscat
+
+
+        // ========================================
+        // 7. FILTER BY CITY
+        // GET /api/Branch/filter?city=Muscat
+        // ========================================
+
         [HttpGet("filter")]
-        public async Task<ActionResult<IEnumerable<Branch>>> Filter(
+        public async Task<IActionResult> Filter(
             string? city)
         {
-            var query = _context.Branches
-                .Include(b => b.Cars)
-                .AsQueryable();
+            var query =
+                _context.Branches
+                    .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(city))
+
+            if (
+                !string.IsNullOrWhiteSpace(
+                    city
+                )
+            )
             {
-                query = query.Where(b => b.City.Contains(city));
+                query =
+                    query.Where(
+                        b =>
+                            b.City.Contains(city)
+                    );
             }
 
-            return Ok(await query.ToListAsync());
+
+            var branches =
+                await query
+
+                    .Select(b => new
+                    {
+                        id = b.Id,
+
+                        name = b.Name,
+
+                        city = b.City,
+
+                        address = b.Address,
+
+                        carsCount =
+                            b.Cars.Count(),
+
+                        rentalsCount =
+                            b.PickupRentals.Count()
+                    })
+
+                    .ToListAsync();
+
+
+            return Ok(branches);
         }
 
-// GET: api/Branch/sort
+
+        // ========================================
+        // 8. SORT
+        // GET /api/Branch/sort
+        // ========================================
+
         [HttpGet("sort")]
-        public async Task<ActionResult<IEnumerable<Branch>>> Sort(
+        public async Task<IActionResult> Sort(
             string sortBy = "name",
             bool descending = false)
         {
-            var query = _context.Branches.AsQueryable();
+            var query =
+                _context.Branches
+                    .AsQueryable();
 
-            if (sortBy.ToLower() == "city")
+
+            if (
+                sortBy.ToLower() == "city"
+            )
             {
-                query = descending
-                    ? query.OrderByDescending(b => b.City)
-                    : query.OrderBy(b => b.City);
+                query =
+                    descending
+
+                        ? query.OrderByDescending(
+                            b => b.City
+                        )
+
+                        : query.OrderBy(
+                            b => b.City
+                        );
             }
             else
             {
-                query = descending
-                    ? query.OrderByDescending(b => b.Name)
-                    : query.OrderBy(b => b.Name);
+                query =
+                    descending
+
+                        ? query.OrderByDescending(
+                            b => b.Name
+                        )
+
+                        : query.OrderBy(
+                            b => b.Name
+                        );
             }
 
-            return Ok(await query.ToListAsync());
+
+            var branches =
+                await query
+
+                    .Select(b => new
+                    {
+                        id = b.Id,
+
+                        name = b.Name,
+
+                        city = b.City,
+
+                        address = b.Address,
+
+                        carsCount =
+                            b.Cars.Count(),
+
+                        rentalsCount =
+                            b.PickupRentals.Count()
+                    })
+
+                    .ToListAsync();
+
+
+            return Ok(branches);
         }
 
-// GET: api/Branch/summary
+
+        // ========================================
+        // 9. SUMMARY
+        // GET /api/Branch/summary
+        // ========================================
+
         [HttpGet("summary")]
         public async Task<IActionResult> Summary()
         {
-            var result = await _context.Branches
-                .GroupBy(b => 1)
-                .Select(g => new
-                {
-                    TotalBranches = g.Count(),
-                    Cities = g.Select(b => b.City).Distinct().Count()
-                })
-                .FirstOrDefaultAsync();
+            var branches =
+                await _context.Branches
+                    .ToListAsync();
 
-            return Ok(result);
+
+            return Ok(new
+            {
+                totalBranches =
+                    branches.Count,
+
+                cities =
+                    branches
+                        .Select(
+                            b => b.City
+                        )
+                        .Distinct()
+                        .Count()
+            });
         }
     }
 }
