@@ -19,10 +19,42 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddDriverProfile")]
         public IActionResult AddDriverProfile(DriverProfile d)
         {
+            // Check that the user exists
+            bool userExists =
+                context.Users.Any(
+                    u => u.userId == d.userId
+                );
+
+            if (!userExists)
+            {
+                return BadRequest(
+                    "The selected user does not exist."
+                );
+            }
+
+
+            // One user can only have one DriverProfile
+            bool alreadyHasDriverProfile =
+                context.DriverProfiles.Any(
+                    dp => dp.userId == d.userId
+                );
+
+            if (alreadyHasDriverProfile)
+            {
+                return BadRequest(
+                    "This user already has a driver profile."
+                );
+            }
+
+
             context.DriverProfiles.Add(d);
+
             context.SaveChanges();
 
-            return Ok(d.DriverProfile_ID);
+
+            return Ok(
+                d.DriverProfile_ID
+            );
         }
 
         // 2. PUT - Update full record
