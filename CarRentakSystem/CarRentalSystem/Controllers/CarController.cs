@@ -1,6 +1,7 @@
 ﻿using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace CarRentalSystem.Controllers
@@ -18,6 +19,7 @@ namespace CarRentalSystem.Controllers
 
         //Implement POST to create a new record
         // POST - Create a new Car
+        [Authorize(Roles = "Admin,staff")]
         [HttpPost("AddCar")]
         public IActionResult AddCar(Car car)
         {
@@ -90,6 +92,7 @@ namespace CarRentalSystem.Controllers
         }
 
         //PUT to update an existing record
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdateCar")]
         public IActionResult UpdateCar(
     int id,
@@ -199,6 +202,7 @@ namespace CarRentalSystem.Controllers
             );
         }
         //PATCH endpoint for Availability
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateCarAvailability")]
         public IActionResult UpdateCarAvailability(int id, bool isAvailable)
         {
@@ -218,6 +222,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // DELETE by ID
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveCar")]
         public IActionResult RemoveCar(int id)
         {
@@ -278,6 +283,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // GET ALL
+        [Authorize]
         [HttpGet("GetAllCars")]
         public IActionResult GetAllCars()
         {
@@ -311,6 +317,7 @@ namespace CarRentalSystem.Controllers
         }
 
         //Filter endpoint using Where()
+        [Authorize]
         [HttpGet("GetByMake")]
         public IActionResult GetByMake(string make)
         {

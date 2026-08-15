@@ -24,7 +24,7 @@ async function loadMaintenance() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE}/Maintenance/GetALLMaintenances`
         );
 
@@ -173,7 +173,7 @@ async function editMaintenance(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE}/Maintenance/GetMaintenance?id=${id}`
         );
 
@@ -287,7 +287,7 @@ async function saveMaintenance() {
         }
 
 
-        const response = await fetch(url, {
+        const response = await authorizedFetch(url, {
 
             method: method,
 
@@ -354,7 +354,7 @@ async function deleteMaintenance(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE}/Maintenance/RemoveMaintenance?id=${id}`,
             {
                 method: "DELETE"
@@ -408,7 +408,7 @@ async function filterMaintenance() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE}/Maintenance/GetByStatus?status=${encodeURIComponent(status)}`
         );
 
@@ -444,7 +444,7 @@ async function sortMaintenance() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE}/Maintenance/GetSortedByCost`
         );
 

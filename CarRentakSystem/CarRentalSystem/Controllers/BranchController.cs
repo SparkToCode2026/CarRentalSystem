@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Controllers
 {
@@ -21,7 +22,7 @@ namespace CarRentalSystem.Controllers
         // 1. GET ALL
         // GET /api/Branch
         // ========================================
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetBranches()
         {
@@ -56,7 +57,7 @@ namespace CarRentalSystem.Controllers
         // 2. GET BY ID
         // GET /api/Branch/5
         // ========================================
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBranch(
             int id)
@@ -102,7 +103,7 @@ namespace CarRentalSystem.Controllers
         // 3. CREATE
         // POST /api/Branch
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateBranch(
             Branch branch)
@@ -166,7 +167,7 @@ namespace CarRentalSystem.Controllers
         // 4. UPDATE
         // PUT /api/Branch/5
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -226,7 +227,7 @@ namespace CarRentalSystem.Controllers
         // 5. UPDATE CITY ONLY
         // PUT /api/Branch/5/city?city=Muscat
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}/city")]
         public async Task<IActionResult> UpdateCity(
             int id,
@@ -274,7 +275,7 @@ namespace CarRentalSystem.Controllers
         // 6. DELETE
         // DELETE /api/Branch/5
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBranch(
             int id)
@@ -337,7 +338,7 @@ namespace CarRentalSystem.Controllers
         // 7. FILTER BY CITY
         // GET /api/Branch/filter?city=Muscat
         // ========================================
-
+        [Authorize]
         [HttpGet("filter")]
         public async Task<IActionResult> Filter(
             string? city)
@@ -392,7 +393,7 @@ namespace CarRentalSystem.Controllers
         // 8. SORT
         // GET /api/Branch/sort
         // ========================================
-
+        [Authorize]
         [HttpGet("sort")]
         public async Task<IActionResult> Sort(
             string sortBy = "name",
@@ -464,7 +465,7 @@ namespace CarRentalSystem.Controllers
         // 9. SUMMARY
         // GET /api/Branch/summary
         // ========================================
-
+        [Authorize]
         [HttpGet("summary")]
         public async Task<IActionResult> Summary()
         {

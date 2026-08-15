@@ -245,6 +245,13 @@ namespace CarRentalSystem.Controllers
 
             return Ok(users);
         }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetAllUser")]
+        public IActionResult GetAllUser()
+        {
+            List<User> users = context.Users.ToList();
+            return Ok(users);
+        }
 
     }
 }

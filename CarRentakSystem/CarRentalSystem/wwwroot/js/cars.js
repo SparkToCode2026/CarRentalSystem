@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // ========================================
 async function loadCars() {
     try {
-        const response = await fetch(`${CAR_API}/GetAllCars`);
+        const response = await authorizedFetch(`${CAR_API}/GetAllCars`);
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(errorText || "Failed to load cars.");
@@ -136,7 +136,7 @@ function openAddCarModal() {
 // ========================================
 async function openEditCarModal(id) {
     try {
-        const response = await fetch(`${CAR_API}/GetCar?id=${id}`);
+        const response = await authorizedFetch(`${CAR_API}/GetCar?id=${id}`);
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(errorText || "Failed to load car.");
@@ -201,14 +201,14 @@ async function saveCar(event) {
         let response;
 
         if (editingCarId !== null) {
-            response = await fetch(`${CAR_API}/UpdateCar?id=${editingCarId}`, {
+            response = await authorizedFetch(`${CAR_API}/UpdateCar?id=${editingCarId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
         }
         else {
-            response = await fetch(`${CAR_API}/AddCar`, {
+            response = await authorizedFetch(`${CAR_API}/AddCar`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -241,7 +241,7 @@ async function toggleAvailability(id, currentAvailability) {
     const newAvailability = !currentAvailability;
 
     try {
-        const response = await fetch(`${CAR_API}/UpdateCarAvailability?id=${id}&isAvailable=${newAvailability}`, {
+        const response = await authorizedFetch(`${CAR_API}/UpdateCarAvailability?id=${id}&isAvailable=${newAvailability}`, {
             method: "PATCH"
         });
 
@@ -277,7 +277,7 @@ async function confirmDeleteCar() {
     }
 
     try {
-        const response = await fetch(`${CAR_API}/RemoveCar?id=${pendingDeleteCarId}`, {
+        const response = await authorizedFetch(`${CAR_API}/RemoveCar?id=${pendingDeleteCarId}`, {
             method: "DELETE"
         });
 
@@ -326,7 +326,7 @@ function applyFilters() {
 // ========================================
 async function sortCarsByRate() {
     try {
-        const response = await fetch(`${CAR_API}/SortByDailyRate`);
+        const response = await authorizedFetch(`${CAR_API}/SortByDailyRate`);
         if (!response.ok) {
             throw new Error("Failed to sort cars.");
         }
@@ -373,7 +373,7 @@ function escapeForJs(value) {
 
 async function loadCategories() {
     try {
-        const response = await fetch("/api/CarCategory");
+        const response = await fetauthorizedFetchch("/api/CarCategory");
         if (!response.ok) {
             throw new Error("Failed to load categories.");
         }
@@ -397,7 +397,7 @@ async function loadCategories() {
 
 async function loadBranches() {
     try {
-        const response = await fetch("/api/Branch");
+        const response = await feauthorizedFetchtch("/api/Branch");
         if (!response.ok) {
             throw new Error("Failed to load branches.");
         }

@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CarRentalSystem.Models;
+﻿using CarRentalSystem.Models;
 using CarRentalSystem.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarRentalSystem.Controllers
 {
@@ -25,7 +26,7 @@ namespace CarRentalSystem.Controllers
         // 1. ADD RENTAL
         // POST /Rental/AddRental
         // ========================================
-
+        [Authorize]
         [HttpPost("AddRental")]
         public async Task<IActionResult> AddRental(
             Rental rental)
@@ -214,7 +215,7 @@ namespace CarRentalSystem.Controllers
         // 2. UPDATE RENTAL
         // PUT /Rental/UpdateRental?id=1
         // ========================================
-
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdateRental")]
         public async Task<IActionResult> UpdateRental(
             int id,
@@ -329,7 +330,7 @@ namespace CarRentalSystem.Controllers
         // PATCH
         // /Rental/UpdateRentalStatus?id=1&status=Completed
         // ========================================
-
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateRentalStatus")]
         public async Task<IActionResult> UpdateRentalStatus(
             int id,
@@ -375,7 +376,7 @@ namespace CarRentalSystem.Controllers
         // 4. DELETE
         // DELETE /Rental/DeleteRental?id=1
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteRental")]
         public async Task<IActionResult> DeleteRental(
             int id)
@@ -420,7 +421,7 @@ namespace CarRentalSystem.Controllers
         // 5. GET ALL
         // GET /Rental/GetAllRentals
         // ========================================
-
+        [Authorize]
         [HttpGet("GetAllRentals")]
         public async Task<IActionResult> GetAllRentals()
         {
@@ -502,7 +503,7 @@ namespace CarRentalSystem.Controllers
         // 6. GET BY ID
         // GET /Rental/GetRentalById?id=1
         // ========================================
-
+        [Authorize]
         [HttpGet("GetRentalById")]
         public async Task<IActionResult> GetRentalById(
             int id)
@@ -596,7 +597,7 @@ namespace CarRentalSystem.Controllers
         // 7. FILTER
         // GET /Rental/FilterRentals
         // ========================================
-
+        [Authorize]
         [HttpGet("FilterRentals")]
         public async Task<IActionResult> FilterRentals(
             string? status,
@@ -689,7 +690,7 @@ namespace CarRentalSystem.Controllers
         // 8. ANALYTICS / SORT
         // GET /Rental/RentalAnalytics
         // ========================================
-
+        [Authorize]
         [HttpGet("RentalAnalytics")]
         public async Task<IActionResult> RentalAnalytics()
         {

@@ -10,7 +10,7 @@ async function loadDrivers() {
     try {
 
         const response =
-            await fetch(`${API_URL}/GetAllDriverProfiles`);
+            await authorizedFetch(`${API_URL}/GetAllDriverProfiles`);
 
 
         if (!response.ok) {
@@ -370,7 +370,7 @@ async function addDriver() {
 
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_URL}/AddDriverProfile`,
                 {
 
@@ -494,7 +494,7 @@ async function viewDriver(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_URL}/GetDriverProfileWithRelatedData?id=${id}`
         );
 
@@ -555,7 +555,7 @@ async function editDriver(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_URL}/GetDriverProfile?id=${id}`
         );
 
@@ -624,7 +624,7 @@ async function updateDriver() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_URL}/UpdateDriverProfile?id=${id}`,
             {
                 method: "PUT",
@@ -686,7 +686,7 @@ async function deleteDriver(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_URL}/RemoveDriverProfile?id=${id}`,
             {
                 method: "DELETE"

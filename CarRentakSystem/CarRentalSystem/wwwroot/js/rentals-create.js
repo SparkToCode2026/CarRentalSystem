@@ -94,7 +94,7 @@ async function loadCustomers() {
     try {
 
         const response =
-            await fetch("/User/GetCustomers");
+            await authorizedFetch("/User/GetCustomers");
 
         if (!response.ok) {
 
@@ -175,7 +175,7 @@ async function loadCars() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${CAR_API}/GetAllCars`
             );
 
@@ -306,7 +306,7 @@ async function loadBranches() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 BRANCH_API
             );
 
@@ -424,7 +424,7 @@ async function loadDriverProfiles() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${DRIVER_API}/GetAllDriverProfiles`
             );
 
@@ -894,7 +894,7 @@ async function createRental(event) {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/AddRental`,
                 {
                     method: "POST",

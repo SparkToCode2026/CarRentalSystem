@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Controllers
 {
@@ -16,6 +17,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // POST - Create a new RentalDiscount record
+        [Authorize(Roles = "Admin,staff")]
         [HttpPost("CreateRentalDiscount")]
         public IActionResult CreateRentalDiscount(
     [FromBody] RentalDiscount rentalDiscount)
@@ -85,6 +87,7 @@ namespace CarRentalSystem.Controllers
             });
         }
         // 2. PUT - Update the full RentalDiscount
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdateRentalDiscount")]
         public IActionResult UpdateRentalDiscount(
     int rentalId,
@@ -128,6 +131,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 3. PATCH - Update a specific field
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateAppliedAmount")]
         public IActionResult UpdateAppliedAmount(
     int rentalId,
@@ -170,6 +174,7 @@ namespace CarRentalSystem.Controllers
             );
         }
         // 4. DELETE - Delete using the composite key
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveRentalDiscount")]
         public IActionResult RemoveRentalDiscount(
             int rentalId,
@@ -192,6 +197,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 5. GET ALL + Include related data
+        [Authorize]
         [HttpGet("GetAllRentalDiscounts")]
         public IActionResult GetAllRentalDiscounts()
         {
@@ -205,6 +211,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 6. GET BY composite key
+        [Authorize]
         [HttpGet("GetRentalDiscount")]
         public IActionResult GetRentalDiscount(
             int rentalId,
@@ -227,6 +234,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 7. FILTER - Using Where()
+        [Authorize]
         [HttpGet("GetByRental")]
         public IActionResult GetByRental(int rentalId)
         {
@@ -239,6 +247,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 8. SORT - Using OrderByDescending()
+        [Authorize]
         [HttpGet("SortByAppliedAmount")]
         public IActionResult SortByAppliedAmount()
         {

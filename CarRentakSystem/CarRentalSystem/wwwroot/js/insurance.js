@@ -10,7 +10,7 @@ async function loadInsurances() {
     try {
 
         const response =
-            await fetch(`${API_URL}/GetAllInsurances`);
+            await authorizedFetch(`${API_URL}/GetAllInsurances`);
 
 
         if (!response.ok) {
@@ -300,7 +300,7 @@ async function addInsurance() {
 
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_URL}/AddInsurance`,
                 {
 
@@ -426,7 +426,7 @@ async function viewInsurance(id) {
 
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_URL}/GetInsurance?id=${id}`
             );
 
@@ -559,7 +559,7 @@ async function editInsurance(id) {
 
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_URL}/GetInsurance?id=${id}`
             );
 
@@ -724,7 +724,7 @@ async function updateInsurance() {
 
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_URL}/UpdateInsurance?id=${id}`,
                 {
 
@@ -846,7 +846,7 @@ async function deleteInsurance(id) {
 
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_URL}/RemoveInsurance?id=${id}`,
                 {
 

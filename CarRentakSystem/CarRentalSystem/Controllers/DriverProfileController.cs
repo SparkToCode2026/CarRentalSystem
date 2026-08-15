@@ -1,4 +1,5 @@
 ﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 1. POST - Create
+        [Authorize]
         [HttpPost("AddDriverProfile")]
         public IActionResult AddDriverProfile(DriverProfile d)
         {
@@ -58,6 +60,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 2. PUT - Update full record
+        [Authorize]
         [HttpPut("UpdateDriverProfile")]
         public IActionResult UpdateDriverProfile(
     int id,
@@ -136,6 +139,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 3. PATCH - Update specific field
+        [Authorize]
         [HttpPatch("UpdateLicenseNumber")]
         public IActionResult UpdateLicenseNumber(
     int id,
@@ -176,6 +180,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 4. DELETE - Delete by ID
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveDriverProfile")]
         public IActionResult RemoveDriverProfile(int id)
         {
@@ -204,6 +209,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 5. GET ALL + Include related User
+        [Authorize]
         [HttpGet("GetAllDriverProfiles")]
         public IActionResult GetAllDriverProfiles()
         {
@@ -215,6 +221,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 6. GET BY ID
+        [Authorize]
         [HttpGet("GetDriverProfile")]
         public IActionResult GetDriverProfile(int id)
         {
@@ -230,6 +237,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 7. FILTER - Where()
+        [Authorize]
         [HttpGet("GetByUser")]
         public IActionResult GetByUser(int userId)
         {
@@ -241,6 +249,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 8. SORT - OrderBy()
+        [Authorize(Roles = "Admin,staff")]
         [HttpGet("GetSortedByLicenseNumber")]
         public IActionResult GetSortedByLicenseNumber()
         {
@@ -250,7 +259,7 @@ namespace CarRentalSystem.Controllers
 
             return Ok(driverProfiles);
         }
-
+        [Authorize]
         [HttpGet("GetDriverProfileWithRelatedData")]
         public IActionResult GetDriverProfileWithRelatedData(int id)
         {

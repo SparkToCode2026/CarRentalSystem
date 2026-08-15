@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Controllers
 {
@@ -26,6 +27,7 @@ namespace CarRentalSystem.Controllers
         //Request Body => { "ReviewDate" : "2025-01-10", "Comment" : "Great service",
         //                   "Rating" : 5, "Carid" : 2, "Userid" : 1 }
         // send request ==>> call function
+        [Authorize]
         [HttpPost("AddReview")]
         public IActionResult AddReview(Review r)
         {
@@ -78,6 +80,7 @@ namespace CarRentalSystem.Controllers
         //Request method => Delete
         //Request Body => empty
         // send request ==>> call function
+        [Authorize(Roles = "Admin,staff")]
         [HttpDelete("RemoveReview")]
         public IActionResult RemoveReview(int id)
         {
@@ -144,6 +147,7 @@ namespace CarRentalSystem.Controllers
         //Request method => Put
         //Request Body => { "ReviewDate" : "2025-02-15", "Comment" : "Updated review",
         //                   "Rating" : 3, "Carid" : 2, "Userid" : 1 }
+        [Authorize]
         [HttpPut("UpdateReview")]
         public IActionResult UpdateReview(
     int id,
@@ -229,6 +233,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Review/GetReview?id=3
         //Request method => Get
+        [Authorize]
         [HttpGet("GetReview")]
         public IActionResult GetReview(int id)
         {
@@ -247,6 +252,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Review/GetALLReviews
         //Request method => Get
+        [Authorize]
         [HttpGet("GetALLReviews")]
         public IActionResult GetALLReviews()
         {
@@ -260,6 +266,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Review/GetByRating?rating=5
         //Request method => Get
+        [Authorize]
         [HttpGet("GetByRating")]
         public IActionResult GetByRating(int rating)
         {
@@ -272,10 +279,11 @@ namespace CarRentalSystem.Controllers
             return Ok(reviews);
         }
 
-        
+
 
         //Request URL => http://localhost:5071/Review/GetSortedByRating
         //Request method => Get
+        [Authorize]
         [HttpGet("GetSortedByRating")]
         public IActionResult GetSortedByRating()
         {

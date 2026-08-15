@@ -141,7 +141,7 @@ async function loadCategories() {
     try {
 
         const response =
-            await fetch(API_URL);
+            await authorizedFetch(API_URL);
 
 
         if (!response.ok) {
@@ -379,7 +379,7 @@ async function openEditCategoryModal(id) {
         // GET category by ID
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_URL}/${id}`
             );
 
@@ -564,7 +564,7 @@ async function saveCategory(event) {
         if (id) {
 
             response =
-                await fetch(
+                await authorizedFetch(
                     `${API_URL}/${id}`,
                     {
 
@@ -595,7 +595,7 @@ async function saveCategory(event) {
         else {
 
             response =
-                await fetch(
+                await authorizedFetch(
                     API_URL,
                     {
 
@@ -753,7 +753,7 @@ async function confirmDeleteCategory() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
 
                 `${API_URL}/${categoryPendingDeleteId}`,
 
@@ -866,7 +866,7 @@ async function searchCategories() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
 
                 `${API_URL}/filter?name=${encodeURIComponent(
                     searchText
@@ -916,7 +916,7 @@ async function sortCategories(sortBy) {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
 
                 `${API_URL}/sort?sortBy=${sortBy}&descending=false`
 

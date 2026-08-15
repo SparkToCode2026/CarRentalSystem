@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Controllers
 {
@@ -16,6 +17,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 1. POST: Create a new record
+        [Authorize]
         [HttpPost("AddPayment")]
         public IActionResult AddPayment(Payments payment)
         {
@@ -66,6 +68,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 2. PUT: Update an existing record
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdatePayment")]
         public IActionResult UpdatePayment(
     int id,
@@ -157,6 +160,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 3. PATCH: Second distinct update case (Status update)
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateStatus")]
         public IActionResult UpdateStatus(int id, string status)
         {
@@ -182,6 +186,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 4. DELETE: Delete by ID[cite: 1]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeletePayment")]
         public IActionResult DeletePayment(int id)
         {
@@ -197,6 +202,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 5. GET ALL: List records including related entity via Include()
+        [Authorize]
         [HttpGet("GetAllPayments")]
         public IActionResult GetAllPayments()
         {
@@ -208,6 +214,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 6. GET BY ID: Find a single record by ID
+        [Authorize]
         [HttpGet("GetPaymentById")]
         public IActionResult GetPaymentById(int id)
         {
@@ -224,6 +231,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 7. GET (Filter): Filter records using LINQ Where()
+        [Authorize]
         [HttpGet("FilterPayments")]
         public IActionResult FilterPayments(string? status, string? method)
         {
@@ -243,6 +251,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 8. GET (Sort/Aggregate): Sort and aggregate records
+        [Authorize]
         [HttpGet("PaymentAnalytics")]
         public IActionResult PaymentAnalytics()
         {

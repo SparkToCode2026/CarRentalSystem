@@ -28,7 +28,7 @@ async function loadCarsForSelect() {
 
     try {
 
-        const response = await fetch(`${API_BASE}/Car/GetAllCars`);
+        const response = await authorizedFetch(`${API_BASE}/Car/GetAllCars`);
 
         if (!response.ok) {
             throw new Error("Failed to load cars.");
@@ -64,7 +64,7 @@ async function loadUsersForSelect() {
 
     try {
 
-        const response = await fetch(`${API_BASE}/User/GetCustomers`);
+        const response = await authorizedFetch(`${API_BASE}/User/GetCustomers`);
 
         if (!response.ok) {
             throw new Error("Failed to load users.");
@@ -127,7 +127,7 @@ async function loadReviews() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE}/Review/GetALLReviews`
         );
 
@@ -260,7 +260,7 @@ async function editReview(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE}/Review/GetReview?id=${id}`
         );
 
@@ -374,7 +374,7 @@ async function saveReview() {
 
         }
 
-        const response = await fetch(url, {
+        const response = await authorizedFetch(url, {
 
             method: method,
 
@@ -438,7 +438,7 @@ async function deleteReview(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
 
             `${API_BASE}/Review/RemoveReview?id=${id}`,
 
@@ -490,7 +490,7 @@ async function filterReviews() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
 
             `${API_BASE}/Review/GetByRating?rating=${rating}`
 
@@ -527,7 +527,7 @@ async function sortReviews() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
 
             `${API_BASE}/Review/GetSortedByRating`
 

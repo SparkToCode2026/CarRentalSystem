@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarRentalSystem.Models;
 
 namespace CarRentalSystem.Controllers
 {
@@ -26,6 +27,7 @@ namespace CarRentalSystem.Controllers
         //Request Body => { "ServiceDate" : "2025-01-10", "Description" : "Oil change",
         //                   "Cost" : 45.5, "Status" : "Pending", "Carid" : 2 }
         // send request ==>> call function
+        [Authorize(Roles = "Admin,staff")]
         [HttpPost("AddMaintenance")]
         public IActionResult AddMaintenance(Maintenance m)
         {
@@ -79,6 +81,7 @@ namespace CarRentalSystem.Controllers
         //Request method => Delete
         //Request Body => empty
         // send request ==>> call function
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveMaintenance")]
         public IActionResult RemoveMaintenance(int id)
         {
@@ -100,6 +103,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Maintenance/UpdateMaintenanceStatus?id=3&newStatus=Completed
         //Request method => Patch
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateMaintenanceStatus")]
         public IActionResult UpdateMaintenanceStatus(
     int id,
@@ -139,6 +143,7 @@ namespace CarRentalSystem.Controllers
         //Request method => Put
         //Request Body => { "ServiceDate" : "2025-02-15", "Description" : "Brake replacement",
         //                   "Cost" : 120.0, "Status" : "In Progress", "Carid" : 2 }
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdateMaintenance")]
         public IActionResult UpdateMaintenance(
     int id,
@@ -209,6 +214,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Maintenance/GetMaintenance?id=3
         //Request method => Get
+        [Authorize]
         [HttpGet("GetMaintenance")]
         public IActionResult GetMaintenance(int id)
         {
@@ -238,6 +244,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Maintenance/GetByStatus?status=Pending
         //Request method => Get
+        [Authorize]
         [HttpGet("GetByStatus")]
         public IActionResult GetByStatus(string status)
         {
@@ -249,10 +256,11 @@ namespace CarRentalSystem.Controllers
             return Ok(maintenances);
         }
 
-        
+
 
         //Request URL => http://localhost:5071/Maintenance/GetSortedByCost
         //Request method => Get
+        [Authorize]
         [HttpGet("GetSortedByCost")]
         public IActionResult GetSortedByCost()
         {

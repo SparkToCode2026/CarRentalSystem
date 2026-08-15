@@ -1,4 +1,5 @@
 ﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,9 @@ namespace CarRentalSystem.Controllers
 
 
         // 1. POST - Create Insurance
+        [Authorize(Roles = "Admin,staff")]
         [HttpPost("AddInsurance")]
+        
         public IActionResult AddInsurance(Insurance insurance)
         {
             // Check Rental exists
@@ -72,6 +75,7 @@ namespace CarRentalSystem.Controllers
 
 
         // 2. PUT - Update Insurance
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdateInsurance")]
         public IActionResult UpdateInsurance(
     int id,
@@ -152,6 +156,7 @@ namespace CarRentalSystem.Controllers
 
 
         // 3. PATCH - Update specific field
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateInsurancePremium")]
         public IActionResult UpdateInsurancePremium(
     int id,
@@ -189,6 +194,7 @@ namespace CarRentalSystem.Controllers
 
 
         // 4. DELETE - Delete by ID
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveInsurance")]
         public IActionResult RemoveInsurance(int id)
         {
@@ -208,6 +214,7 @@ namespace CarRentalSystem.Controllers
 
 
         // 5. GET ALL - Include related Rental data
+        [Authorize]
         [HttpGet("GetAllInsurances")]
         public IActionResult GetAllInsurances()
         {
@@ -220,6 +227,7 @@ namespace CarRentalSystem.Controllers
 
 
         // 6. GET BY ID
+        [Authorize]
         [HttpGet("GetInsurance")]
         public IActionResult GetInsurance(int id)
         {
@@ -236,6 +244,7 @@ namespace CarRentalSystem.Controllers
 
 
         // 7. FILTER - Using Where()
+        [Authorize]
         [HttpGet("GetByPolicyType")]
         public IActionResult GetByPolicyType(string policyType)
         {
@@ -248,6 +257,7 @@ namespace CarRentalSystem.Controllers
 
 
         // 8. SORT - Using OrderBy()
+        [Authorize]
         [HttpGet("SortByPremium")]
         public IActionResult SortByPremium()
         {

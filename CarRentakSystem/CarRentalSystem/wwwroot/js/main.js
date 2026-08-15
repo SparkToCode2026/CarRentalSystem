@@ -42,7 +42,7 @@ async function loadAvailableCars() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 "/Car/GetAllCars"
             );
 
@@ -118,7 +118,7 @@ async function loadRentals() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 "/Rental/GetAllRentals"
             );
 
@@ -205,7 +205,7 @@ async function loadCustomers() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 "/User/GetCustomers"
             );
 
@@ -274,7 +274,7 @@ async function loadBranches() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 "/api/Branch"
             );
 
