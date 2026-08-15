@@ -280,6 +280,11 @@ function openAddDiscountModal() {
     ).value = "";
 
 
+    document.getElementById(
+        "discountStatus"
+    ).value = "Active";
+
+
     discountModal.show();
 }
 
@@ -350,6 +355,12 @@ async function openEditDiscountModal(id) {
 
 
         document.getElementById(
+            "discountStatus"
+        ).value =
+            getDiscountStatus(expiry);
+
+
+        document.getElementById(
             "discountModalTitle"
         ).textContent =
             "Edit Discount";
@@ -414,6 +425,12 @@ async function saveDiscount(event) {
         ).value;
 
 
+    const status =
+        document.getElementById(
+            "discountStatus"
+        ).value;
+
+
     // -------------------------------
     // Validation
     // -------------------------------
@@ -448,6 +465,30 @@ async function saveDiscount(event) {
 
         showMessage(
             "Expiration date is required.",
+            "danger"
+        );
+
+        return;
+    }
+
+
+    // -------------------------------
+    // Status must match the expiry date,
+    // since status is derived from ExpiresOn
+    // -------------------------------
+
+    const actualStatus =
+        getDiscountStatus(
+            `${expiry}T00:00:00`
+        );
+
+
+    if (status !== actualStatus) {
+
+        showMessage(
+            status === "Active"
+                ? "For Active status, the expiration date must be today or later."
+                : "For Expired status, the expiration date must be in the past.",
             "danger"
         );
 
@@ -587,7 +628,6 @@ async function saveDiscount(event) {
                 : "Save Discount";
     }
 }
-
 
 
 // ==========================================

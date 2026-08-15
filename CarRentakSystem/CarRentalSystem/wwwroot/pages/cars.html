@@ -60,10 +60,10 @@
 		</div>
 
 
-		<button class="btn btn-sm btn-primary">
+		<button class="btn btn-sm btn-primary"
+				onclick="window.location.href='rentals-create.html'">
 
 			<i class="bi bi-plus-lg"></i>
-
 			New Rental
 
 		</button>
@@ -405,43 +405,16 @@
 
 
 						<thead>
-
 							<tr>
-
-								<th>
-									Plate
-								</th>
-
-								<th>
-									Make / Model
-								</th>
-
-								<th>
-									Year
-								</th>
-
-								<th>
-									Category ID
-								</th>
-
-								<th>
-									Branch ID
-								</th>
-
-								<th>
-									Daily Rate
-								</th>
-
-								<th>
-									Availability
-								</th>
-
-								<th>
-									Actions
-								</th>
-
+								<th>Plate</th>
+								<th>Make / Model</th>
+								<th>Year</th>
+								<th>Category</th>
+								<th>Branch</th>
+								<th>Daily Rate</th>
+								<th>Availability</th>
+								<th>Actions</th>
 							</tr>
-
 						</thead>
 
 
@@ -629,17 +602,15 @@
 							<!-- CATEGORY ID -->
 
 							<div class="col-md-6">
-
 								<label class="form-label">
-									Car Category ID
+									Car Category
 								</label>
 
-								<input type="number"
-									   class="form-control"
-									   id="carCategoryId"
-									   min="1"
-									   required>
-
+								<select class="form-select"
+										id="carCategoryId"
+										required>
+									<option value="">Select category</option>
+								</select>
 							</div>
 
 
@@ -647,17 +618,15 @@
 							<!-- BRANCH ID -->
 
 							<div class="col-md-6">
-
 								<label class="form-label">
-									Branch ID
+									Branch
 								</label>
 
-								<input type="number"
-									   class="form-control"
-									   id="branchId"
-									   min="1"
-									   required>
-
+								<select class="form-select"
+										id="branchId"
+										required>
+									<option value="">Select branch</option>
+								</select>
 							</div>
 
 

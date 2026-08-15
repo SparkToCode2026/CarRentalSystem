@@ -407,54 +407,54 @@
                     <div class="mb-3">
 
                         <label class="form-label">
-                            Car ID
+                            Car
                         </label>
 
-                        <input type="number"
-                               class="form-control"
-                               id="carId"
-                               min="1"
-                               required>
+                        <select class="form-select"
+                                id="carId"
+                                required>
+
+                            <option value="">Select car</option>
+
+                        </select>
 
                     </div>
 
                     <div class="mb-3">
 
                         <label class="form-label">
-                            User ID
+                            User
                         </label>
 
-                        <input type="number"
-                               class="form-control"
-                               id="userId"
-                               min="1"
-                               required>
+                        <select class="form-select"
+                                id="userId"
+                                required>
+
+                            <option value="">Select user</option>
+
+                        </select>
 
                     </div>
 
-                </form>
+                    <div class="modal-footer">
 
-            </div>
+                        <button class="btn btn-secondary"
+                                data-bs-dismiss="modal">
 
-            <div class="modal-footer">
+                            Cancel
 
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal">
+                        </button>
 
-                    Cancel
+                        <button class="btn btn-primary"
+                                onclick="saveReview()">
 
-                </button>
+                            Save
 
-                <button class="btn btn-primary"
-                        onclick="saveReview()">
+                        </button>
 
-                    Save
+                    </div>
 
-                </button>
-
-            </div>
-
-        </div>
+</div>
 
     </div>
 
