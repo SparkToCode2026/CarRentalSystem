@@ -130,7 +130,7 @@ async function loadBranches() {
     try {
 
         const response =
-            await authorizedFetch
+            await authorizedFetch(
                 BRANCH_API
             );
 

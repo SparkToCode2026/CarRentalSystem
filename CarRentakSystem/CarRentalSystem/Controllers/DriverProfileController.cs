@@ -209,7 +209,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 5. GET ALL + Include related User
-        [Authorize(Roles = "Admin,staff")]
+        [Authorize]
         [HttpGet("GetAllDriverProfiles")]
         public IActionResult GetAllDriverProfiles()
         {
