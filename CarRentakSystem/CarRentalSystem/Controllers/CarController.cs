@@ -17,33 +17,186 @@ namespace CarRentalSystem.Controllers
         }
 
         //Implement POST to create a new record
+        // POST - Create a new Car
         [HttpPost("AddCar")]
         public IActionResult AddCar(Car car)
         {
+            // Check Category exists
+            bool categoryExists =
+                context.CarCategories.Any(
+                    c => c.Id == car.CarCategoryId
+                );
+
+            if (!categoryExists)
+            {
+                return BadRequest(
+                    "The selected car category does not exist."
+                );
+            }
+
+
+            // Check Branch exists
+            bool branchExists =
+                context.Branches.Any(
+                    b => b.Id == car.BranchId
+                );
+
+            if (!branchExists)
+            {
+                return BadRequest(
+                    "The selected branch does not exist."
+                );
+            }
+
+
+            // Optional basic validation
+            if (string.IsNullOrWhiteSpace(car.Make))
+            {
+                return BadRequest(
+                    "Car make is required."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(car.Model))
+            {
+                return BadRequest(
+                    "Car model is required."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(car.PlateNumber))
+            {
+                return BadRequest(
+                    "Plate number is required."
+                );
+            }
+
+            if (car.DailyRate < 0)
+            {
+                return BadRequest(
+                    "Daily rate cannot be negative."
+                );
+            }
+
+
             context.Cars.Add(car);
             context.SaveChanges();
-            return Ok(car.CarId);
+
+            return Ok(new
+            {
+                message = "Car added successfully.",
+                carId = car.CarId
+            });
         }
 
         //PUT to update an existing record
         [HttpPut("UpdateCar")]
-        public IActionResult UpdateCar(int id, Car updatedCar)
+        public IActionResult UpdateCar(
+    int id,
+    Car updatedCar)
         {
-            Car ? car = context.Cars.FirstOrDefault(car => car.CarId == id);
+            Car? car =
+                context.Cars.FirstOrDefault(
+                    c => c.CarId == id
+                );
+
             if (car == null)
             {
-                return NotFound("car not found");
+                return NotFound(
+                    "Car not found"
+                );
             }
-            car.PlateNumber = updatedCar.PlateNumber;
-            car.Make = updatedCar.Make;
-            car.Model = updatedCar.Model;
-            car.year = updatedCar.year;
-            car.DailyRate = updatedCar.DailyRate;
-            car.IsAvailable = updatedCar.IsAvailable;
-            car.CarCategoryId = updatedCar.CarCategoryId;
-            car.BranchId = updatedCar.BranchId;
+
+
+            // Check Category
+            bool categoryExists =
+                context.CarCategories.Any(
+                    c =>
+                        c.Id ==
+                        updatedCar.CarCategoryId
+                );
+
+            if (!categoryExists)
+            {
+                return BadRequest(
+                    "The selected car category does not exist."
+                );
+            }
+
+
+            // Check Branch
+            bool branchExists =
+                context.Branches.Any(
+                    b =>
+                        b.Id ==
+                        updatedCar.BranchId
+                );
+
+            if (!branchExists)
+            {
+                return BadRequest(
+                    "The selected branch does not exist."
+                );
+            }
+
+
+            if (
+                string.IsNullOrWhiteSpace(
+                    updatedCar.Make
+                ) ||
+                string.IsNullOrWhiteSpace(
+                    updatedCar.Model
+                ) ||
+                string.IsNullOrWhiteSpace(
+                    updatedCar.PlateNumber
+                )
+            )
+            {
+                return BadRequest(
+                    "Plate number, make and model are required."
+                );
+            }
+
+
+            if (updatedCar.DailyRate < 0)
+            {
+                return BadRequest(
+                    "Daily rate cannot be negative."
+                );
+            }
+
+
+            car.PlateNumber =
+                updatedCar.PlateNumber;
+
+            car.Make =
+                updatedCar.Make;
+
+            car.Model =
+                updatedCar.Model;
+
+            car.year =
+                updatedCar.year;
+
+            car.DailyRate =
+                updatedCar.DailyRate;
+
+            car.IsAvailable =
+                updatedCar.IsAvailable;
+
+            car.CarCategoryId =
+                updatedCar.CarCategoryId;
+
+            car.BranchId =
+                updatedCar.BranchId;
+
+
             context.SaveChanges();
-            return Ok("updated successfully");
+
+
+            return Ok(
+                "Car updated successfully"
+            );
         }
         //PATCH endpoint for Availability
         [HttpPatch("UpdateCarAvailability")]
@@ -68,25 +221,39 @@ namespace CarRentalSystem.Controllers
         [HttpDelete("RemoveCar")]
         public IActionResult RemoveCar(int id)
         {
-            Car? car = context.Cars
-                .FirstOrDefault(c => c.CarId == id);
+            Car? car =
+                context.Cars.FirstOrDefault(
+                    c => c.CarId == id
+                );
 
             if (car == null)
             {
-                return NotFound("car not found");
+                return NotFound(
+                    "Car not found"
+                );
             }
 
+
             bool hasRentals =
-                context.Rentals.Any(r => r.CarId == id);
+                context.Rentals.Any(
+                    r => r.CarId == id
+                );
 
             bool hasMaintenance =
-                context.Maintenances.Any(m => m.Carid == id);
+                context.Maintenances.Any(
+                    m => m.Carid == id
+                );
 
             bool hasDamageReports =
-                context.DamageReports.Any(d => d.CarId == id);
+                context.DamageReports.Any(
+                    d => d.CarId == id
+                );
 
             bool hasReviews =
-                context.Reviews.Any(r => r.Carid == id);
+                context.Reviews.Any(
+                    r => r.Carid == id
+                );
+
 
             if (
                 hasRentals ||
@@ -100,11 +267,14 @@ namespace CarRentalSystem.Controllers
                 );
             }
 
-            context.Cars.Remove(car);
 
+            context.Cars.Remove(car);
             context.SaveChanges();
 
-            return Ok("car removed successfully");
+
+            return Ok(
+                "Car removed successfully"
+            );
         }
 
         // GET ALL

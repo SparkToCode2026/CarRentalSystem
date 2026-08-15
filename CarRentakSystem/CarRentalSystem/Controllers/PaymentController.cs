@@ -19,7 +19,27 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddPayment")]
         public IActionResult AddPayment(Payments payment)
         {
-            // Check that the rental really exists
+            if (payment.Amount < 0)
+            {
+                return BadRequest(
+                    "Payment amount cannot be negative."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(payment.Method))
+            {
+                return BadRequest(
+                    "Payment method is required."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(payment.Status))
+            {
+                return BadRequest(
+                    "Payment status is required."
+                );
+            }
+
             bool rentalExists =
                 context.Rentals.Any(
                     r => r.Rental_ID == payment.Rental_ID
@@ -38,7 +58,11 @@ namespace CarRentalSystem.Controllers
 
             context.SaveChanges();
 
-            return Ok(payment.Payment_ID);
+            return Ok(new
+            {
+                message = "Payment added successfully.",
+                paymentId = payment.Payment_ID
+            });
         }
 
         // 2. PUT: Update an existing record
@@ -61,6 +85,36 @@ namespace CarRentalSystem.Controllers
             }
 
 
+            // Validate amount
+            if (updatedPayment.Amount < 0)
+            {
+                return BadRequest(
+                    "Payment amount cannot be negative."
+                );
+            }
+
+
+            // Validate payment method
+            if (string.IsNullOrWhiteSpace(
+                updatedPayment.Method))
+            {
+                return BadRequest(
+                    "Payment method is required."
+                );
+            }
+
+
+            // Validate status
+            if (string.IsNullOrWhiteSpace(
+                updatedPayment.Status))
+            {
+                return BadRequest(
+                    "Payment status is required."
+                );
+            }
+
+
+            // Check Rental exists
             bool rentalExists =
                 context.Rentals.Any(
                     r =>
@@ -77,6 +131,7 @@ namespace CarRentalSystem.Controllers
             }
 
 
+            // Update values
             payment.Amount =
                 updatedPayment.Amount;
 
@@ -97,7 +152,7 @@ namespace CarRentalSystem.Controllers
 
 
             return Ok(
-                "Updated successfully"
+                "Payment updated successfully"
             );
         }
 
@@ -105,14 +160,24 @@ namespace CarRentalSystem.Controllers
         [HttpPatch("UpdateStatus")]
         public IActionResult UpdateStatus(int id, string status)
         {
-            Payments? payment = context.Payments.FirstOrDefault(p => p.Payment_ID == id);
+            Payments? payment =
+                context.Payments
+                    .FirstOrDefault(p => p.Payment_ID == id);
+
             if (payment == null)
             {
                 return NotFound("Payment not found");
             }
 
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return BadRequest("Status is required.");
+            }
+
             payment.Status = status;
+
             context.SaveChanges();
+
             return Ok("Status updated successfully");
         }
 
@@ -181,12 +246,18 @@ namespace CarRentalSystem.Controllers
         [HttpGet("PaymentAnalytics")]
         public IActionResult PaymentAnalytics()
         {
-            var sortedPayments = context.Payments
-                .OrderByDescending(p => p.Amount)
-                .ToList();
+            var sortedPayments =
+                context.Payments
+                    .OrderByDescending(p => p.Amount)
+                    .ToList();
 
-            var totalRevenue = context.Payments.Sum(p => p.Amount);
-            var totalCount = context.Payments.Count();
+            int totalCount =
+                context.Payments.Count();
+
+            decimal totalRevenue =
+                totalCount > 0
+                    ? context.Payments.Sum(p => p.Amount)
+                    : 0;
 
             return Ok(new
             {

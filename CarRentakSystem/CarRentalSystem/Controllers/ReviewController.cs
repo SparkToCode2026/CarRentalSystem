@@ -29,11 +29,48 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddReview")]
         public IActionResult AddReview(Review r)
         {
+            bool carExists =
+                context.Cars.Any(c => c.CarId == r.Carid);
+
+            if (!carExists)
+            {
+                return BadRequest(
+                    "The selected car does not exist."
+                );
+            }
+
+            bool userExists =
+                context.Users.Any(u => u.userId == r.Userid);
+
+            if (!userExists)
+            {
+                return BadRequest(
+                    "The selected user does not exist."
+                );
+            }
+
+            if (r.Rating < 1 || r.Rating > 5)
+            {
+                return BadRequest(
+                    "Rating must be between 1 and 5."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(r.Comment))
+            {
+                return BadRequest(
+                    "Comment is required."
+                );
+            }
 
             context.Reviews.Add(r);
             context.SaveChanges();
 
-            return Ok(r.Review_ID);
+            return Ok(new
+            {
+                message = "Review added successfully.",
+                reviewId = r.Review_ID
+            });
         }
 
 
@@ -60,25 +97,46 @@ namespace CarRentalSystem.Controllers
         }
 
 
-        
+
 
         //Request URL => http://localhost:5071/Review/UpdateReviewRating?id=3&newRating=4
         //Request method => Patch
         [HttpPatch("UpdateReviewRating")]
-        public IActionResult UpdateReviewRating(int id, int newRating)
+        public IActionResult UpdateReviewRating(
+    int id,
+    int newRating)
         {
-            Review? r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
+            Review? r =
+                context.Reviews
+                    .FirstOrDefault(
+                        r => r.Review_ID == id
+                    );
 
             if (r == null)
             {
-                return NotFound("review not found");
+                return NotFound(
+                    "Review not found."
+                );
             }
 
-            r.Rating = newRating;
+            if (
+                newRating < 1 ||
+                newRating > 5
+            )
+            {
+                return BadRequest(
+                    "Rating must be between 1 and 5."
+                );
+            }
+
+            r.Rating =
+                newRating;
 
             context.SaveChanges();
 
-            return Ok();
+            return Ok(
+                "Review rating updated successfully."
+            );
         }
 
 
@@ -87,24 +145,85 @@ namespace CarRentalSystem.Controllers
         //Request Body => { "ReviewDate" : "2025-02-15", "Comment" : "Updated review",
         //                   "Rating" : 3, "Carid" : 2, "Userid" : 1 }
         [HttpPut("UpdateReview")]
-        public IActionResult UpdateReview(int id, Review newReview)
+        public IActionResult UpdateReview(
+    int id,
+    Review newReview)
         {
-            Review? r = context.Reviews.FirstOrDefault(r => r.Review_ID == id);
+            Review? r =
+                context.Reviews
+                    .FirstOrDefault(
+                        r => r.Review_ID == id
+                    );
 
             if (r == null)
             {
-                return NotFound("review not found");
+                return NotFound(
+                    "Review not found."
+                );
             }
 
-            r.ReviewDate = newReview.ReviewDate;
-            r.Comment = newReview.Comment;
-            r.Rating = newReview.Rating;
-            r.Carid = newReview.Carid;
-            r.Userid = newReview.Userid;
+            bool carExists =
+                context.Cars.Any(
+                    c => c.CarId == newReview.Carid
+                );
+
+            if (!carExists)
+            {
+                return BadRequest(
+                    "The selected car does not exist."
+                );
+            }
+
+            bool userExists =
+                context.Users.Any(
+                    u => u.userId == newReview.Userid
+                );
+
+            if (!userExists)
+            {
+                return BadRequest(
+                    "The selected user does not exist."
+                );
+            }
+
+            if (
+                newReview.Rating < 1 ||
+                newReview.Rating > 5
+            )
+            {
+                return BadRequest(
+                    "Rating must be between 1 and 5."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                newReview.Comment))
+            {
+                return BadRequest(
+                    "Comment is required."
+                );
+            }
+
+            r.ReviewDate =
+                newReview.ReviewDate;
+
+            r.Comment =
+                newReview.Comment;
+
+            r.Rating =
+                newReview.Rating;
+
+            r.Carid =
+                newReview.Carid;
+
+            r.Userid =
+                newReview.Userid;
 
             context.SaveChanges();
 
-            return Ok();
+            return Ok(
+                "Review updated successfully."
+            );
         }
 
 

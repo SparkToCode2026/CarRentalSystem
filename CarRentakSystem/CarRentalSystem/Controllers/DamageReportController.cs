@@ -14,58 +14,174 @@ namespace CarRentalSystem.Controllers
         {
             context = _context;
         }
-        
+
         // 1.POST - Create a new DamageReport
         [HttpPost("AddDamageReport")]
         public IActionResult AddDamageReport(DamageReport d)
         {
+            bool carExists =
+                context.Cars.Any(c => c.CarId == d.CarId);
+
+            if (!carExists)
+            {
+                return BadRequest(
+                    "The selected car does not exist."
+                );
+            }
+
+            bool rentalExists =
+                context.Rentals.Any(
+                    r => r.Rental_ID == d.Rental_ID
+                );
+
+            if (!rentalExists)
+            {
+                return BadRequest(
+                    "The selected rental does not exist."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(d.Description))
+            {
+                return BadRequest(
+                    "Description is required."
+                );
+            }
+
+            if (d.RepairCost < 0)
+            {
+                return BadRequest(
+                    "Repair cost cannot be negative."
+                );
+            }
+
             context.DamageReports.Add(d);
             context.SaveChanges();
 
-            return Ok(d.DamageReport_ID);
+            return Ok(new
+            {
+                message = "Damage report added successfully.",
+                damageReportId = d.DamageReport_ID
+            });
         }
-        
+
         // 2.PUT - Update full DamageReport
         [HttpPut("UpdateDamageReport")]
-        public IActionResult UpdateDamageReport(int id, DamageReport newDamagereport)
+        public IActionResult UpdateDamageReport(
+    int id,
+    DamageReport newDamageReport)
         {
-            DamageReport? d = context.DamageReports
-                .FirstOrDefault(d => d.DamageReport_ID == id);
+            DamageReport? d =
+                context.DamageReports
+                    .FirstOrDefault(
+                        d => d.DamageReport_ID == id
+                    );
 
             if (d == null)
             {
-                return NotFound("damage report not found ");
+                return NotFound(
+                    "Damage report not found."
+                );
             }
 
-            d.Description = newDamagereport.Description;
-            d.ReportedAtUtc = newDamagereport.ReportedAtUtc;
-            d.RepairCost = newDamagereport.RepairCost;
-            d.CarId = newDamagereport.CarId;
-            d.Rental_ID = newDamagereport.Rental_ID;
+            bool carExists =
+                context.Cars.Any(
+                    c => c.CarId == newDamageReport.CarId
+                );
+
+            if (!carExists)
+            {
+                return BadRequest(
+                    "The selected car does not exist."
+                );
+            }
+
+            bool rentalExists =
+                context.Rentals.Any(
+                    r =>
+                        r.Rental_ID ==
+                        newDamageReport.Rental_ID
+                );
+
+            if (!rentalExists)
+            {
+                return BadRequest(
+                    "The selected rental does not exist."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                newDamageReport.Description))
+            {
+                return BadRequest(
+                    "Description is required."
+                );
+            }
+
+            if (newDamageReport.RepairCost < 0)
+            {
+                return BadRequest(
+                    "Repair cost cannot be negative."
+                );
+            }
+
+            d.Description =
+                newDamageReport.Description;
+
+            d.ReportedAtUtc =
+                newDamageReport.ReportedAtUtc;
+
+            d.RepairCost =
+                newDamageReport.RepairCost;
+
+            d.CarId =
+                newDamageReport.CarId;
+
+            d.Rental_ID =
+                newDamageReport.Rental_ID;
 
             context.SaveChanges();
 
-            return Ok("damage report updated successfully");
+            return Ok(
+                "Damage report updated successfully."
+            );
         }
         // 3.PATCH -Update RepairCost only
         [HttpPatch("UpdateRepairCost")]
-        public IActionResult UpdateRepairCost(int id, decimal newRepairCost)
+        public IActionResult UpdateRepairCost(
+    int id,
+    decimal newRepairCost)
         {
-            DamageReport? d = context.DamageReports
-                .FirstOrDefault(d => d.DamageReport_ID == id);
+            DamageReport? d =
+                context.DamageReports
+                    .FirstOrDefault(
+                        d => d.DamageReport_ID == id
+                    );
 
             if (d == null)
             {
-                return NotFound("damage report not found ");
+                return NotFound(
+                    "Damage report not found."
+                );
             }
 
-            d.RepairCost = newRepairCost;
+            if (newRepairCost < 0)
+            {
+                return BadRequest(
+                    "Repair cost cannot be negative."
+                );
+            }
+
+            d.RepairCost =
+                newRepairCost;
 
             context.SaveChanges();
 
-            return Ok("repair cost updated successfully ");
+            return Ok(
+                "Repair cost updated successfully."
+            );
         }
-        
+
         // 4.DELETE -Delete DamageReport by ID
         [HttpDelete("RemoveDamageReport")]
         public IActionResult RemoveDamageReport(int id)

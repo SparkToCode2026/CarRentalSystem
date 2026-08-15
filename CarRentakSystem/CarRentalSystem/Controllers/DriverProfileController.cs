@@ -19,52 +19,160 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddDriverProfile")]
         public IActionResult AddDriverProfile(DriverProfile d)
         {
+            // Check that the user exists
+            bool userExists =
+                context.Users.Any(
+                    u => u.userId == d.userId
+                );
+
+            if (!userExists)
+            {
+                return BadRequest(
+                    "The selected user does not exist."
+                );
+            }
+
+
+            // One user can only have one DriverProfile
+            bool alreadyHasDriverProfile =
+                context.DriverProfiles.Any(
+                    dp => dp.userId == d.userId
+                );
+
+            if (alreadyHasDriverProfile)
+            {
+                return BadRequest(
+                    "This user already has a driver profile."
+                );
+            }
+
+
             context.DriverProfiles.Add(d);
+
             context.SaveChanges();
 
-            return Ok(d.DriverProfile_ID);
+
+            return Ok(
+                d.DriverProfile_ID
+            );
         }
 
         // 2. PUT - Update full record
         [HttpPut("UpdateDriverProfile")]
         public IActionResult UpdateDriverProfile(
-            int id,
-            DriverProfile newDriverProfile)
+    int id,
+    DriverProfile newDriverProfile)
         {
-            DriverProfile? d = context.DriverProfiles
-                .FirstOrDefault(d => d.DriverProfile_ID == id);
+            DriverProfile? d =
+                context.DriverProfiles
+                    .FirstOrDefault(
+                        dp => dp.DriverProfile_ID == id
+                    );
 
             if (d == null)
             {
-                return NotFound("driver profile not found");
+                return NotFound(
+                    "Driver profile not found."
+                );
             }
 
-            d.LicenseNumber = newDriverProfile.LicenseNumber;
-            d.LicenseExpiryDate = newDriverProfile.LicenseExpiryDate;
-            d.userId = newDriverProfile.userId;
+
+            // Check that the selected user exists
+            bool userExists =
+                context.Users.Any(
+                    u => u.userId == newDriverProfile.userId
+                );
+
+            if (!userExists)
+            {
+                return BadRequest(
+                    "The selected user does not exist."
+                );
+            }
+
+
+            // Check that another DriverProfile
+            // is not already using this user
+            bool userAlreadyHasProfile =
+                context.DriverProfiles.Any(
+                    dp =>
+                        dp.userId == newDriverProfile.userId &&
+                        dp.DriverProfile_ID != id
+                );
+
+            if (userAlreadyHasProfile)
+            {
+                return BadRequest(
+                    "This user already has a driver profile."
+                );
+            }
+
+
+            // Validate license number
+            if (newDriverProfile.LicenseNumber <= 0)
+            {
+                return BadRequest(
+                    "License number must be greater than zero."
+                );
+            }
+
+
+            d.LicenseNumber =
+                newDriverProfile.LicenseNumber;
+
+            d.LicenseExpiryDate =
+                newDriverProfile.LicenseExpiryDate;
+
+            d.userId =
+                newDriverProfile.userId;
+
 
             context.SaveChanges();
 
-            return Ok("driver profile updated successfully");
+
+            return Ok(
+                "Driver profile updated successfully."
+            );
         }
 
         // 3. PATCH - Update specific field
         [HttpPatch("UpdateLicenseNumber")]
-        public IActionResult UpdateLicenseNumber(int id, int newLicenseNumber)
+        public IActionResult UpdateLicenseNumber(
+    int id,
+    int newLicenseNumber)
         {
-            DriverProfile? d = context.DriverProfiles
-                .FirstOrDefault(d => d.DriverProfile_ID == id);
+            DriverProfile? d =
+                context.DriverProfiles
+                    .FirstOrDefault(
+                        dp => dp.DriverProfile_ID == id
+                    );
 
             if (d == null)
             {
-                return NotFound("driver profile not found");
+                return NotFound(
+                    "Driver profile not found."
+                );
             }
 
-            d.LicenseNumber = newLicenseNumber;
+
+            if (newLicenseNumber <= 0)
+            {
+                return BadRequest(
+                    "License number must be greater than zero."
+                );
+            }
+
+
+            d.LicenseNumber =
+                newLicenseNumber;
+
 
             context.SaveChanges();
 
-            return Ok("license number updated successfully");
+
+            return Ok(
+                "License number updated successfully."
+            );
         }
 
         // 4. DELETE - Delete by ID

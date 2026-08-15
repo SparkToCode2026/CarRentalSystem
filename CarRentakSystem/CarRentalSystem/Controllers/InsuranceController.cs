@@ -20,53 +20,171 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddInsurance")]
         public IActionResult AddInsurance(Insurance insurance)
         {
+            // Check Rental exists
+            bool rentalExists =
+                context.Rentals.Any(
+                    r => r.Rental_ID == insurance.Rental_ID
+                );
+
+            if (!rentalExists)
+            {
+                return BadRequest(
+                    "The selected Rental ID does not exist."
+                );
+            }
+
+            // Validate Policy Type
+            if (string.IsNullOrWhiteSpace(insurance.PolicyType))
+            {
+                return BadRequest(
+                    "Policy type is required."
+                );
+            }
+
+            // Validate Coverage
+            if (string.IsNullOrWhiteSpace(insurance.Coverage))
+            {
+                return BadRequest(
+                    "Coverage is required."
+                );
+            }
+
+            // Validate Premium
+            if (insurance.Premium < 0)
+            {
+                return BadRequest(
+                    "Premium cannot be negative."
+                );
+            }
+
+            insurance.Rental = null!;
+
             context.Insurances.Add(insurance);
+
             context.SaveChanges();
 
-            return Ok(insurance.Insurance_ID);
+            return Ok(new
+            {
+                message = "Insurance added successfully.",
+                insuranceId = insurance.Insurance_ID
+            });
         }
 
 
         // 2. PUT - Update Insurance
         [HttpPut("UpdateInsurance")]
-        public IActionResult UpdateInsurance(int id, Insurance newInsurance)
+        public IActionResult UpdateInsurance(
+    int id,
+    Insurance newInsurance)
         {
-            Insurance? insurance = context.Insurances
-                .FirstOrDefault(i => i.Insurance_ID == id);
+            Insurance? insurance =
+                context.Insurances
+                    .FirstOrDefault(
+                        i => i.Insurance_ID == id
+                    );
 
             if (insurance == null)
             {
-                return NotFound("insurance not found");
+                return NotFound(
+                    "Insurance not found."
+                );
             }
 
-            insurance.PolicyType = newInsurance.PolicyType;
-            insurance.Coverage = newInsurance.Coverage;
-            insurance.Premium = newInsurance.Premium;
-            insurance.Rental_ID = newInsurance.Rental_ID;
+            // Check Rental exists
+            bool rentalExists =
+                context.Rentals.Any(
+                    r =>
+                        r.Rental_ID ==
+                        newInsurance.Rental_ID
+                );
+
+            if (!rentalExists)
+            {
+                return BadRequest(
+                    "The selected Rental ID does not exist."
+                );
+            }
+
+            // Validate Policy Type
+            if (string.IsNullOrWhiteSpace(
+                newInsurance.PolicyType))
+            {
+                return BadRequest(
+                    "Policy type is required."
+                );
+            }
+
+            // Validate Coverage
+            if (string.IsNullOrWhiteSpace(
+                newInsurance.Coverage))
+            {
+                return BadRequest(
+                    "Coverage is required."
+                );
+            }
+
+            // Validate Premium
+            if (newInsurance.Premium < 0)
+            {
+                return BadRequest(
+                    "Premium cannot be negative."
+                );
+            }
+
+            insurance.PolicyType =
+                newInsurance.PolicyType;
+
+            insurance.Coverage =
+                newInsurance.Coverage;
+
+            insurance.Premium =
+                newInsurance.Premium;
+
+            insurance.Rental_ID =
+                newInsurance.Rental_ID;
 
             context.SaveChanges();
 
-            return Ok("insurance updated successfully");
+            return Ok(
+                "Insurance updated successfully."
+            );
         }
 
 
         // 3. PATCH - Update specific field
         [HttpPatch("UpdateInsurancePremium")]
-        public IActionResult UpdateInsurancePremium(int id, decimal newPremium)
+        public IActionResult UpdateInsurancePremium(
+    int id,
+    decimal newPremium)
         {
-            Insurance? insurance = context.Insurances
-                .FirstOrDefault(i => i.Insurance_ID == id);
+            Insurance? insurance =
+                context.Insurances
+                    .FirstOrDefault(
+                        i => i.Insurance_ID == id
+                    );
 
             if (insurance == null)
             {
-                return NotFound("insurance not found");
+                return NotFound(
+                    "Insurance not found."
+                );
             }
 
-            insurance.Premium = newPremium;
+            if (newPremium < 0)
+            {
+                return BadRequest(
+                    "Premium cannot be negative."
+                );
+            }
+
+            insurance.Premium =
+                newPremium;
 
             context.SaveChanges();
 
-            return Ok("premium updated successfully");
+            return Ok(
+                "Premium updated successfully."
+            );
         }
 
 
