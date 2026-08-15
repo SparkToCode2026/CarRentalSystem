@@ -18,66 +18,185 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddDiscount")]
         public IActionResult AddDiscount(Discount d)
         {
+            if (string.IsNullOrWhiteSpace(d.Code))
+            {
+                return BadRequest(
+                    "Discount code is required."
+                );
+            }
+
+            if (d.Percent < 0 || d.Percent > 100)
+            {
+                return BadRequest(
+                    "Discount percent must be between 0 and 100."
+                );
+            }
+
+            bool codeExists =
+                context.Discounts.Any(
+                    x => x.Code == d.Code
+                );
+
+            if (codeExists)
+            {
+                return BadRequest(
+                    "This discount code already exists."
+                );
+            }
+
             context.Discounts.Add(d);
+
             context.SaveChanges();
 
-            return Ok(d.Discount_ID);
+            return Ok(new
+            {
+                message = "Discount added successfully.",
+                discountId = d.Discount_ID
+            });
         }
         //2.PUT - Update full Discount
         [HttpPut("UpdateDiscount")]
-        public IActionResult UpdateDiscout(int discount_id, Discount newDiscount)
+        public IActionResult UpdateDiscount(
+    int discount_id,
+    Discount newDiscount)
         {
-            Discount? d = context.Discounts
-                .FirstOrDefault(d => d.Discount_ID == discount_id);
+            Discount? d =
+                context.Discounts
+                    .FirstOrDefault(
+                        x => x.Discount_ID == discount_id
+                    );
 
             if (d == null)
             {
-                return NotFound("discount not found");
+                return NotFound(
+                    "Discount not found."
+                );
             }
 
-            d.Code = newDiscount.Code;
-            d.Percent = newDiscount.Percent;
-            d.ExpiresOn = newDiscount.ExpiresOn;
+            if (string.IsNullOrWhiteSpace(
+                newDiscount.Code))
+            {
+                return BadRequest(
+                    "Discount code is required."
+                );
+            }
+
+            if (
+                newDiscount.Percent < 0 ||
+                newDiscount.Percent > 100
+            )
+            {
+                return BadRequest(
+                    "Discount percent must be between 0 and 100."
+                );
+            }
+
+            bool duplicateCode =
+                context.Discounts.Any(
+                    x =>
+                        x.Code == newDiscount.Code &&
+                        x.Discount_ID != discount_id
+                );
+
+            if (duplicateCode)
+            {
+                return BadRequest(
+                    "This discount code already exists."
+                );
+            }
+
+            d.Code =
+                newDiscount.Code;
+
+            d.Percent =
+                newDiscount.Percent;
+
+            d.ExpiresOn =
+                newDiscount.ExpiresOn;
 
             context.SaveChanges();
 
-            return Ok("discount updated successfully");
-            
+            return Ok(
+                "Discount updated successfully."
+            );
         }
         // 3.PATCH - Update Discount percentage 
         [HttpPatch("UpdateDiscountPercent")]
-        public IActionResult UpdateDiscountPercent(int discount_id, decimal newPercent)
+        public IActionResult UpdateDiscountPercent(
+    int discount_id,
+    decimal newPercent)
         {
-            Discount? d = context.Discounts
-                .FirstOrDefault(d => d.Discount_ID == discount_id);
+            Discount? d =
+                context.Discounts
+                    .FirstOrDefault(
+                        x => x.Discount_ID == discount_id
+                    );
 
             if (d == null)
             {
-                return NotFound("discount not found ");
+                return NotFound(
+                    "Discount not found."
+                );
             }
 
-            d.Percent = newPercent;
+            if (
+                newPercent < 0 ||
+                newPercent > 100
+            )
+            {
+                return BadRequest(
+                    "Discount percent must be between 0 and 100."
+                );
+            }
+
+            d.Percent =
+                newPercent;
 
             context.SaveChanges();
 
-            return Ok("discount percentage updated successfully");
+            return Ok(
+                "Discount percentage updated successfully."
+            );
         }
         // 4.DELETE - Delete Discount by ID
         [HttpDelete("RemoveDiscount")]
-        public IActionResult RemoveDiscount(int discount_id)
+        public IActionResult RemoveDiscount(
+    int discount_id)
         {
-            Discount? d = context.Discounts
-                .FirstOrDefault(d => d.Discount_ID == discount_id);
+            Discount? d =
+                context.Discounts
+                    .FirstOrDefault(
+                        x => x.Discount_ID == discount_id
+                    );
 
             if (d == null)
             {
-                return NotFound("discount not found ");
+                return NotFound(
+                    "Discount not found."
+                );
+            }
+
+            bool isUsed =
+                context.RentalDiscounts.Any(
+                    rd =>
+                        rd.DiscountId ==
+                        discount_id
+                );
+
+            if (isUsed)
+            {
+                return BadRequest(
+                    "This discount cannot be deleted because it is used by rental records."
+                );
             }
 
             context.Discounts.Remove(d);
+
             context.SaveChanges();
 
-            return Ok("discount removed successfully ");
+            return Ok(
+                "Discount removed successfully."
+            );
         }
         // 5.GET ALL - Include related RentalDiscounts
         [HttpGet("GetAllDiscount")]

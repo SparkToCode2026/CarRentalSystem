@@ -17,14 +17,71 @@ namespace CarRentalSystem.Controllers
 
         // POST - Create a new RentalDiscount record
         [HttpPost("CreateRentalDiscount")]
-        public IActionResult CreateRentalDiscount([FromBody] RentalDiscount rentalDiscount)
+        public IActionResult CreateRentalDiscount(
+    [FromBody] RentalDiscount rentalDiscount)
         {
+            // Check Rental exists
+            bool rentalExists =
+                context.Rentals.Any(
+                    r => r.Rental_ID == rentalDiscount.Rental_ID
+                );
+
+            if (!rentalExists)
+            {
+                return BadRequest(
+                    "The selected rental does not exist."
+                );
+            }
+
+
+            // Check Discount exists
+            bool discountExists =
+                context.Discounts.Any(
+                    d => d.Discount_ID == rentalDiscount.DiscountId
+                );
+
+            if (!discountExists)
+            {
+                return BadRequest(
+                    "The selected discount does not exist."
+                );
+            }
+
+
+            // Prevent duplicate composite key
+            bool alreadyExists =
+                context.RentalDiscounts.Any(
+                    rd =>
+                        rd.Rental_ID == rentalDiscount.Rental_ID &&
+                        rd.DiscountId == rentalDiscount.DiscountId
+                );
+
+            if (alreadyExists)
+            {
+                return BadRequest(
+                    "This discount is already applied to this rental."
+                );
+            }
+
+
+            if (rentalDiscount.AppliedAmount < 0)
+            {
+                return BadRequest(
+                    "Applied amount cannot be negative."
+                );
+            }
+
+
             context.RentalDiscounts.Add(rentalDiscount);
+
             context.SaveChanges();
+
+
             return Ok(new
             {
-                rentalDiscount.Rental_ID,
-                rentalDiscount.DiscountId
+                message = "Rental discount created successfully.",
+                rentalId = rentalDiscount.Rental_ID,
+                discountId = rentalDiscount.DiscountId
             });
         }
         // 2. PUT - Update the full RentalDiscount
@@ -34,21 +91,40 @@ namespace CarRentalSystem.Controllers
     int discountId,
     RentalDiscount newRentalDiscount)
         {
-            RentalDiscount? rentalDiscount = context.RentalDiscounts
-                .FirstOrDefault(rd =>
-                    rd.Rental_ID == rentalId &&
-                    rd.DiscountId == discountId);
+            RentalDiscount? rentalDiscount =
+                context.RentalDiscounts
+                    .FirstOrDefault(
+                        rd =>
+                            rd.Rental_ID == rentalId &&
+                            rd.DiscountId == discountId
+                    );
 
             if (rentalDiscount == null)
             {
-                return NotFound("rental discount not found");
+                return NotFound(
+                    "Rental discount not found."
+                );
             }
 
-            rentalDiscount.AppliedAmount = newRentalDiscount.AppliedAmount;
+
+            if (newRentalDiscount.AppliedAmount < 0)
+            {
+                return BadRequest(
+                    "Applied amount cannot be negative."
+                );
+            }
+
+
+            rentalDiscount.AppliedAmount =
+                newRentalDiscount.AppliedAmount;
+
 
             context.SaveChanges();
 
-            return Ok("rental discount updated successfully");
+
+            return Ok(
+                "Rental discount updated successfully."
+            );
         }
 
         // 3. PATCH - Update a specific field
@@ -58,21 +134,40 @@ namespace CarRentalSystem.Controllers
     int discountId,
     decimal newAmount)
         {
-            RentalDiscount? rentalDiscount = context.RentalDiscounts
-                .FirstOrDefault(rd =>
-                    rd.Rental_ID == rentalId &&
-                    rd.DiscountId == discountId);
+            RentalDiscount? rentalDiscount =
+                context.RentalDiscounts
+                    .FirstOrDefault(
+                        rd =>
+                            rd.Rental_ID == rentalId &&
+                            rd.DiscountId == discountId
+                    );
 
             if (rentalDiscount == null)
             {
-                return NotFound("rental discount not found");
+                return NotFound(
+                    "Rental discount not found."
+                );
             }
 
-            rentalDiscount.AppliedAmount = newAmount;
+
+            if (newAmount < 0)
+            {
+                return BadRequest(
+                    "Applied amount cannot be negative."
+                );
+            }
+
+
+            rentalDiscount.AppliedAmount =
+                newAmount;
+
 
             context.SaveChanges();
 
-            return Ok("applied amount updated successfully");
+
+            return Ok(
+                "Applied amount updated successfully."
+            );
         }
         // 4. DELETE - Delete using the composite key
         [HttpDelete("RemoveRentalDiscount")]

@@ -29,11 +29,49 @@ namespace CarRentalSystem.Controllers
         [HttpPost("AddMaintenance")]
         public IActionResult AddMaintenance(Maintenance m)
         {
+            // Check Car exists
+            bool carExists =
+                context.Cars.Any(c => c.CarId == m.Carid);
+
+            if (!carExists)
+            {
+                return BadRequest(
+                    "The selected car does not exist."
+                );
+            }
+
+            // Validate description
+            if (string.IsNullOrWhiteSpace(m.Description))
+            {
+                return BadRequest(
+                    "Description is required."
+                );
+            }
+
+            // Validate status
+            if (string.IsNullOrWhiteSpace(m.Status))
+            {
+                return BadRequest(
+                    "Status is required."
+                );
+            }
+
+            // Validate cost
+            if (m.Cost < 0)
+            {
+                return BadRequest(
+                    "Maintenance cost cannot be negative."
+                );
+            }
 
             context.Maintenances.Add(m);
             context.SaveChanges();
 
-            return Ok(m.Maintenane_ID);
+            return Ok(new
+            {
+                message = "Maintenance added successfully.",
+                maintenanceId = m.Maintenane_ID
+            });
         }
 
 
@@ -63,20 +101,37 @@ namespace CarRentalSystem.Controllers
         //Request URL => http://localhost:5071/Maintenance/UpdateMaintenanceStatus?id=3&newStatus=Completed
         //Request method => Patch
         [HttpPatch("UpdateMaintenanceStatus")]
-        public IActionResult UpdateMaintenanceStatus(int id, string newStatus)
+        public IActionResult UpdateMaintenanceStatus(
+    int id,
+    string newStatus)
         {
-            Maintenance? m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
+            Maintenance? m =
+                context.Maintenances
+                    .FirstOrDefault(
+                        m => m.Maintenane_ID == id
+                    );
 
             if (m == null)
             {
-                return NotFound("maintenance record not found");
+                return NotFound(
+                    "Maintenance record not found."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(newStatus))
+            {
+                return BadRequest(
+                    "Status is required."
+                );
             }
 
             m.Status = newStatus;
 
             context.SaveChanges();
 
-            return Ok();
+            return Ok(
+                "Maintenance status updated successfully."
+            );
         }
 
 
@@ -85,13 +140,57 @@ namespace CarRentalSystem.Controllers
         //Request Body => { "ServiceDate" : "2025-02-15", "Description" : "Brake replacement",
         //                   "Cost" : 120.0, "Status" : "In Progress", "Carid" : 2 }
         [HttpPut("UpdateMaintenance")]
-        public IActionResult UpdateMaintenance(int id, Maintenance newMaintenance)
+        public IActionResult UpdateMaintenance(
+    int id,
+    Maintenance newMaintenance)
         {
-            Maintenance? m = context.Maintenances.FirstOrDefault(m => m.Maintenane_ID == id);
+            Maintenance? m =
+                context.Maintenances
+                    .FirstOrDefault(
+                        m => m.Maintenane_ID == id
+                    );
 
             if (m == null)
             {
-                return NotFound("maintenance record not found");
+                return NotFound(
+                    "Maintenance record not found."
+                );
+            }
+
+            // Check Car exists
+            bool carExists =
+                context.Cars.Any(
+                    c => c.CarId == newMaintenance.Carid
+                );
+
+            if (!carExists)
+            {
+                return BadRequest(
+                    "The selected car does not exist."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                newMaintenance.Description))
+            {
+                return BadRequest(
+                    "Description is required."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                newMaintenance.Status))
+            {
+                return BadRequest(
+                    "Status is required."
+                );
+            }
+
+            if (newMaintenance.Cost < 0)
+            {
+                return BadRequest(
+                    "Maintenance cost cannot be negative."
+                );
             }
 
             m.Carid = newMaintenance.Carid;
@@ -102,7 +201,9 @@ namespace CarRentalSystem.Controllers
 
             context.SaveChanges();
 
-            return Ok();
+            return Ok(
+                "Maintenance updated successfully."
+            );
         }
 
 
