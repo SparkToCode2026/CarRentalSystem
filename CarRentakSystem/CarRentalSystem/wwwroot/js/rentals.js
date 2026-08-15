@@ -104,7 +104,7 @@ async function loadRentals() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/GetAllRentals`
             );
 
@@ -343,7 +343,7 @@ async function viewRental(id) {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/GetRentalById?id=${id}`
             );
 
@@ -635,7 +635,7 @@ async function saveRentalStatus() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/UpdateRentalStatus?id=${id}&status=${encodeURIComponent(status)}`,
                 {
                     method: "PATCH"
@@ -754,7 +754,7 @@ async function filterRentals() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/FilterRentals?${params.toString()}`
             );
 
@@ -847,7 +847,7 @@ async function sortByDays() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/RentalAnalytics`
             );
 
@@ -941,7 +941,7 @@ async function confirmDeleteRental() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/DeleteRental?id=${pendingDeleteRentalId}`,
                 {
                     method: "DELETE"

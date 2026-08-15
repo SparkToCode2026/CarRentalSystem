@@ -102,7 +102,10 @@ async function login(event) {
             "jwtToken",
             token
         );
-
+        localStorage.setItem("userRole", result.role ?? result.Role ?? "");
+        localStorage.setItem("userName", result.name ?? result.Name ?? "");
+        localStorage.setItem("userEmail", result.email ?? result.Email ?? email);
+        localStorage.setItem("userId", String(result.userId ?? result.UserId ?? ""));
 
         message.innerHTML = `
             <div class="alert alert-success">
@@ -309,11 +312,37 @@ function requireLogin() {
 
 
 function logout() {
-
     localStorage.removeItem("jwtToken");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userId");
 
-    window.location.href =
-        "/pages/login.html";
+    window.location.href = "/pages/login.html";
+}
+
+function getUserRole() {
+    return localStorage.getItem("userRole") || "";
+}
+
+function getUserName() {
+    return localStorage.getItem("userName") || "";
+}
+
+function isAdmin() {
+    return getUserRole().toLowerCase() === "admin";
+}
+function isStaffOrAdmin() {
+    const role = getUserRole().toLowerCase();
+    return role === "admin" || role === "staff";
+}
+
+function getUserInitials() {
+    const name = getUserName().trim();
+    if (!name) return "U";
+    const parts = name.split(/\s+/).filter(Boolean);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
 
@@ -341,26 +370,14 @@ async function authorizedFetch(url, options = {}) {
         await fetch(url, options);
 
 
-    // Token missing / expired
     if (response.status === 401) {
-
         localStorage.removeItem("jwtToken");
-
-        window.location.href =
-            "/pages/login.html";
-
-        return null;
+        window.location.href = "/pages/login.html";
+        throw new Error("Session expired. Redirecting to login...");
     }
 
-
-    // Logged in but does not have permission
     if (response.status === 403) {
-
-        alert(
-            "You do not have permission to perform this action."
-        );
-
-        return null;
+        throw new Error("You do not have permission to perform this action.");
     }
 
 

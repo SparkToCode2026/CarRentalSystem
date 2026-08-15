@@ -1,4 +1,5 @@
 ﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,7 @@ namespace CarRentalSystem.Controllers
         // 1. GET ALL
         // GET /api/CarCategory
         // ========================================
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -48,7 +49,7 @@ namespace CarRentalSystem.Controllers
         // 2. GET BY ID
         // GET /api/CarCategory/5
         // ========================================
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -88,7 +89,7 @@ namespace CarRentalSystem.Controllers
         // 3. ADD
         // POST /api/CarCategory
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(
             CarCategory category)
@@ -138,7 +139,7 @@ namespace CarRentalSystem.Controllers
         // 4. UPDATE
         // PUT /api/CarCategory/5
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -200,7 +201,7 @@ namespace CarRentalSystem.Controllers
         // 5. UPDATE RATE ONLY
         // PUT /api/CarCategory/5/rate
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}/rate")]
         public async Task<IActionResult> UpdateRate(
             int id,
@@ -244,7 +245,7 @@ namespace CarRentalSystem.Controllers
         // 6. DELETE
         // DELETE /api/CarCategory/5
         // ========================================
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             int id)
@@ -299,7 +300,7 @@ namespace CarRentalSystem.Controllers
         // 7. FILTER
         // GET /api/CarCategory/filter?name=SUV
         // ========================================
-
+        [Authorize]
         [HttpGet("filter")]
         public async Task<IActionResult> Filter(
             string? name)
@@ -349,7 +350,7 @@ namespace CarRentalSystem.Controllers
         // 8. SORT
         // GET /api/CarCategory/sort
         // ========================================
-
+        [Authorize]
         [HttpGet("sort")]
         public async Task<IActionResult> Sort(
             string sortBy = "name",
@@ -419,7 +420,7 @@ namespace CarRentalSystem.Controllers
         // 9. SUMMARY
         // GET /api/CarCategory/summary
         // ========================================
-
+        [Authorize]
         [HttpGet("summary")]
         public async Task<IActionResult> Summary()
         {

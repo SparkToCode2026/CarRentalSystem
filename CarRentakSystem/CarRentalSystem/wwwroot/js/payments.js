@@ -63,7 +63,7 @@ async function loadRentals() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${RENTAL_API}/GetAllRentals`
             );
 
@@ -145,7 +145,7 @@ async function loadPayments() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${PAYMENT_API}/GetAllPayments`
             );
 
@@ -565,7 +565,7 @@ async function savePayment(event) {
 
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 url,
                 {
                     method: method,
@@ -668,7 +668,7 @@ async function filterPayments() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${PAYMENT_API}/FilterPayments?${params}`
             );
 
@@ -741,7 +741,7 @@ async function deletePayment() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${PAYMENT_API}/DeletePayment?id=${deletePaymentId}`,
                 {
                     method: "DELETE"
@@ -806,7 +806,7 @@ async function loadAnalytics() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${PAYMENT_API}/PaymentAnalytics`
             );
 

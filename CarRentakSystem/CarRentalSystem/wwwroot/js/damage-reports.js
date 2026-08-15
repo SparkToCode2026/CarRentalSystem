@@ -19,7 +19,7 @@ async function loadDamageReports() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_BASE}/DamageReport/GetAllDamageReports`
             );
 
@@ -129,7 +129,7 @@ async function editDamageReport(id) {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_BASE}/DamageReport/GetDamageReport?id=${id}`
             );
 
@@ -223,7 +223,7 @@ async function saveDamageReport() {
         const method =
             id ? "PUT" : "POST";
 
-        const response = await fetch(url, {
+        const response = await authorizedFetch(url, {
 
             method,
 
@@ -275,7 +275,7 @@ async function deleteDamageReport(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
 
             `${API_BASE}/DamageReport/RemoveDamageReport?id=${id}`,
 
@@ -319,7 +319,7 @@ async function filterDamageReports() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_BASE}/DamageReport/GetByCar?carId=${carId}`
             );
 
@@ -347,7 +347,7 @@ async function sortDamageReports() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${API_BASE}/DamageReport/GetSortedByRepairCost`
             );
 

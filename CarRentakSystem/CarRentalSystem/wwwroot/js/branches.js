@@ -130,7 +130,7 @@ async function loadBranches() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch
                 BRANCH_API
             );
 
@@ -377,7 +377,7 @@ async function openEditBranchModal(id) {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${BRANCH_API}/${id}`
             );
 
@@ -547,7 +547,7 @@ async function saveBranch(event) {
         if (id) {
 
             response =
-                await fetch(
+                await authorizedFetch(
                     `${BRANCH_API}/${id}`,
                     {
                         method:
@@ -572,7 +572,7 @@ async function saveBranch(event) {
         else {
 
             response =
-                await fetch(
+                await authorizedFetch(
                     BRANCH_API,
                     {
                         method:
@@ -695,7 +695,7 @@ async function confirmDeleteBranch() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
                 `${BRANCH_API}/${pendingDeleteBranchId}`,
                 {
                     method:
@@ -785,7 +785,7 @@ async function searchBranches() {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
 
                 `${BRANCH_API}/filter?city=${encodeURIComponent(
                     city
@@ -836,7 +836,7 @@ async function sortBranches(sortBy) {
     try {
 
         const response =
-            await fetch(
+            await authorizedFetch(
 
                 `${BRANCH_API}/sort?sortBy=${sortBy}&descending=false`
 

@@ -1,4 +1,5 @@
 ﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 1.POST - Create a new DamageReport
+        [Authorize]
         [HttpPost("AddDamageReport")]
         public IActionResult AddDamageReport(DamageReport d)
         {
@@ -66,6 +68,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 2.PUT - Update full DamageReport
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdateDamageReport")]
         public IActionResult UpdateDamageReport(
     int id,
@@ -147,6 +150,7 @@ namespace CarRentalSystem.Controllers
             );
         }
         // 3.PATCH -Update RepairCost only
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateRepairCost")]
         public IActionResult UpdateRepairCost(
     int id,
@@ -183,6 +187,7 @@ namespace CarRentalSystem.Controllers
         }
 
         // 4.DELETE -Delete DamageReport by ID
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveDamageReport")]
         public IActionResult RemoveDamageReport(int id)
         {
@@ -199,9 +204,10 @@ namespace CarRentalSystem.Controllers
 
             return Ok("damage report removed successfully ");
         }
-        
-        
+
+
         // 5.GET ALL - Include related Car and Rental
+        [Authorize]
         [HttpGet("GetAllDamageReports")]
         public IActionResult GetAllDamageReports()
         {
@@ -213,6 +219,7 @@ namespace CarRentalSystem.Controllers
             return Ok(damageReports);
         }
         // 6.GET BY ID -Include related Car and Rental
+        [Authorize]
         [HttpGet("GetDamageReport")]
         public IActionResult GetDamageReport(int id)
         {
@@ -228,8 +235,9 @@ namespace CarRentalSystem.Controllers
 
             return Ok(d);
         }
-        
+
         // 7.FILTER - Filter by Car
+        [Authorize]
         [HttpGet("GetByCar")]
         public IActionResult GetByCar(int carId)
         {
@@ -239,8 +247,9 @@ namespace CarRentalSystem.Controllers
 
             return Ok(damageReports);
         }
-        
+
         // 8.SORT -Sort by RepairCost
+        [Authorize]
         [HttpGet("GetSortedByRepairCost")]
         public IActionResult GetSortedByRepairCost()
         {

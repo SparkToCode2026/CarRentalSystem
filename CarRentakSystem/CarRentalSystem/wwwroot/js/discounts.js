@@ -57,7 +57,7 @@ async function loadDiscounts() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE_URL}/Discount/GetAllDiscount`
         );
 
@@ -298,7 +298,7 @@ async function openEditDiscountModal(id) {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE_URL}/Discount/GetDiscount?discount_id=${id}`
         );
 
@@ -533,7 +533,7 @@ async function saveDiscount(event) {
 
         if (id) {
 
-            response = await fetch(
+            response = await authorizedFetch(
                 `${API_BASE_URL}/Discount/UpdateDiscount?discount_id=${id}`,
                 {
                     method: "PUT",
@@ -556,7 +556,7 @@ async function saveDiscount(event) {
 
         else {
 
-            response = await fetch(
+            response = await authorizedFetch(
                 `${API_BASE_URL}/Discount/AddDiscount`,
                 {
                     method: "POST",
@@ -677,7 +677,7 @@ async function deleteDiscount() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
 
             `${API_BASE_URL}/Discount/RemoveDiscount?discount_id=${selectedDiscountId}`,
 
@@ -781,7 +781,7 @@ async function filterDiscounts() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
 
             `${API_BASE_URL}/Discount/GetByPercent?percent=${encodeURIComponent(percent)}`
 
@@ -839,7 +839,7 @@ async function loadSortedDiscounts() {
 
     try {
 
-        const response = await fetch(
+        const response = await authorizedFetch(
             `${API_BASE_URL}/Discount/GetSortedByExpiry`
         );
 

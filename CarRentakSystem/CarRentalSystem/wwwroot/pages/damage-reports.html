@@ -20,397 +20,400 @@
 
 <body>
 
-<div class="topbar">
+    <div class="topbar">
 
-    <div class="brand">
-        <span class="dot"></span>
-        RoadKey
+        <div class="brand">
+            <span class="dot"></span>
+            RoadKey
+        </div>
+
+        <div class="search flex-grow-1">
+
+            <input class="form-control form-control-sm"
+                   placeholder="Search damage reports..."
+                   id="searchInput">
+
+        </div>
+
+        <button class="btn btn-sm btn-primary"
+                data-role="staff"
+                data-bs-toggle="modal"
+                data-bs-target="#damageModal"
+                onclick="openAddModal()">
+
+            <i class="bi bi-plus-lg"></i>
+            Add Damage Report
+
+        </button>
+
+        <div class="avatar">M</div>
+
     </div>
 
-    <div class="search flex-grow-1">
+    <div class="app-shell">
 
-        <input class="form-control form-control-sm"
-               placeholder="Search damage reports..."
-               id="searchInput">
+        <aside class="sidebar">
+
+            <!-- OVERVIEW -->
+            <div class="side-group">
+
+                <div class="side-label">
+                    Overview
+                </div>
+
+                <a class="side-link" href="../index.html">
+                    <i class="bi bi-grid-1x2"></i>
+                    Dashboard
+                </a>
+
+            </div>
+
+
+            <!-- FLEET -->
+            <div class="side-group">
+
+                <div class="side-label">
+                    Fleet
+                </div>
+
+                <a class="side-link" href="cars.html">
+                    <i class="bi bi-car-front"></i>
+                    Cars
+                </a>
+
+                <a class="side-link" href="categories.html">
+                    <i class="bi bi-tags"></i>
+                    Car Categories
+                </a>
+
+                <a class="side-link" href="branches.html">
+                    <i class="bi bi-geo-alt"></i>
+                    Branches
+                </a>
+
+                <a class="side-link" href="maintenance.html">
+                    <i class="bi bi-tools"></i>
+                    Maintenance
+                </a>
+
+                <a class="side-link active" href="damage-reports.html">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Damage Reports
+                </a>
+
+            </div>
+
+
+            <!-- BOOKINGS -->
+            <div class="side-group">
+
+                <div class="side-label">
+                    Bookings
+                </div>
+
+                <a class="side-link" href="rentals.html">
+                    <i class="bi bi-key"></i>
+                    Rentals
+                </a>
+
+                <a class="side-link" href="payments.html">
+                    <i class="bi bi-credit-card"></i>
+                    Payments
+                </a>
+
+                <a class="side-link" href="discounts.html">
+                    <i class="bi bi-percent"></i>
+                    Discounts
+                </a>
+
+                <a class="side-link" href="insurance.html">
+                    <i class="bi bi-shield-check"></i>
+                    Insurance
+                </a>
+
+            </div>
+
+
+            <!-- PEOPLE -->
+            <div class="side-group">
+
+                <div class="side-label">
+                    People
+                </div>
+
+                <a class="side-link" href="driver-profiles.html">
+                    <i class="bi bi-person-badge"></i>
+                    Driver Profiles
+                </a>
+
+                <a class="side-link" href="reviews.html">
+                    <i class="bi bi-star"></i>
+                    Reviews
+                </a>
+
+                <a class="side-link" href="users.html">
+                    <i class="bi bi-people"></i>
+                    Users
+                </a>
+
+            </div>
+
+        </aside>
+
+        <main class="main">
+
+            <div class="page-head">
+
+                <div>
+
+                    <div class="eyebrow">Fleet</div>
+
+                    <h1 class="page-title">
+                        Damage Reports
+                    </h1>
+
+                    <div class="page-sub">
+                        Manage vehicle damage reports.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="messageContainer"></div>
+
+            <div class="card p-3 mb-3">
+
+                <div class="row g-2 align-items-end">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Filter by Car ID
+                        </label>
+
+                        <input class="form-control"
+                               id="carFilter"
+                               type="number">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button class="btn btn-outline-secondary w-100"
+                                onclick="filterDamageReports()">
+
+                            Filter
+
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button class="btn btn-outline-secondary w-100"
+                                onclick="sortDamageReports()">
+
+                            Sort by Repair Cost
+
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <button class="btn btn-outline-dark w-100"
+                                onclick="loadDamageReports()">
+
+                            Refresh
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card p-3">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h2 style="font-size:16px;font-weight:700;margin:0;">
+                        Damage Reports
+                    </h2>
+
+                    <span class="badge text-bg-secondary"
+                          id="recordCount">
+
+                        0 records
+
+                    </span>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+                                <th>Car ID</th>
+                                <th>Rental ID</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Repair Cost</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="damageTableBody">
+
+                            <tr>
+
+                                <td colspan="7"
+                                    class="text-center py-5">
+
+                                    Loading...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </main>
 
     </div>
 
-    <button class="btn btn-sm btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#damageModal"
-            onclick="openAddModal()">
+    <div class="modal fade"
+         id="damageModal"
+         tabindex="-1">
 
-        <i class="bi bi-plus-lg"></i>
-        Add Damage Report
+        <div class="modal-dialog">
 
-    </button>
+            <div class="modal-content">
 
-    <div class="avatar">M</div>
+                <div class="modal-header">
 
-</div>
+                    <h5 class="modal-title"
+                        id="modalTitle">
 
-<div class="app-shell">
+                        Add Damage Report
 
-    <aside class="sidebar">
+                    </h5>
 
-        <!-- OVERVIEW -->
-        <div class="side-group">
-
-            <div class="side-label">
-                Overview
-            </div>
-
-            <a class="side-link" href="../index.html">
-                <i class="bi bi-grid-1x2"></i>
-                Dashboard
-            </a>
-
-        </div>
-
-
-        <!-- FLEET -->
-        <div class="side-group">
-
-            <div class="side-label">
-                Fleet
-            </div>
-
-            <a class="side-link" href="cars.html">
-                <i class="bi bi-car-front"></i>
-                Cars
-            </a>
-
-            <a class="side-link" href="categories.html">
-                <i class="bi bi-tags"></i>
-                Car Categories
-            </a>
-
-            <a class="side-link" href="branches.html">
-                <i class="bi bi-geo-alt"></i>
-                Branches
-            </a>
-
-            <a class="side-link" href="maintenance.html">
-                <i class="bi bi-tools"></i>
-                Maintenance
-            </a>
-
-            <a class="side-link active" href="damage-reports.html">
-                <i class="bi bi-exclamation-triangle"></i>
-                Damage Reports
-            </a>
-
-        </div>
-
-
-        <!-- BOOKINGS -->
-        <div class="side-group">
-
-            <div class="side-label">
-                Bookings
-            </div>
-
-            <a class="side-link" href="rentals.html">
-                <i class="bi bi-key"></i>
-                Rentals
-            </a>
-
-            <a class="side-link" href="payments.html">
-                <i class="bi bi-credit-card"></i>
-                Payments
-            </a>
-
-            <a class="side-link" href="discounts.html">
-                <i class="bi bi-percent"></i>
-                Discounts
-            </a>
-
-            <a class="side-link" href="insurance.html">
-                <i class="bi bi-shield-check"></i>
-                Insurance
-            </a>
-
-        </div>
-
-
-        <!-- PEOPLE -->
-        <div class="side-group">
-
-            <div class="side-label">
-                People
-            </div>
-
-            <a class="side-link" href="driver-profiles.html">
-                <i class="bi bi-person-badge"></i>
-                Driver Profiles
-            </a>
-
-            <a class="side-link" href="reviews.html">
-                <i class="bi bi-star"></i>
-                Reviews
-            </a>
-
-            <a class="side-link" href="users.html">
-                <i class="bi bi-people"></i>
-                Users
-            </a>
-
-        </div>
-
-    </aside>
-
-    <main class="main">
-
-        <div class="page-head">
-
-            <div>
-
-                <div class="eyebrow">Fleet</div>
-
-                <h1 class="page-title">
-                    Damage Reports
-                </h1>
-
-                <div class="page-sub">
-                    Manage vehicle damage reports.
-                </div>
-
-            </div>
-
-        </div>
-
-        <div id="messageContainer"></div>
-
-        <div class="card p-3 mb-3">
-
-            <div class="row g-2 align-items-end">
-
-                <div class="col-md-4">
-
-                    <label class="form-label">
-                        Filter by Car ID
-                    </label>
-
-                    <input class="form-control"
-                           id="carFilter"
-                           type="number">
-
-                </div>
-
-                <div class="col-md-3">
-
-                    <button class="btn btn-outline-secondary w-100"
-                            onclick="filterDamageReports()">
-
-                        Filter
-
+                    <button class="btn-close"
+                            data-bs-dismiss="modal">
                     </button>
 
                 </div>
 
-                <div class="col-md-3">
+                <div class="modal-body">
 
-                    <button class="btn btn-outline-secondary w-100"
-                            onclick="sortDamageReports()">
+                    <form id="damageForm">
 
-                        Sort by Repair Cost
+                        <input type="hidden"
+                               id="damageId">
 
-                    </button>
+                        <div class="mb-3">
 
-                </div>
+                            <label class="form-label">
+                                Car ID
+                            </label>
 
-                <div class="col-md-2">
+                            <input class="form-control"
+                                   id="carId"
+                                   type="number"
+                                   required>
 
-                    <button class="btn btn-outline-dark w-100"
-                            onclick="loadDamageReports()">
+                        </div>
 
-                        Refresh
+                        <div class="mb-3">
 
-                    </button>
+                            <label class="form-label">
+                                Rental ID
+                            </label>
 
-                </div>
+                            <input class="form-control"
+                                   id="rentalId"
+                                   type="number"
+                                   required>
 
-            </div>
+                        </div>
 
-        </div>
+                        <div class="mb-3">
 
-        <div class="card p-3">
+                            <label class="form-label">
+                                Report Date
+                            </label>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+                            <input class="form-control"
+                                   id="reportDate"
+                                   type="date"
+                                   required>
 
-                <h2 style="font-size:16px;font-weight:700;margin:0;">
-                    Damage Reports
-                </h2>
+                        </div>
 
-                <span class="badge text-bg-secondary"
-                      id="recordCount">
+                        <div class="mb-3">
 
-                    0 records
+                            <label class="form-label">
+                                Description
+                            </label>
 
-                </span>
-
-            </div>
-
-            <div class="table-responsive">
-
-                <table class="table align-middle">
-
-                    <thead>
-
-                    <tr>
-
-                        <th>ID</th>
-                        <th>Car ID</th>
-                        <th>Rental ID</th>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Repair Cost</th>
-                        <th>Actions</th>
-
-                    </tr>
-
-                    </thead>
-
-                    <tbody id="damageTableBody">
-
-                    <tr>
-
-                        <td colspan="7"
-                            class="text-center py-5">
-
-                            Loading...
-
-                        </td>
-
-                    </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </main>
-
-</div>
-
-<div class="modal fade"
-     id="damageModal"
-     tabindex="-1">
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title"
-                    id="modalTitle">
-
-                    Add Damage Report
-
-                </h5>
-
-                <button class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body">
-
-                <form id="damageForm">
-
-                    <input type="hidden"
-                           id="damageId">
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Car ID
-                        </label>
-
-                        <input class="form-control"
-                               id="carId"
-                               type="number"
-                               required>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Rental ID
-                        </label>
-
-                        <input class="form-control"
-                               id="rentalId"
-                               type="number"
-                               required>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Report Date
-                        </label>
-
-                        <input class="form-control"
-                               id="reportDate"
-                               type="date"
-                               required>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Description
-                        </label>
-
-                        <textarea class="form-control"
-                                  id="description"
-                                  required>
+                            <textarea class="form-control"
+                                      id="description"
+                                      required>
                         </textarea>
 
-                    </div>
+                        </div>
 
-                    <div class="mb-3">
+                        <div class="mb-3">
 
-                        <label class="form-label">
-                            Repair Cost
-                        </label>
+                            <label class="form-label">
+                                Repair Cost
+                            </label>
 
-                        <input class="form-control"
-                               id="repairCost"
-                               type="number"
-                               step="0.01"
-                               required>
+                            <input class="form-control"
+                                   id="repairCost"
+                                   type="number"
+                                   step="0.01"
+                                   required>
 
-                    </div>
+                        </div>
 
-                </form>
+                    </form>
 
-            </div>
+                </div>
 
-            <div class="modal-footer">
+                <div class="modal-footer">
 
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal">
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
 
-                    Cancel
+                        Cancel
 
-                </button>
+                    </button>
 
-                <button class="btn btn-primary"
-                        onclick="saveDamageReport()">
+                    <button class="btn btn-primary"
+                            onclick="saveDamageReport()">
 
-                    Save
+                        Save
 
-                </button>
+                    </button>
+
+                </div>
 
             </div>
 
@@ -418,11 +421,10 @@
 
     </div>
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script src="../js/damage-reports.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/nav-guard.js"></script>
+    <script src="../js/damage-reports.js"></script>
 
 </body>
 </html>

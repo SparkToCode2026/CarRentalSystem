@@ -1,4 +1,5 @@
 ﻿using CarRentalSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace CarRentalSystem.Controllers
             context = _context;
         }
         //1.POST - Create a New Discount 
+        [Authorize(Roles = "Admin,staff")]
         [HttpPost("AddDiscount")]
         public IActionResult AddDiscount(Discount d)
         {
@@ -55,6 +57,7 @@ namespace CarRentalSystem.Controllers
             });
         }
         //2.PUT - Update full Discount
+        [Authorize(Roles = "Admin,staff")]
         [HttpPut("UpdateDiscount")]
         public IActionResult UpdateDiscount(
     int discount_id,
@@ -121,6 +124,7 @@ namespace CarRentalSystem.Controllers
             );
         }
         // 3.PATCH - Update Discount percentage 
+        [Authorize(Roles = "Admin,staff")]
         [HttpPatch("UpdateDiscountPercent")]
         public IActionResult UpdateDiscountPercent(
     int discount_id,
@@ -159,6 +163,7 @@ namespace CarRentalSystem.Controllers
             );
         }
         // 4.DELETE - Delete Discount by ID
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveDiscount")]
         public IActionResult RemoveDiscount(
     int discount_id)
@@ -199,6 +204,7 @@ namespace CarRentalSystem.Controllers
             );
         }
         // 5.GET ALL - Include related RentalDiscounts
+        [Authorize]
         [HttpGet("GetAllDiscount")]
         public IActionResult GetAllDiscount()
         {
@@ -226,8 +232,9 @@ namespace CarRentalSystem.Controllers
             return Ok(d);
             
         }
-        
+
         // 7.GET FILTER - filter by percetage 
+        [Authorize]
         [HttpGet("GetByPercent")]
         public IActionResult GetByPercent(decimal percent)
         {
