@@ -42,8 +42,38 @@
             New Rental
         </button>
 
-        <div class="avatar">
-            M
+        <div class="dropdown">
+
+            <div class="avatar"
+                 id="userAvatar"
+                 role="button"
+                 data-bs-toggle="dropdown">
+                U
+            </div>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+                <li>
+                    <span class="dropdown-item-text small text-muted">
+                        RoadKey Account
+                    </span>
+                </li>
+
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+
+                <li>
+                    <a class="dropdown-item text-danger"
+                       href="#"
+                       onclick="logout(); return false;">
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Log out
+                    </a>
+                </li>
+
+            </ul>
+
         </div>
 
     </div>

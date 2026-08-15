@@ -16,15 +16,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function loadDamageReports() {
 
-    const response =
-        await fetch(
-            `${API_BASE}/DamageReport/GetAllDamageReports`
-        );
+    try {
 
-    damageReports =
-        await response.json();
+        const response =
+            await fetch(
+                `${API_BASE}/DamageReport/GetAllDamageReports`
+            );
 
-    displayDamageReports(damageReports);
+        if (!response.ok) {
+            throw new Error("Failed to load damage reports.");
+        }
+
+        damageReports =
+            await response.json();
+
+        displayDamageReports(damageReports);
+
+    }
+    catch (error) {
+
+        showMessage(error.message, "danger");
+        console.error(error);
+
+    }
 
 }
 
@@ -35,6 +49,20 @@ function displayDamageReports(records) {
 
     document.getElementById("recordCount").textContent =
         `${records.length} records`;
+
+    if (records.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5">
+                    No damage reports found
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
 
     tbody.innerHTML =
         records.map(d => `
@@ -53,7 +81,7 @@ function displayDamageReports(records) {
         ).toLocaleDateString()}
             </td>
 
-            <td>${d.description}</td>
+            <td>${escapeHtml(d.description)}</td>
 
             <td>
                 OMR ${Number(
@@ -98,36 +126,50 @@ function openAddModal() {
 
 async function editDamageReport(id) {
 
-    const response =
-        await fetch(
-            `${API_BASE}/DamageReport/GetDamageReport?id=${id}`
-        );
+    try {
 
-    const d =
-        await response.json();
+        const response =
+            await fetch(
+                `${API_BASE}/DamageReport/GetDamageReport?id=${id}`
+            );
 
-    document.getElementById("damageId").value =
-        d.damageReport_ID;
+        if (!response.ok) {
+            throw new Error("Damage report not found.");
+        }
 
-    document.getElementById("carId").value =
-        d.carId;
+        const d =
+            await response.json();
 
-    document.getElementById("rentalId").value =
-        d.rental_ID;
+        document.getElementById("damageId").value =
+            d.damageReport_ID;
 
-    document.getElementById("reportDate").value =
-        d.reportedAtUtc.substring(0, 10);
+        document.getElementById("carId").value =
+            d.carId;
 
-    document.getElementById("description").value =
-        d.description;
+        document.getElementById("rentalId").value =
+            d.rental_ID;
 
-    document.getElementById("repairCost").value =
-        d.repairCost;
+        document.getElementById("reportDate").value =
+            d.reportedAtUtc.substring(0, 10);
 
-    document.getElementById("modalTitle").textContent =
-        "Edit Damage Report";
+        document.getElementById("description").value =
+            d.description;
 
-    damageModal.show();
+        document.getElementById("repairCost").value =
+            d.repairCost;
+
+        document.getElementById("modalTitle").textContent =
+            "Edit Damage Report";
+
+        damageModal.show();
+
+    }
+    catch (error) {
+
+        showMessage(error.message, "danger");
+        console.error(error);
+
+    }
 
 }
 
@@ -150,10 +192,10 @@ async function saveDamageReport() {
     const report = {
 
         description:
-        document.getElementById("description").value,
+            document.getElementById("description").value.trim(),
 
         reportedAtUtc:
-        document.getElementById("reportDate").value,
+            document.getElementById("reportDate").value,
 
         repairCost:
             Number(
@@ -172,28 +214,56 @@ async function saveDamageReport() {
 
     };
 
-    const url = id
-        ? `${API_BASE}/DamageReport/UpdateDamageReport?id=${id}`
-        : `${API_BASE}/DamageReport/AddDamageReport`;
+    try {
 
-    const method =
-        id ? "PUT" : "POST";
+        const url = id
+            ? `${API_BASE}/DamageReport/UpdateDamageReport?id=${id}`
+            : `${API_BASE}/DamageReport/AddDamageReport`;
 
-    await fetch(url, {
+        const method =
+            id ? "PUT" : "POST";
 
-        method,
+        const response = await fetch(url, {
 
-        headers: {
-            "Content-Type": "application/json"
-        },
+            method,
 
-        body: JSON.stringify(report)
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-    });
+            body: JSON.stringify(report)
 
-    damageModal.hide();
+        });
 
-    loadDamageReports();
+        if (!response.ok) {
+
+            const errorText = await response.text();
+
+            throw new Error(
+                errorText ||
+                (id ? "Failed to update damage report." : "Failed to add damage report.")
+            );
+
+        }
+
+        damageModal.hide();
+
+        showMessage(
+            id
+                ? "Damage report updated successfully."
+                : "Damage report added successfully.",
+            "success"
+        );
+
+        await loadDamageReports();
+
+    }
+    catch (error) {
+
+        showMessage(error.message, "danger");
+        console.error(error);
+
+    }
 
 }
 
@@ -203,17 +273,33 @@ async function deleteDamageReport(id) {
         return;
     }
 
-    await fetch(
+    try {
 
-        `${API_BASE}/DamageReport/RemoveDamageReport?id=${id}`,
+        const response = await fetch(
 
-        {
-            method: "DELETE"
+            `${API_BASE}/DamageReport/RemoveDamageReport?id=${id}`,
+
+            {
+                method: "DELETE"
+            }
+
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to delete damage report.");
         }
 
-    );
+        showMessage("Damage report deleted successfully.", "success");
 
-    loadDamageReports();
+        await loadDamageReports();
+
+    }
+    catch (error) {
+
+        showMessage(error.message, "danger");
+        console.error(error);
+
+    }
 
 }
 
@@ -224,34 +310,115 @@ async function filterDamageReports() {
 
     if (!carId) {
 
-        loadDamageReports();
+        await loadDamageReports();
 
         return;
 
     }
 
-    const response =
-        await fetch(
-            `${API_BASE}/DamageReport/GetByCar?carId=${carId}`
-        );
+    try {
 
-    const data =
-        await response.json();
+        const response =
+            await fetch(
+                `${API_BASE}/DamageReport/GetByCar?carId=${carId}`
+            );
 
-    displayDamageReports(data);
+        if (!response.ok) {
+            throw new Error("Failed to filter damage reports.");
+        }
+
+        const data =
+            await response.json();
+
+        displayDamageReports(data);
+
+    }
+    catch (error) {
+
+        showMessage(error.message, "danger");
+        console.error(error);
+
+    }
 
 }
 
 async function sortDamageReports() {
 
-    const response =
-        await fetch(
-            `${API_BASE}/DamageReport/GetSortedByRepairCost`
-        );
+    try {
 
-    const data =
-        await response.json();
+        const response =
+            await fetch(
+                `${API_BASE}/DamageReport/GetSortedByRepairCost`
+            );
 
-    displayDamageReports(data);
+        if (!response.ok) {
+            throw new Error("Failed to sort damage reports.");
+        }
+
+        const data =
+            await response.json();
+
+        displayDamageReports(data);
+
+    }
+    catch (error) {
+
+        showMessage(error.message, "danger");
+        console.error(error);
+
+    }
+
+}
+
+// ===============================
+// MESSAGE
+// ===============================
+function showMessage(message, type) {
+
+    const container =
+        document.getElementById("messageContainer");
+
+    container.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show"
+             role="alert">
+
+            ${escapeHtml(message)}
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    `;
+
+    setTimeout(() => {
+
+        const alert =
+            container.querySelector(".alert");
+
+        if (alert) {
+            alert.remove();
+        }
+
+    }, 4000);
+
+}
+
+// ===============================
+// HTML SAFETY
+// ===============================
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }

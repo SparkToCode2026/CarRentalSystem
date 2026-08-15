@@ -1,6 +1,8 @@
 ﻿const API_BASE = " ";
 
 let reviews = [];
+let carRecords = [];
+let userRecords = [];
 let reviewModal;
 
 // ===============================
@@ -13,9 +15,110 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("reviewModal")
         );
 
+    loadCarsForSelect();
+    loadUsersForSelect();
     loadReviews();
 
 });
+
+// ===============================
+// LOAD CARS FOR DROPDOWN
+// ===============================
+async function loadCarsForSelect() {
+
+    try {
+
+        const response = await fetch(`${API_BASE}/Car/GetAllCars`);
+
+        if (!response.ok) {
+            throw new Error("Failed to load cars.");
+        }
+
+        carRecords = await response.json();
+
+        const select = document.getElementById("carId");
+
+        select.innerHTML = `<option value="">Select car</option>`;
+
+        carRecords.forEach(car => {
+
+            select.innerHTML += `
+                <option value="${car.carId}">
+                    ${escapeHtml(car.plateNumber)} — ${escapeHtml(car.make)} ${escapeHtml(car.model)}
+                </option>
+            `;
+
+        });
+
+    }
+    catch (error) {
+        console.error(error);
+    }
+
+}
+
+// ===============================
+// LOAD USERS FOR DROPDOWN
+// ===============================
+async function loadUsersForSelect() {
+
+    try {
+
+        const response = await fetch(`${API_BASE}/User/GetCustomers`);
+
+        if (!response.ok) {
+            throw new Error("Failed to load users.");
+        }
+
+        userRecords = await response.json();
+
+        const select = document.getElementById("userId");
+
+        select.innerHTML = `<option value="">Select user</option>`;
+
+        userRecords.forEach(user => {
+
+            select.innerHTML += `
+                <option value="${user.userId}">
+                    ${escapeHtml(user.name)}
+                </option>
+            `;
+
+        });
+
+    }
+    catch (error) {
+        console.error(error);
+    }
+
+}
+
+// ===============================
+// NAME LOOKUPS
+// ===============================
+function getCarName(id) {
+
+    const car = carRecords.find(function (c) {
+        return c.carId === id;
+    });
+
+    return car
+        ? `${car.make} ${car.model}`
+        : `Car #${id}`;
+
+}
+
+function getUserName(id) {
+
+    const user = userRecords.find(function (u) {
+        return u.userId === id;
+    });
+
+    return user
+        ? user.name
+        : `User #${id}`;
+
+}
 
 // ===============================
 // GET ALL REVIEWS
@@ -93,11 +196,11 @@ function displayReviews(records) {
             </td>
 
             <td>
-                ${r.carid}
+                ${escapeHtml(getCarName(r.carid))}
             </td>
 
             <td>
-                ${r.userid}
+                ${escapeHtml(getUserName(r.userid))}
             </td>
 
             <td>
@@ -226,7 +329,7 @@ async function saveReview() {
     const review = {
 
         reviewDate:
-        document.getElementById("reviewDate").value,
+            document.getElementById("reviewDate").value,
 
         comment:
             document.getElementById("comment").value.trim(),
@@ -484,12 +587,14 @@ document.getElementById("searchInput")
 
             ||
 
-            String(r.carid)
+            getCarName(r.carid)
+                .toLowerCase()
                 .includes(search)
 
             ||
 
-            String(r.userid)
+            getUserName(r.userid)
+                .toLowerCase()
                 .includes(search)
 
         );
