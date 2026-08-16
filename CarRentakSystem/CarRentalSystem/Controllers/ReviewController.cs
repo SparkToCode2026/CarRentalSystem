@@ -104,6 +104,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Review/UpdateReviewRating?id=3&newRating=4
         //Request method => Patch
+        [Authorize]
         [HttpPatch("UpdateReviewRating")]
         public IActionResult UpdateReviewRating(
     int id,

@@ -3,13 +3,17 @@
 let damageReports = [];
 let damageModal;
 
+let carRecords = [];
+let rentalRecords = [];
+
 document.addEventListener("DOMContentLoaded", function () {
 
     damageModal =
         new bootstrap.Modal(
             document.getElementById("damageModal")
         );
-
+    loadCars();
+    loadRentals();
     loadDamageReports();
 
 });
@@ -42,6 +46,37 @@ async function loadDamageReports() {
 
 }
 
+async function loadCars() {
+    try {
+        const response = await authorizedFetch(`${API_BASE}/Car/GetAllCars`);
+        if (!response.ok) return;
+        carRecords = await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function loadRentals() {
+    try {
+        const response = await authorizedFetch(`${API_BASE}/Rental/GetAllRentals`);
+        if (!response.ok) return;
+        rentalRecords = await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function getCarLabel(carId) {
+    const car = carRecords.find(c => c.carId === carId);
+    return car ? `${car.plateNumber} — ${car.make} ${car.model}` : carId;
+}
+
+function getRentalLabel(rentalId) {
+    const rental = rentalRecords.find(r => r.rental_ID === rentalId);
+    if (!rental) return `#${rentalId}`;
+    return `#${rentalId} — ${rental.customerName ?? "Unknown"}`;
+}
+
 function displayDamageReports(records) {
 
     const tbody =
@@ -71,9 +106,9 @@ function displayDamageReports(records) {
 
             <td>${d.damageReport_ID}</td>
 
-            <td>${d.carId}</td>
+            <td>${escapeHtml(getCarLabel(d.carId))}</td>
 
-            <td>${d.rental_ID}</td>
+            <td>${escapeHtml(getRentalLabel(d.rental_ID))}</td>
 
             <td>
                 ${new Date(

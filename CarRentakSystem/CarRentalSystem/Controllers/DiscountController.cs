@@ -214,8 +214,9 @@ namespace CarRentalSystem.Controllers
 
             return Ok(discounts);
         }
-        
+
         // 6.GET BY ID 
+        [Authorize]
         [HttpGet("GetDiscount")]
         public IActionResult GetDiscount(int discount_id)
         {
@@ -244,8 +245,9 @@ namespace CarRentalSystem.Controllers
 
             return Ok(discounts);
         }
-        
+
         // 8.GET SORT - Sort by expiration date 
+        [Authorize]
         [HttpGet("GetSortedByExpiry")]
         public IActionResult GetSortedByExpiry()
         {

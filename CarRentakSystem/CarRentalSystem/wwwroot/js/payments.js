@@ -2,6 +2,7 @@
 const RENTAL_API = "/Rental";
 
 let payments = [];
+let rentalRecords = [];
 let deletePaymentId = null;
 
 
@@ -87,6 +88,7 @@ async function loadRentals() {
         const rentals =
             await response.json();
 
+        rentalRecords = rentals;
 
         select.innerHTML = `
             <option value="">
@@ -132,8 +134,21 @@ async function loadRentals() {
         `;
 
     }
-
 }
+    function getRentalLabel(rentalId) {
+        const rental = rentalRecords.find(r =>
+            (r.rental_ID ?? r.Rental_ID) === rentalId
+        );
+
+        if (!rental) return `Rental #${rentalId}`;
+
+        const customer = rental.customerName ?? "Unknown";
+        const car = rental.carName ?? "";
+
+        return `#${rentalId} — ${customer}${car ? " · " + car : ""}`;
+    }
+
+
 
 
 // ==============================
@@ -268,7 +283,7 @@ function renderPayments(data) {
             </td>
 
             <td>
-                Rental #${rentalId}
+                ${escapeHtml(getRentalLabel(rentalId))}
             </td>
 
             <td>
