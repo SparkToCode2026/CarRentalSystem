@@ -257,7 +257,7 @@ function displayCategories(records) {
                         <td>
 
                             <strong>
-                                ${category.name}
+                                ${escapeHtml(category.name)}
                             </strong>
 
                         </td>
@@ -956,6 +956,22 @@ async function sortCategories(sortBy) {
         );
 
     }
+
+}
+
+
+// ========================================
+// SAFE HTML
+// ========================================
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
 }
 
