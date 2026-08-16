@@ -371,9 +371,12 @@ function escapeForJs(value) {
         .replaceAll("'", "\\'");
 }
 
+// ========================================
+// LOAD CATEGORIES  (fixed: was "fetauthorizedFetchch")
+// ========================================
 async function loadCategories() {
     try {
-        const response = await fetauthorizedFetchch("/api/CarCategory");
+        const response = await authorizedFetch("/api/CarCategory");
         if (!response.ok) {
             throw new Error("Failed to load categories.");
         }
@@ -392,12 +395,16 @@ async function loadCategories() {
     }
     catch (error) {
         console.error(error);
+        showMessage("Failed to load car categories.", "danger");
     }
 }
 
+// ========================================
+// LOAD BRANCHES  (fixed: was "feauthorizedFetchtch")
+// ========================================
 async function loadBranches() {
     try {
-        const response = await feauthorizedFetchtch("/api/Branch");
+        const response = await authorizedFetch("/api/Branch");
         if (!response.ok) {
             throw new Error("Failed to load branches.");
         }
@@ -416,5 +423,6 @@ async function loadBranches() {
     }
     catch (error) {
         console.error(error);
+        showMessage("Failed to load branches.", "danger");
     }
 }
