@@ -14,7 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
     carModal = new bootstrap.Modal(document.getElementById("carModal"));
     deleteCarModal = new bootstrap.Modal(document.getElementById("deleteCarModal"));
 
-    document.getElementById("addCarBtn").addEventListener("click", openAddCarModal);
+    const addCarBtn = document.getElementById("addCarBtn");
+    if (addCarBtn) {
+        addCarBtn.addEventListener("click", openAddCarModal);
+    }
+
     document.getElementById("carForm").addEventListener("submit", saveCar);
     document.getElementById("confirmDeleteCarBtn").addEventListener("click", confirmDeleteCar);
     document.getElementById("makeFilter").addEventListener("input", applyFilters);
@@ -26,6 +30,16 @@ document.addEventListener("DOMContentLoaded", function () {
     loadBranches();
     loadCars();
 });
+
+// ========================================
+// ROLE CHECKER
+// ========================================
+function canManageCars() {
+    // Checks common storage keys for the role and normalizes to lowercase
+    const role = localStorage.getItem("userRole") || localStorage.getItem("role") || sessionStorage.getItem("userRole") || "";
+    const normalizedRole = role.toLowerCase();
+    return normalizedRole === "admin" || normalizedRole === "staff";
+}
 
 // ========================================
 // GET ALL
@@ -69,13 +83,31 @@ function getBranchName(id) {
 function displayCars(cars) {
     const tbody = document.getElementById("carsTableBody");
     const count = document.getElementById("recordCount");
+    const isStaffOrAdmin = canManageCars();
+
+    // Toggle "+ Add Car" button visibility
+    const addCarBtn = document.getElementById("addCarBtn");
+    if (addCarBtn) {
+        if (isStaffOrAdmin) {
+            addCarBtn.classList.remove("d-none");
+        } else {
+            addCarBtn.classList.add("d-none");
+        }
+    }
+
+    // Toggle table header visibility for Actions
+    const actionsHeader = document.getElementById("actionsHeader");
+    if (actionsHeader) {
+        actionsHeader.style.display = isStaffOrAdmin ? "" : "none";
+    }
 
     count.textContent = `${cars.length} ${cars.length === 1 ? "car" : "cars"}`;
 
     if (cars.length === 0) {
+        const totalColumns = isStaffOrAdmin ? 8 : 7;
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-5">
+                <td colspan="${totalColumns}" class="text-center py-5">
                     <div class="state-empty">
                         <i class="bi bi-inbox"></i>
                         <div>No cars found</div>
@@ -91,6 +123,23 @@ function displayCars(cars) {
             ? `<span class="badge-status badge-success">Available</span>`
             : `<span class="badge-status badge-danger">Unavailable</span>`;
 
+        // Render actions column only for Admin/Staff
+        const actionsCell = isStaffOrAdmin ? `
+            <td>
+                <div class="row-actions">
+                    <button class="btn btn-outline-secondary" title="Edit" onclick="openEditCarModal(${car.carId})">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" title="Change Availability" onclick="toggleAvailability(${car.carId}, ${car.isAvailable})">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" title="Delete" onclick="openDeleteCarModal(${car.carId}, '${escapeForJs(car.make)} ${escapeForJs(car.model)}')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        ` : "";
+
         return `
             <tr>
                 <td><span class="plate">${escapeHtml(car.plateNumber)}</span></td>
@@ -100,19 +149,7 @@ function displayCars(cars) {
                 <td>${escapeHtml(getBranchName(car.branchId))}</td>
                 <td>OMR ${Number(car.dailyRate).toFixed(2)}</td>
                 <td>${availability}</td>
-                <td>
-                    <div class="row-actions">
-                        <button class="btn btn-outline-secondary" title="Edit" onclick="openEditCarModal(${car.carId})">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-outline-secondary" title="Change Availability" onclick="toggleAvailability(${car.carId}, ${car.isAvailable})">
-                            <i class="bi bi-arrow-repeat"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" title="Delete" onclick="openDeleteCarModal(${car.carId}, '${escapeForJs(car.make)} ${escapeForJs(car.model)}')">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                </td>
+                ${actionsCell}
             </tr>
         `;
     }).join("");
@@ -372,7 +409,7 @@ function escapeForJs(value) {
 }
 
 // ========================================
-// LOAD CATEGORIES  (fixed: was "fetauthorizedFetchch")
+// LOAD CATEGORIES
 // ========================================
 async function loadCategories() {
     try {
@@ -400,7 +437,7 @@ async function loadCategories() {
 }
 
 // ========================================
-// LOAD BRANCHES  (fixed: was "feauthorizedFetchtch")
+// LOAD BRANCHES
 // ========================================
 async function loadBranches() {
     try {
