@@ -150,7 +150,7 @@ function displayDrivers(drivers) {
 
 
 
-                <td>
+                <td data-role="staff">
 
                     ${getLicenseStatus(
             driver.licenseExpiryDate
@@ -160,7 +160,7 @@ function displayDrivers(drivers) {
 
 
 
-                <td>
+                <td data-role="staff">
 
                     <div class="row-actions">
 
@@ -190,6 +190,7 @@ function displayDrivers(drivers) {
                         <button
                             class="btn btn-outline-danger"
                             title="Delete"
+                            data-role="admin"
                             onclick="deleteDriver(${driver.driverProfile_ID})">
 
                             <i class="bi bi-trash"></i>
@@ -354,7 +355,7 @@ async function addDriver() {
 
 
         licenseExpiryDate:
-        licenseExpiryDate,
+            licenseExpiryDate,
 
 
         userId:

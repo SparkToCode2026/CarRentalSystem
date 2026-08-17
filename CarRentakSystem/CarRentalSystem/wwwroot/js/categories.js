@@ -279,7 +279,7 @@ function displayCategories(records) {
                         </td>
 
 
-                        <td>
+                        <td data-role="admin">
 
                             <div class="row-actions">
 

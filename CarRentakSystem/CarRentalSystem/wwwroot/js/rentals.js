@@ -263,7 +263,7 @@ function displayRentals(records) {
                             </td>
 
 
-                            <td>
+                            <td data-role="staff">
 
                                 ${getStatusBadge(
                         rental.status
@@ -272,7 +272,7 @@ function displayRentals(records) {
                             </td>
 
 
-                            <td>
+                            <td data-role="staff">
 
                                 <div class="row-actions">
 
@@ -312,6 +312,7 @@ function displayRentals(records) {
                                         type="button"
                                         class="btn btn-outline-danger"
                                         title="Delete"
+                                        data-role="admin"
                                         onclick="openDeleteRentalModal(
                                             ${rental.rental_ID}
                                         )">

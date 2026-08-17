@@ -232,6 +232,7 @@ namespace CarRentalSystem.Controllers
 
         //Request URL => http://localhost:5071/Maintenance/GetALLMaintenances
         //Request method => Get
+        [Authorize]
         [HttpGet("GetALLMaintenances")]
         public IActionResult GetALLMaintenances()
         {
@@ -272,7 +273,7 @@ namespace CarRentalSystem.Controllers
             return Ok(maintenances);
         }
 
-     
+
 
     }
 }

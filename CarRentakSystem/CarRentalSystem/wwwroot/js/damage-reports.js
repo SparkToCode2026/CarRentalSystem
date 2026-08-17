@@ -3,13 +3,17 @@
 let damageReports = [];
 let damageModal;
 
+let carRecords = [];
+let rentalRecords = [];
+
 document.addEventListener("DOMContentLoaded", function () {
 
     damageModal =
         new bootstrap.Modal(
             document.getElementById("damageModal")
         );
-
+    loadCars();
+    loadRentals();
     loadDamageReports();
 
 });
@@ -42,6 +46,40 @@ async function loadDamageReports() {
 
 }
 
+async function loadCars() {
+    try {
+        const response = await authorizedFetch(`${API_BASE}/Car/GetAllCars`);
+        if (!response.ok) return;
+        carRecords = await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function loadRentals() {
+    try {
+        const response = await authorizedFetch(`${API_BASE}/Rental/GetAllRentals`);
+        if (!response.ok) return;
+        rentalRecords = await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function getCarLabel(carId) {
+    const car = carRecords.find(c => c.carId === carId);
+    if (!car) return `<span class="text-muted">Car #${carId}</span>`;
+    return `<strong>${escapeHtml(car.make)} ${escapeHtml(car.model)}</strong>` +
+        `<div class="small text-muted">${escapeHtml(car.plateNumber ?? "")}</div>`;
+}
+
+function getRentalLabel(rentalId) {
+    const rental = rentalRecords.find(r => r.rental_ID === rentalId);
+    const customer = rental ? (rental.customerName ?? "") : "";
+    return `<span class="plate">RNT-${rentalId}</span>` +
+        (customer ? `<div class="small text-muted">${escapeHtml(customer)}</div>` : "");
+}
+
 function displayDamageReports(records) {
 
     const tbody =
@@ -71,9 +109,9 @@ function displayDamageReports(records) {
 
             <td>${d.damageReport_ID}</td>
 
-            <td>${d.carId}</td>
+            <td>${getCarLabel(d.carId)}</td>
 
-            <td>${d.rental_ID}</td>
+            <td>${getRentalLabel(d.rental_ID)}</td>
 
             <td>
                 ${new Date(
@@ -89,7 +127,7 @@ function displayDamageReports(records) {
         ).toFixed(2)}
             </td>
 
-            <td>
+            <td data-role="staff">
 
                 <button class="btn btn-sm btn-outline-primary"
                         onclick="editDamageReport(${d.damageReport_ID})">
@@ -98,7 +136,7 @@ function displayDamageReports(records) {
 
                 </button>
 
-                <button class="btn btn-sm btn-outline-danger"
+                <button class="btn btn-sm btn-outline-danger" data-role="admin"
                         onclick="deleteDamageReport(${d.damageReport_ID})">
 
                     <i class="bi bi-trash"></i>

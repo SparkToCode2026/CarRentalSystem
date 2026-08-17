@@ -55,9 +55,11 @@ namespace CarRentalSystem.Controllers
             context.Users.Add(user);
             context.SaveChanges();
 
-            return Ok(new{
+            return Ok(new
+            {
                 Message = "User registered successfully",
-                UserId = user.userId    });
+                UserId = user.userId
+            });
         }
 
         // Login User
@@ -103,7 +105,7 @@ namespace CarRentalSystem.Controllers
                 name = user.name,
                 email = user.email,
                 role = user.role.ToString()
-            }); 
+            });
         }
         //note: add user replaced with register user
         // Implement PUT/PATCH to update an existing record.

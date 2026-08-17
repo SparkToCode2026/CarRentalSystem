@@ -20,7 +20,7 @@ namespace CarRentalSystem.Controllers
         // 1. POST - Create Insurance
         [Authorize(Roles = "Admin,staff")]
         [HttpPost("AddInsurance")]
-        
+
         public IActionResult AddInsurance(Insurance insurance)
         {
             // Check Rental exists

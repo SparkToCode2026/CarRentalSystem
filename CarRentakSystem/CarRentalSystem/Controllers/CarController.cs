@@ -292,6 +292,7 @@ namespace CarRentalSystem.Controllers
             return Ok(cars);
         }
         //GET ALL with related data
+        [Authorize]
         [HttpGet("Carswithdata")]
         public IActionResult Carswithdata()
         {
@@ -303,6 +304,7 @@ namespace CarRentalSystem.Controllers
             return Ok(cars);
         }
         // GET BY ID
+        [Authorize]
         [HttpGet("GetCar")]
         public IActionResult GetCar(int id)
         {
@@ -329,6 +331,7 @@ namespace CarRentalSystem.Controllers
         }
 
         //Sort using OrderBy()
+        [Authorize]
         [HttpGet("SortByDailyRate")]
         public IActionResult SortByDailyRate()
         {

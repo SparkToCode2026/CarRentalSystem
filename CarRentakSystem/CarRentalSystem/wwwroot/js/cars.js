@@ -100,7 +100,7 @@ function displayCars(cars) {
                 <td>${escapeHtml(getBranchName(car.branchId))}</td>
                 <td>OMR ${Number(car.dailyRate).toFixed(2)}</td>
                 <td>${availability}</td>
-                <td>
+                <td data-role="staff">
                     <div class="row-actions">
                         <button class="btn btn-outline-secondary" title="Edit" onclick="openEditCarModal(${car.carId})">
                             <i class="bi bi-pencil"></i>
@@ -108,7 +108,7 @@ function displayCars(cars) {
                         <button class="btn btn-outline-secondary" title="Change Availability" onclick="toggleAvailability(${car.carId}, ${car.isAvailable})">
                             <i class="bi bi-arrow-repeat"></i>
                         </button>
-                        <button class="btn btn-outline-danger" title="Delete" onclick="openDeleteCarModal(${car.carId}, '${escapeForJs(car.make)} ${escapeForJs(car.model)}')">
+                        <button class="btn btn-outline-danger" title="Delete" data-role="admin" onclick="openDeleteCarModal(${car.carId}, '${escapeForJs(car.make)} ${escapeForJs(car.model)}')">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
