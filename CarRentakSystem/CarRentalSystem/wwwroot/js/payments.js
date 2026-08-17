@@ -135,18 +135,18 @@ async function loadRentals() {
 
     }
 }
-    function getRentalLabel(rentalId) {
-        const rental = rentalRecords.find(r =>
-            (r.rental_ID ?? r.Rental_ID) === rentalId
-        );
+function getRentalLabel(rentalId) {
+    const rental = rentalRecords.find(r =>
+        (r.rental_ID ?? r.Rental_ID) === rentalId
+    );
 
-        if (!rental) return `Rental #${rentalId}`;
+    if (!rental) return `<span class="plate">RNT-${rentalId}</span>`;
 
-        const customer = rental.customerName ?? "Unknown";
-        const car = rental.carName ?? "";
+    const customer = rental.customerName ?? "";
 
-        return `#${rentalId} — ${customer}${car ? " · " + car : ""}`;
-    }
+    return `<span class="plate">RNT-${rentalId}</span>` +
+        (customer ? `<div class="small text-muted">${escapeHtml(customer)}</div>` : "");
+}
 
 
 
@@ -283,7 +283,7 @@ function renderPayments(data) {
             </td>
 
             <td>
-                ${escapeHtml(getRentalLabel(rentalId))}
+                ${getRentalLabel(rentalId)}
             </td>
 
             <td>
@@ -298,13 +298,13 @@ function renderPayments(data) {
                 ${formatDate(paidAt)}
             </td>
 
-            <td>
+            <td data-role="staff">
                 <span class="badge text-bg-light">
                     ${escapeHtml(status)}
                 </span>
             </td>
 
-            <td>
+            <td data-role="staff">
 
                 <button
                     class="btn btn-sm btn-outline-secondary"
@@ -317,6 +317,7 @@ function renderPayments(data) {
 
                 <button
                     class="btn btn-sm btn-outline-danger"
+                    data-role="admin"
                     onclick="openDeletePaymentModal(${paymentId})">
 
                     <i class="bi bi-trash"></i>

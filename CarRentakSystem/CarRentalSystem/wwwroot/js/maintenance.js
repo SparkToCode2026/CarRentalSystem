@@ -91,6 +91,8 @@ function displayMaintenance(records) {
                 ? `${m.car.make || ""} ${m.car.model || ""}`.trim()
                 : `Car #${m.carid}`;
 
+        const carPlate = m.car ? (m.car.plateNumber || "") : "";
+
 
         return `
             <tr>
@@ -102,7 +104,8 @@ function displayMaintenance(records) {
                 </td>
 
                 <td>
-                    ${escapeHtml(carName)}
+                    <strong>${escapeHtml(carName)}</strong>
+                    ${carPlate ? `<div class="small text-muted">${escapeHtml(carPlate)}</div>` : ""}
                 </td>
 
                 <td>
@@ -117,11 +120,11 @@ function displayMaintenance(records) {
                     OMR ${Number(m.cost).toFixed(2)}
                 </td>
 
-                <td>
+                <td data-role="staff">
                     ${getStatusBadge(m.status)}
                 </td>
 
-                <td>
+                <td data-role="staff">
 
                     <div class="btn-group btn-group-sm">
 
@@ -132,7 +135,7 @@ function displayMaintenance(records) {
 
                         </button>
 
-                        <button class="btn btn-outline-danger"
+                        <button class="btn btn-outline-danger" data-role="admin"
                                 onclick="deleteMaintenance(${m.maintenane_ID})">
 
                             <i class="bi bi-trash"></i>
@@ -246,7 +249,7 @@ async function saveMaintenance() {
     const maintenance = {
 
         serviceDate:
-        document.getElementById("serviceDate").value,
+            document.getElementById("serviceDate").value,
 
         description:
             document.getElementById("description").value.trim(),
@@ -255,7 +258,7 @@ async function saveMaintenance() {
             Number(document.getElementById("cost").value),
 
         status:
-        document.getElementById("status").value,
+            document.getElementById("status").value,
 
         carid:
             Number(document.getElementById("carId").value)

@@ -259,6 +259,6 @@ namespace CarRentalSystem.Controllers
 
             return Ok(damageReports);
         }
-        
+
     }
 }

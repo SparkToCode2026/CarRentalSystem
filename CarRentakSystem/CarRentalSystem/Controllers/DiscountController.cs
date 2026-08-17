@@ -227,11 +227,11 @@ namespace CarRentalSystem.Controllers
             if (d == null)
             {
                 return NotFound("discount not found ");
-                    
+
             }
 
             return Ok(d);
-            
+
         }
 
         // 7.GET FILTER - filter by percetage 

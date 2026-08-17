@@ -108,6 +108,21 @@ function getCarName(id) {
 
 }
 
+function renderCarCell(id) {
+
+    const car = carRecords.find(function (c) {
+        return c.carId === id;
+    });
+
+    if (!car) {
+        return `<span class="text-muted">Car #${id}</span>`;
+    }
+
+    return `<strong>${escapeHtml(car.make)} ${escapeHtml(car.model)}</strong>` +
+        `<div class="small text-muted">${escapeHtml(car.plateNumber ?? "")}</div>`;
+
+}
+
 function getUserName(id) {
 
     const user = userRecords.find(function (u) {
@@ -196,7 +211,7 @@ function displayReviews(records) {
             </td>
 
             <td>
-                ${escapeHtml(getCarName(r.carid))}
+                ${renderCarCell(r.carid)}
             </td>
 
             <td>
@@ -211,7 +226,7 @@ function displayReviews(records) {
                 ${escapeHtml(r.comment)}
             </td>
 
-            <td>
+            <td data-role="staff">
 
                 <div class="btn-group btn-group-sm">
 

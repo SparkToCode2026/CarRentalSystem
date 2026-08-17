@@ -202,7 +202,7 @@ function renderDiscounts(data) {
             </td>
 
 
-            <td>
+            <td data-role="staff">
 
                 <span class="badge-status ${statusClass}">
                     ${status}
@@ -211,7 +211,7 @@ function renderDiscounts(data) {
             </td>
 
 
-            <td>
+            <td data-role="staff">
 
                 <div class="row-actions">
 
@@ -229,6 +229,7 @@ function renderDiscounts(data) {
                     <button
                         class="btn btn-outline-danger"
                         title="Delete"
+                        data-role="admin"
                         onclick="openDeleteDiscountModal(
                             ${id},
                             '${escapeForJs(code)}'

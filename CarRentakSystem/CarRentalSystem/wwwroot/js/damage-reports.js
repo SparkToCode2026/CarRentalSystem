@@ -68,13 +68,16 @@ async function loadRentals() {
 
 function getCarLabel(carId) {
     const car = carRecords.find(c => c.carId === carId);
-    return car ? `${car.plateNumber} — ${car.make} ${car.model}` : carId;
+    if (!car) return `<span class="text-muted">Car #${carId}</span>`;
+    return `<strong>${escapeHtml(car.make)} ${escapeHtml(car.model)}</strong>` +
+        `<div class="small text-muted">${escapeHtml(car.plateNumber ?? "")}</div>`;
 }
 
 function getRentalLabel(rentalId) {
     const rental = rentalRecords.find(r => r.rental_ID === rentalId);
-    if (!rental) return `#${rentalId}`;
-    return `#${rentalId} — ${rental.customerName ?? "Unknown"}`;
+    const customer = rental ? (rental.customerName ?? "") : "";
+    return `<span class="plate">RNT-${rentalId}</span>` +
+        (customer ? `<div class="small text-muted">${escapeHtml(customer)}</div>` : "");
 }
 
 function displayDamageReports(records) {
@@ -106,9 +109,9 @@ function displayDamageReports(records) {
 
             <td>${d.damageReport_ID}</td>
 
-            <td>${escapeHtml(getCarLabel(d.carId))}</td>
+            <td>${getCarLabel(d.carId)}</td>
 
-            <td>${escapeHtml(getRentalLabel(d.rental_ID))}</td>
+            <td>${getRentalLabel(d.rental_ID)}</td>
 
             <td>
                 ${new Date(
@@ -124,7 +127,7 @@ function displayDamageReports(records) {
         ).toFixed(2)}
             </td>
 
-            <td>
+            <td data-role="staff">
 
                 <button class="btn btn-sm btn-outline-primary"
                         onclick="editDamageReport(${d.damageReport_ID})">
@@ -133,7 +136,7 @@ function displayDamageReports(records) {
 
                 </button>
 
-                <button class="btn btn-sm btn-outline-danger"
+                <button class="btn btn-sm btn-outline-danger" data-role="admin"
                         onclick="deleteDamageReport(${d.damageReport_ID})">
 
                     <i class="bi bi-trash"></i>

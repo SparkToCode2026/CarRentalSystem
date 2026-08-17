@@ -162,7 +162,7 @@ function displayInsurances(insurances) {
 
                 <!-- Actions -->
 
-                <td>
+                <td data-role="staff">
 
                     <div class="row-actions">
 
@@ -201,6 +201,7 @@ function displayInsurances(insurances) {
                                 type="button"
                                 class="btn btn-outline-danger"
                                 title="Delete"
+                                data-role="admin"
                                 onclick="deleteInsurance(${insurance.insurance_ID})">
 
                             <i class="bi bi-trash"></i>

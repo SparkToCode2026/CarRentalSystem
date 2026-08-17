@@ -419,7 +419,7 @@ function displayRecentRentals(
                             Customer
                         </th>
 
-                        <th>
+                        <th data-role="staff">
                             Status
                         </th>
 
@@ -450,10 +450,13 @@ function displayRecentRentals(
 
                                 <td>
 
-                                    ${escapeHtml(
+                                    <strong>
+                                        ${escapeHtml(
             rental.carName ??
             `Car #${rental.carId}`
         )}
+                                    </strong>
+                                    ${rental.plateNumber ? `<div class="small text-muted">${escapeHtml(rental.plateNumber)}</div>` : ""}
 
                                 </td>
 
@@ -468,7 +471,7 @@ function displayRecentRentals(
                                 </td>
 
 
-                                <td>
+                                <td data-role="staff">
 
                                     ${statusBadge(
             rental.status
